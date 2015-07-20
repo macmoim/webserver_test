@@ -1,5 +1,6 @@
 package info.androidhive.listviewfeed.app;
 
+import info.androidhive.listviewfeed.multipart.MultiPartStack;
 import info.androidhive.listviewfeed.volley.LruBitmapCache;
 import android.app.Application;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ public class AppController extends Application {
 	public static final String TAG = AppController.class.getSimpleName();
 
 	private RequestQueue mRequestQueue;
+	private RequestQueue mHttpRequestQueue;
 	private ImageLoader mImageLoader;
 	LruBitmapCache mLruBitmapCache;
 
@@ -68,4 +70,27 @@ public class AppController extends Application {
 			mRequestQueue.cancelAll(tag);
 		}
 	}
+	
+	public RequestQueue getHttpStackRequestQueue() {
+        if (mHttpRequestQueue == null) {
+            mHttpRequestQueue = Volley.newRequestQueue(getApplicationContext(), new MultiPartStack());
+        }
+        return mHttpRequestQueue;
+    }
+
+    public <T> void addHttpStackToRequestQueue(Request<T> req, String tag) {
+        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
+        getHttpStackRequestQueue().add(req);
+    }
+    
+    public <T> void addHttpStackToRequestQueue(Request<T> req) {
+        req.setTag(TAG);
+        getHttpStackRequestQueue().add(req);
+    }
+    
+    public void cancelPendingHttpRequests(Object tag) {
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(tag);
+        }
+    }
 }
