@@ -10,6 +10,7 @@ import android.widget.Button;
 public class TestSelectingActivity extends Activity {
     private Button mDownloadBtn;
     private Button mUploadBtn;
+    private Button mMainEditor;
     
     private static final String TAG = "TestSelectingActivity";
     @Override
@@ -37,6 +38,16 @@ public class TestSelectingActivity extends Activity {
                 startActivity(new Intent(TestSelectingActivity.this, MultiVolleyTest.class));
             }
         });
+
+        mMainEditor = (Button) findViewById(R.id.editor_main);
+        mMainEditor.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TestSelectingActivity.this, PangEditorActivity.class));
+            }
+        });
+
+
         
     }
     
