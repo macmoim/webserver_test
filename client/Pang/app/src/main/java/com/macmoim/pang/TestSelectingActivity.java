@@ -63,6 +63,11 @@ public class TestSelectingActivity extends Activity {
             mUploadBtn.setOnClickListener(null);
             mUploadBtn = null;
         }
+
+        if (mMainEditor!= null) {
+            mMainEditor.setOnClickListener(null);
+            mMainEditor = null;
+        }
         super.onDestroy();
     }
     

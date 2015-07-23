@@ -2,9 +2,10 @@ package com.macmoim.pang;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
@@ -15,6 +16,8 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.NavigationDrawer.NavigationDrawerCallbacks;
+import com.macmoim.pang.NavigationDrawer.NavigationDrawerFragment;
 import com.macmoim.pang.adapter.FeedListAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -30,18 +33,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private ListView listView;
 	private FeedListAdapter listAdapter;
 	private List<FeedItem> feedItems;
 	private String URL_FEED = "http://localhost:8080/web_test/image_test/image_rest.php";//"http://api.androidhive.info/feed/feed.json";
 
+	private Toolbar mToolbar;
+	private NavigationDrawerFragment mNavigationDrawerFragment;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+		setSupportActionBar(mToolbar);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+		mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
 		listView = (ListView) findViewById(R.id.list);
 
@@ -141,6 +154,11 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onNavigationDrawerItemSelected(int position) {
+		//Toast.makeText(this, "Menu item selected -> " + position, Toast.LENGTH_SHORT).show();
 	}
 
 }
