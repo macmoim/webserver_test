@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 
 		mPager = (ViewPager) findViewById(R.id.pager);
 		//Setting the Adapter on the view pager first. Passing the fragment manager through as an argument
-		mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(),this.getBaseContext()));
+		mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), this.getBaseContext()));
 		mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
 
 
@@ -87,7 +87,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 
 		//Setting the ViewPager as the tabs
 		mTabs.setViewPager(mPager);
-
 
 
 		listView = (ListView) findViewById(R.id.list);
@@ -122,32 +121,32 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 //			}
 //
 //		} else {
-		    Log.d(TAG, "now on new connection");
-			// making fresh volley request and getting json
-		    Map<String, String> obj = new HashMap<String, String>();
-            obj.put("action", "get_thumb_images");
-            
-			CustomRequest jsonReq = new CustomRequest(Method.POST,
-					URL_FEED, obj, new Response.Listener<JSONObject>() {
+		Log.d(TAG, "now on new connection");
+		// making fresh volley request and getting json
+		Map<String, String> obj = new HashMap<String, String>();
+		obj.put("action", "get_thumb_images");
 
-						@Override
-						public void onResponse(JSONObject response) {
-							VolleyLog.d(TAG, "Response: " + response.toString());
-							if (response != null) {
-								parseJsonFeed(response);
-							}
-						}
-					}, new Response.ErrorListener() {
+		CustomRequest jsonReq = new CustomRequest(Method.POST,
+				URL_FEED, obj, new Response.Listener<JSONObject>() {
 
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							VolleyLog.d(TAG, "Error: " + error.getMessage());
-						}
-					});
+			@Override
+			public void onResponse(JSONObject response) {
+				VolleyLog.d(TAG, "Response: " + response.toString());
+				if (response != null) {
+					parseJsonFeed(response);
+				}
+			}
+		}, new Response.ErrorListener() {
 
-			// Adding request to volley request queue
-			AppController.getInstance().addToRequestQueue(jsonReq);
-//		}
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.d(TAG, "Error: " + error.getMessage());
+			}
+		});
+//	}
+		// Adding request to volley request queue
+		AppController.getInstance().addToRequestQueue(jsonReq);
+	}
 
 	@Nullable
 	@Override
