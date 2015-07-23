@@ -2,13 +2,17 @@ package com.macmoim.pang;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -27,6 +31,8 @@ import com.macmoim.pang.adapter.FeedListAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FeedItem;
+import com.macmoim.pang.tabs.MyPagerAdapter;
+import com.macmoim.pang.tabs.SlidingTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +54,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 	private Toolbar mToolbar;
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 
+	private ViewPager mPager;
+	private SlidingTabLayout mTabs;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,26 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 		mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
+		mPager = (ViewPager) findViewById(R.id.pager);
+		//Setting the Adapter on the view pager first. Passing the fragment manager through as an argument
+		mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(),this.getBaseContext()));
+		mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
+
+
+		//Setting the custom Tab View as the Sliding Tabs Layout
+		mTabs.setCustomTabView(R.layout.custom_tab_view, R.id.tabText);
+
+		mTabs.setDistributeEvenly(true);
+
+		mTabs.setSelectedIndicatorColors(getResources().getColor(R.color.tabIndicatorColour));
+
+		mTabs.setBackgroundColor(getResources().getColor(R.color.basePrimaryBackgroundColour));
+
+		//Setting the ViewPager as the tabs
+		mTabs.setViewPager(mPager);
+
+
+
 		listView = (ListView) findViewById(R.id.list);
 
 		feedItems = new ArrayList<FeedItem>();
@@ -68,12 +97,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 		listAdapter = new FeedListAdapter(this, feedItems);
 		listView.setAdapter(listAdapter);
 		listView.setOnItemClickListener(this);
-		
+
 		// These two lines not needed,
 		// just to get the look of facebook (changing background color & hiding the icon)
-		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
-		getSupportActionBar().setIcon(
-				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+//		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
+//		getSupportActionBar().setIcon(
+//				new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
 		// We first check for cached request
 		Cache cache = AppController.getInstance().getRequestQueue().getCache();
@@ -81,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 		if (entry != null) {
 			// fetch the data from cache
 			try {
-			    Log.d(TAG, "now on cache");
+				Log.d(TAG, "now on cache");
 				String data = new String(entry.data, "UTF-8");
 				try {
 					parseJsonFeed(new JSONObject(data));
@@ -93,33 +122,40 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 			}
 
 		} else {
-		    Log.d(TAG, "now on new connection");
+			Log.d(TAG, "now on new connection");
 			// making fresh volley request and getting json
-		    Map<String, String> obj = new HashMap<String, String>();
-            obj.put("action", "get_thumb_images");
-            
+			Map<String, String> obj = new HashMap<String, String>();
+			obj.put("action", "get_thumb_images");
+
 			CustomRequest jsonReq = new CustomRequest(Method.POST,
 					URL_FEED, obj, new Response.Listener<JSONObject>() {
 
-						@Override
-						public void onResponse(JSONObject response) {
-							VolleyLog.d(TAG, "Response: " + response.toString());
-							if (response != null) {
-								parseJsonFeed(response);
-							}
-						}
-					}, new Response.ErrorListener() {
+				@Override
+				public void onResponse(JSONObject response) {
+					VolleyLog.d(TAG, "Response: " + response.toString());
+					if (response != null) {
+						parseJsonFeed(response);
+					}
+				}
+			}, new Response.ErrorListener() {
 
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							VolleyLog.d(TAG, "Error: " + error.getMessage());
-						}
-					});
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					VolleyLog.d(TAG, "Error: " + error.getMessage());
+				}
+			});
 
 			// Adding request to volley request queue
 			AppController.getInstance().addToRequestQueue(jsonReq);
 		}
+	}
 
+	@Nullable
+	@Override
+	public View onCreateView(String name, Context context, AttributeSet attrs) {
+
+		Log.d("TTT","onCreateview");
+		return super.onCreateView(name, context, attrs);
 	}
 
 	/**

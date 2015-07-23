@@ -271,9 +271,12 @@ public class PangEditorActivity extends Activity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        VolleyLog.d(TAG, "Response: " + response.toString());
+
                         if (response != null) {
+                            VolleyLog.d(TAG, "Response: " + response.toString());
                             parseJsonHtml(response);
+                        }else{
+                            VolleyLog.d(TAG, "Error: response is null!!!!");
                         }
                     }
                 }, new Response.ErrorListener() {

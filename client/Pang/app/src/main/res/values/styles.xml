@@ -19,4 +19,19 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- The theme that will override the default action bar -->
+    <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:textColorPrimary">@color/basePrimaryTextColour</item>
+        <item name="colorControlHighlight">@color/baseBackgroundColour</item>
+        <item name="android:actionMenuTextColor">@color/basePrimaryTextColour</item>
+        <item name="android:textColorSecondary">@color/baseSecondaryTextColour</item>
+        <item name="android:background">@color/basePrimaryBackgroundColour</item>
+    </style>
+
+    <!--Action Bar Title Text -->
+    <style name="ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/basePrimaryTextColour</item>
+        <item name="android:textSize">18sp</item> <!-- Standard Pixels -->
+    </style>
+
 </resources>
