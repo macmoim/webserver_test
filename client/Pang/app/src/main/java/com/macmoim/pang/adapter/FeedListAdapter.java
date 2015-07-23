@@ -104,7 +104,7 @@ public class FeedListAdapter extends BaseAdapter {
 
 		// Feed image
 		if (item.getImge() != null) {
-			feedImageView.setImageUrl("http://localhost:8080/web_test/image_test/upload_image/"+item.getImge(), imageLoader);
+			feedImageView.setImageUrl(/*"http://localhost:8080/web_test/image_test/upload_image/"+*/item.getImge(), imageLoader);
 			feedImageView.setVisibility(View.VISIBLE);
 			feedImageView
 					.setResponseObserver(new FeedImageView.ResponseObserver() {

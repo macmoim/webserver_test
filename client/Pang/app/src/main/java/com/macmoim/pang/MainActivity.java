@@ -2,12 +2,17 @@ package com.macmoim.pang;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Cache;
@@ -33,12 +38,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private ListView listView;
 	private FeedListAdapter listAdapter;
 	private List<FeedItem> feedItems;
-	private String URL_FEED = "http://localhost:8080/web_test/image_test/image_rest.php";//"http://api.androidhive.info/feed/feed.json";
+	private String URL_FEED = "http://localhost:8080/web_test/image_test/getThumbImageList.php";//"http://api.androidhive.info/feed/feed.json";
 
 	private Toolbar mToolbar;
 	private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -62,12 +67,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 
 		listAdapter = new FeedListAdapter(this, feedItems);
 		listView.setAdapter(listAdapter);
+		listView.setOnItemClickListener(this);
 		
 		// These two lines not needed,
 		// just to get the look of facebook (changing background color & hiding the icon)
-//		getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
-//		getActionBar().setIcon(
-//				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+		getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3b5998")));
+		getSupportActionBar().setIcon(
+				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
 		// We first check for cached request
 		Cache cache = AppController.getInstance().getRequestQueue().getCache();
@@ -90,7 +96,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 		    Log.d(TAG, "now on new connection");
 			// making fresh volley request and getting json
 		    Map<String, String> obj = new HashMap<String, String>();
-            obj.put("action", "get_all_images");
+            obj.put("action", "get_thumb_images");
             
 			CustomRequest jsonReq = new CustomRequest(Method.POST,
 					URL_FEED, obj, new Response.Listener<JSONObject>() {
@@ -121,24 +127,24 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 	 * */
 	private void parseJsonFeed(JSONObject response) {
 		try {
-			JSONArray feedArray = response.getJSONArray("image_info");
+			JSONArray feedArray = response.getJSONArray("post_info");
 
 			for (int i = 0; i < feedArray.length(); i++) {
 				JSONObject feedObj = (JSONObject) feedArray.get(i);
 
 				FeedItem item = new FeedItem();
 				item.setId(feedObj.getInt("id"));
-				item.setName(feedObj.getString("title"));
+				item.setName(feedObj.getString("filename"));
 
 				// Image might be null sometimes
-				String image = feedObj.isNull("image") ? null : feedObj
-						.getString("image");
+				String image = feedObj.isNull("img_path") ? null : feedObj
+						.getString("img_path");
 				item.setImge(image);
 				item.setTimeStamp(feedObj.getString("date"));
 
 
 				Log.d(TAG, "parseJsonFeed dbname " + feedObj
-                        .getString("image"));
+                        .getString("img_path"));
 				feedItems.add(item);
 			}
 
@@ -160,5 +166,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 	public void onNavigationDrawerItemSelected(int position) {
 		//Toast.makeText(this, "Menu item selected -> " + position, Toast.LENGTH_SHORT).show();
 	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		FeedItem item = feedItems.get(position);
 
+		Intent i = new Intent(this, PangEditorActivity.class);
+		i.putExtra("edit", true);
+		i.putExtra("thumb_path", item.getImge());
+		startActivity(i);
+
+	}
 }

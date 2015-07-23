@@ -98,6 +98,7 @@ public class MultiVolleyTest extends Activity {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                                Log.d(TAG, "requestError : " + error.getMessage());
                             }
                         });
 

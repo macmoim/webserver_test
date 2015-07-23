@@ -34,8 +34,8 @@ if ($_FILES ['image'] ['size'] > 0) {
 		} // switch
 	} // if
 	  
-	// 3. 업로드 제한용량 체크(서버측에서 5M로 제한)
-	if ($_FILES ['image'] ['size'] > 5242880) {
+	// 3. 업로드 제한용량 체크(서버측에서 8M로 제한)
+	if ($_FILES ['image'] ['size'] > 8388608) {
 		exit ( "업로드 최대용량 초과" );
 	} // if
 	  
