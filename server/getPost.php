@@ -9,15 +9,14 @@ function get_post($thumb_path) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT user_id, upload_filename, db_filename, filepath, upload_date
+	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date
 	                   FROM posts WHERE thumb_img_path = '$thumb_path'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
 		if (isset ( $row ['db_filename'] )) {
-			// echo $row['user_alias'];
-			// echo $row['email'];
 			$post_info = array (
 					"user_id" => $row ['user_id'],
+					"title" => $row ['title'],
 					"upload_filename" => $row ['upload_filename'],
 					"db_filename" => $row ['db_filename'],
 					"filepath" => $row ['filepath'],

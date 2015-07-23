@@ -107,48 +107,47 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 		// We first check for cached request
 		Cache cache = AppController.getInstance().getRequestQueue().getCache();
 		Entry entry = cache.get(URL_FEED);
-		if (entry != null) {
-			// fetch the data from cache
-			try {
-				Log.d(TAG, "now on cache");
-				String data = new String(entry.data, "UTF-8");
-				try {
-					parseJsonFeed(new JSONObject(data));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-
-		} else {
-			Log.d(TAG, "now on new connection");
+//		if (entry != null) {
+//			// fetch the data from cache
+//			try {
+//			    Log.d(TAG, "now on cache");
+//				String data = new String(entry.data, "UTF-8");
+//				try {
+//					parseJsonFeed(new JSONObject(data));
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//
+//		} else {
+		    Log.d(TAG, "now on new connection");
 			// making fresh volley request and getting json
-			Map<String, String> obj = new HashMap<String, String>();
-			obj.put("action", "get_thumb_images");
-
+		    Map<String, String> obj = new HashMap<String, String>();
+            obj.put("action", "get_thumb_images");
+            
 			CustomRequest jsonReq = new CustomRequest(Method.POST,
 					URL_FEED, obj, new Response.Listener<JSONObject>() {
 
-				@Override
-				public void onResponse(JSONObject response) {
-					VolleyLog.d(TAG, "Response: " + response.toString());
-					if (response != null) {
-						parseJsonFeed(response);
-					}
-				}
-			}, new Response.ErrorListener() {
+						@Override
+						public void onResponse(JSONObject response) {
+							VolleyLog.d(TAG, "Response: " + response.toString());
+							if (response != null) {
+								parseJsonFeed(response);
+							}
+						}
+					}, new Response.ErrorListener() {
 
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					VolleyLog.d(TAG, "Error: " + error.getMessage());
-				}
-			});
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							VolleyLog.d(TAG, "Error: " + error.getMessage());
+						}
+					});
 
 			// Adding request to volley request queue
 			AppController.getInstance().addToRequestQueue(jsonReq);
-		}
-	}
+//		}
 
 	@Nullable
 	@Override
@@ -170,7 +169,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
 
 				FeedItem item = new FeedItem();
 				item.setId(feedObj.getInt("id"));
-				item.setName(feedObj.getString("filename"));
+				item.setName(feedObj.getString("title"));
 
 				// Image might be null sometimes
 				String image = feedObj.isNull("img_path") ? null : feedObj

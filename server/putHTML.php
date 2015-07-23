@@ -1,5 +1,30 @@
 <?php
+function resize_image($file, $w, $h, $crop = FALSE) {
+	list ( $width, $height ) = getimagesize ( $file );
+	$r = $width / $height;
+	if ($crop) {
+		if ($width > $height) {
+			$width = ceil ( $width - ($width * abs ( $r - $w / $h )) );
+		} else {
+			$height = ceil ( $height - ($height * abs ( $r - $w / $h )) );
+		}
+		$newwidth = $w;
+		$newheight = $h;
+	} else {
+		if ($w / $h > $r) {
+			$newwidth = $h * $r;
+			$newheight = $h;
+		} else {
+			$newheight = $w / $r;
+			$newwidth = $w;
+		}
+	}
+	$src = imagecreatefromjpeg ( $file );
+	$dst = imagecreatetruecolor ( $newwidth, $newheight );
+	imagecopyresampled ( $dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height );
 
+	return $dst;
+}
 function saveHTMLFile() {
 	include "serverconfig.php";
 	include "./image_test/dbconfig.php";
@@ -46,6 +71,7 @@ function saveHTMLFile() {
 	$create_table = "CREATE TABLE if not exists posts (
 					id int auto_increment,
 					user_id varchar(30) DEFAULT \"khwan07\",
+					title varchar(100),
 					upload_filename varchar(100),
 					db_filename varchar(100),
 					filepath varchar(100),
@@ -66,6 +92,10 @@ function saveHTMLFile() {
 	
 		// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
 		$filePath = 'http://localhost:8080/web_test/image_test/upload_html/';//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+		$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+		if(!is_dir($fileServerPath)){
+			@mkdir($fileServerPath);
+		}
 	
 		// 7. 생성한 파일명이 DB내에 존재하는지 체크
 		$query = sprintf ( "SELECT no FROM image_files WHERE db_filename = '%s'", $fileName );
@@ -83,11 +113,44 @@ function saveHTMLFile() {
 	$file_type = $_FILES ['html_file'] ['type'];
 	$upload_date = date ( "Y-m-d H:i:s" );
 	
+	// create and save thumbnail
+	// save thumbnail
+	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
+	$imageName = $_POST['thumb_img_url'];
+	
+	$exif_data = exif_read_data ( $imageServerPath . $imageName, 0, true );
+	
+	$exist_thumbnail = false;
+	foreach ( $exif_data as $key => $section ) {
+		if (in_array ( "THUMBNAIL", $section )) {
+			$exist_thumbnail = true;
+			break;
+		}
+	}
+	if ($exist_thumbnail) {
+		$thumbData = exif_thumbnail($thumbServerPath.$imageName, $thumb_width, $thumb_height, $thumb_type);
+		$thumb = imagecreatefromstring($thumbData);
+	} else {
+		$thumb_width = 200;
+		$thumb_height = 200;
+		$thumb = resize_image ( $imageServerPath . $imageName, 200, 200 );
+	}
+	if(!is_dir($thumbServerPath)){
+		@mkdir($thumbServerPath);
+	}
+	if (imagejpeg($thumb,$thumbServerPath.$imageName,100)) {
+	} else {
+		// 실패시 db에 저장했던 내용 취소를 위한 롤백
+		exit ( "thumbnail 실패" );
+	} // if
+	
 	$mysqli->autocommit ( false );
 	
 	$query = sprintf ( "INSERT INTO posts
-		(user_id, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path)
-		VALUES ('khwan07', '%s','%s','%s','%s','%s','%s','%s')", $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $_POST['thumb_img_url']);
+		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path)
+		VALUES ('khwan07', '%s', '%s','%s','%s','%s','%s','%s','%s')", $upload_filename, $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName);
 	
 	$mysqli->query ( $query );
 	
@@ -100,7 +163,7 @@ function saveHTMLFile() {
 	
 	if ($mysqli->affected_rows > 0) {
 		// 9. 업로드 파일을 새로 만든 파일명으로 변경 및 이동
-		if (move_uploaded_file ( $_FILES ['html_file'] ['tmp_name'], $uploadHTMLFolder . $fileName )) {
+		if (move_uploaded_file ( $_FILES ['html_file'] ['tmp_name'], $fileServerPath . $fileName )) {
 				
 				
 			$mysqli->commit ();

@@ -55,7 +55,7 @@ function showImage($image_name) {
 				$img_info = getimagesize ( $image_path );
 				$filesize = filesize ( $image_path );
 				
-				echo "<div><img src='$image_name' /></div>";
+				echo "<div><a href=\"url\"><img src=\"'$image_name'\" border=\"0\" /></a></div>";
 				
 				// 이미지 전송을 위한 헤더설정
 				// header("Content-Type: {$img_info['mime']}\n");

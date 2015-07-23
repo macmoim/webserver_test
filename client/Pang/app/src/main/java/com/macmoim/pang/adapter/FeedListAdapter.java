@@ -2,6 +2,7 @@ package com.macmoim.pang.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,8 @@ import com.macmoim.pang.data.FeedItem;
 import java.util.List;
 
 
-public class FeedListAdapter extends BaseAdapter {	
+public class FeedListAdapter extends BaseAdapter {
+	private static final String TAG = "FeedListAdapter";
 	private Activity activity;
 	private LayoutInflater inflater;
 	private List<FeedItem> feedItems;
@@ -100,25 +102,25 @@ public class FeedListAdapter extends BaseAdapter {
 //		}
 
 		// user profile pic
-//		profilePic.setImageUrl(item.getProfilePic(), imageLoader);
+		profilePic.setImageUrl(/*item.getProfilePic()*/item.getImge(), imageLoader);
 
 		// Feed image
-		if (item.getImge() != null) {
-			feedImageView.setImageUrl(/*"http://localhost:8080/web_test/image_test/upload_image/"+*/item.getImge(), imageLoader);
-			feedImageView.setVisibility(View.VISIBLE);
-			feedImageView
-					.setResponseObserver(new FeedImageView.ResponseObserver() {
-						@Override
-						public void onError() {
-						}
-
-						@Override
-						public void onSuccess() {
-						}
-					});
-		} else {
-			feedImageView.setVisibility(View.GONE);
-		}
+//		if (item.getImge() != null) {
+//			feedImageView.setImageUrl(/*"http://localhost:8080/web_test/image_test/upload_image/"+*/item.getImge(), imageLoader);
+//			feedImageView.setVisibility(View.VISIBLE);
+//			feedImageView
+//					.setResponseObserver(new FeedImageView.ResponseObserver() {
+//						@Override
+//						public void onError() {
+//						}
+//
+//						@Override
+//						public void onSuccess() {
+//						}
+//					});
+//		} else {
+//			feedImageView.setVisibility(View.GONE);
+//		}
 
 		return convertView;
 	}

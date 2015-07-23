@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -311,37 +314,7 @@ public class PangEditorActivity extends Activity {
 
                 File filePath = new File(getRealPathFromURI(getApplicationContext(), data.getData()));
 
-                String url = "http://localhost:8080/web_test/putImage.php";
-
-                Map<String, String> obj_body = new HashMap<String, String>();
-                obj_body.put("title", "editor_image.jpg");
-
-                Map<String, File> obj_file = new HashMap<String, File>();
-                obj_file.put("image", filePath);
-
-                @SuppressWarnings("unchecked")
-                MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                        url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        VolleyLog.d(TAG, "Response: " + response.toString());
-                        if (response != null) {
-                            parseJson(response);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        VolleyLog.d(TAG, "Error: " + error.getMessage());
-                        Log.d(TAG, "requestError : " + error.getMessage());
-                    }
-                });
-
-
-                // Adding request to volley request queue
-                AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+                new ResizeBitmapTask().execute(filePath);
             }
         }
 
@@ -363,21 +336,44 @@ public class PangEditorActivity extends Activity {
 
     private void parseJson(JSONObject response) {
         String url="";
+        String fileName="";
+        int width=0;
+        int height=0;
         try {
             url = "http://localhost:8080/web_test/image_test/upload_image/"+response.getString("file_url");
+            fileName = response.getString("file_url");
+            width = response.getInt("width");
+            height = response.getInt("height");
             Log.d(TAG, "parseJsonFeed upload url " + url);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Toast.makeText(getApplicationContext(), "upload success", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "upload success width " + width +" height " + height, Toast.LENGTH_SHORT).show();
 
-        mEditor.insertImage(url,"food");
+
+//        mEditor.insertImage(url,"food");
+        float ratio = 0f;
+        int fixedWidth = 0;
+        int fixedHeight = 0;
+        if (width > height) {
+            ratio = (float)width/(float)height;
+            fixedHeight = 100;
+            fixedWidth =(int) (fixedHeight * ratio);
+
+        } else {
+            ratio = (float)height/(float)width;
+            fixedWidth = 100;
+            fixedHeight =(int) (fixedWidth * ratio);
+        }
+
+
+        mEditor.insertImage(url,"food", fixedWidth, fixedHeight);
 
         if (mImageUrlArr == null) {
             mImageUrlArr = new ArrayList<>();
         }
-        mImageUrlArr.add(url);
+        mImageUrlArr.add(fileName);
 
     }
 
@@ -491,6 +487,99 @@ public class PangEditorActivity extends Activity {
             super.onPostExecute(s);
             mEditor.setHtml(s);
         }
+    }
+
+    class ResizeBitmapTask extends AsyncTask<File, Void, File> {
+
+        @Override
+        protected File doInBackground(File... params) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            long fileSize = params[0].length();
+            if (fileSize > 2*1024*1024) {
+                options.inSampleSize = 4;
+            } else if (fileSize < 700*1024) {
+
+            } else {
+                options.inSampleSize = 2;
+            }
+
+            Bitmap bitmap = BitmapFactory.decodeFile(params[0].getAbsolutePath(), options);
+
+            String dirPath = getFilesDir().getAbsolutePath();
+            File file = new File(dirPath);
+            if( !file.exists() ) {
+                file.mkdirs();
+            }
+
+            File savefile = new File(dirPath+"/temp");
+            OutputStream out = null;
+            try
+            {
+                savefile.createNewFile();
+                out = new FileOutputStream(savefile);
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            return savefile;
+        }
+
+        @Override
+        protected void onPostExecute(File s) {
+            super.onPostExecute(s);
+            Log.d(TAG, "requestHTML path " + s.getAbsolutePath() + " size " + s.length());
+            requestHTML(s);
+        }
+    }
+
+    private void requestHTML(File filePath) {
+        String url = "http://localhost:8080/web_test/putImage.php";
+
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("title", "editor_image.jpg");
+
+        Map<String, File> obj_file = new HashMap<String, File>();
+        obj_file.put("image", filePath);
+
+        @SuppressWarnings("unchecked")
+        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJson(response);
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "requestError : " + error.getMessage());
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
     }
 
     @Override

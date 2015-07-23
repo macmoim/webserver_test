@@ -105,6 +105,7 @@ if ($_FILES ['image'] ['size'] > 0) {
 		
 		// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
 		$filePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+		$thumbPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 		
 		// 7. 생성한 파일명이 DB내에 존재하는지 체크
 		$query = sprintf ( "SELECT no FROM image_files WHERE db_filename = '%s'", $fileName );
@@ -161,9 +162,72 @@ if ($_FILES ['image'] ['size'] > 0) {
 			$mysqli->rollback ();
 			exit ( "업로드 실패" );
 		} // if
+		  
+		// save thumbnail
+		echo "filename " . $thumbPath . $fileName . "<br>";
+		
+		$exif_data = exif_read_data ( $filePath . $fileName, 0, true );
+		
+		$exist_thumbnail = false;
+		foreach ( $exif_data as $key => $section ) {
+			if (in_array ( "THUMBNAIL", $section )) {
+				echo "<br/>  exif thumbnail exists<br/>";
+				$exist_thumbnail = true;
+				break;
+			}
+		}
+		$thumb;
+		if ($exist_thumbnail) {
+			$thumbData = exif_thumbnail ( $filePath . $fileName, $thumb_width, $thumb_height, $thumb_type );
+			$thumb = imagecreatefromstring ( $thumbData );
+			// echo "<img width='$thumb_width' height='$thumb_height' src='data:image;base64,".base64_encode($thumbData)."'>";
+			// echo "<img width='$thumb_width' height='$thumb_height' src='".$thumb.">";
+		} else {
+			$thumb_width = 200;
+			$thumb_height = 200;
+			$thumb = resize_image ( $filePath . $fileName, 200, 200 );
+		}
+		if (! is_dir ( $thumbPath )) {
+			@mkdir ( $thumbPath );
+		}
+		if (imagejpeg ( $thumb, $thumbPath . $fileName, 100 )) {
+			
+			echo "thumbnail 성공";
+// 			echo "<img  width='$thumb_width' height='$thumb_height' src='data:image;base64," . base64_encode ( $thumbData ) . "'>";
+			echo "<img  width='$thumb_width' height='$thumb_height' src='".$thumb. "'>";
+		} else {
+			// 실패시 db에 저장했던 내용 취소를 위한 롤백
+			exit ( "thumbnail 실패" );
+		} // if
 	} // if
 	$mysqli->close ();
 } else {
 	die ( "You have not selected any image" );
+}
+function resize_image($file, $w, $h, $crop = FALSE) {
+	list ( $width, $height ) = getimagesize ( $file );
+	$r = $width / $height;
+	if ($crop) {
+		if ($width > $height) {
+			$width = ceil ( $width - ($width * abs ( $r - $w / $h )) );
+		} else {
+			$height = ceil ( $height - ($height * abs ( $r - $w / $h )) );
+		}
+		$newwidth = $w;
+		$newheight = $h;
+	} else {
+		if ($w / $h > $r) {
+			$newwidth = $h * $r;
+			$newheight = $h;
+		} else {
+			$newheight = $w / $r;
+			$newwidth = $w;
+		}
+	}
+	$src = imagecreatefromjpeg ( $file );
+	$dst = imagecreatetruecolor ( $newwidth, $newheight );
+	imagecopyresampled ( $dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height );
+	
+	return $dst;
 }
 ?>
