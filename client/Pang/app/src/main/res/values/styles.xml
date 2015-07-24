@@ -1,23 +1,23 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"> <!--No Action Bar as the main theme is being replaced by custom Theme-->
+    </style>
+    <!-- Customize your theme here. -->
+
+    <!--Creating a Base-->
+    <style name="Theme.Base" parent="AppTheme">
+        <!--Similar to Inheritance, inheriting from AppTheme and extending ie. overriding defaults for custom-->
+        <!--Mapping actual android colour properties to our custom colours-->
+        <item name="colorPrimary">@color/basePrimaryBackgroundColour</item> <!--Background colour-->
+        <item name="colorPrimaryDark">@color/baseSecondaryBackgroundColour</item>
+        <item name="windowActionBar">false</item> <!--Not using an Action Bar-->
+        <item name="android:windowNoTitle">true</item> <!--Don't want to show a title-->
+        <item name="android:windowBackground">@color/baseBackgroundColour</item> <!--Default Background Coloer-->
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+    <!--Basic Theme. Theme.Custom inherits from theme.base which inherits from AppTheme -->
+    <style name="Theme.Custom" parent="Theme.Base"/>
 
     <!-- The theme that will override the default action bar -->
     <style name="ActionBarThemeOverlay" parent="">

@@ -22,7 +22,7 @@ public class MyFragment extends Fragment {
     private static Context mContext;
 
     //Method to return instance of the fragment. Passing in position to show which position is currently being shown in the fragment
-    public static MyFragment getInstance(int position, Context context) {
+    public static MyFragment getInstance(int position) {
 
         //Construct the fragment
         MyFragment myFragment = new MyFragment();
@@ -46,7 +46,7 @@ public class MyFragment extends Fragment {
         //Inflate the fragment_main layout
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
 
-        FeedListView mFeedListView = new FeedListView((Activity)mContext);
+        FeedListView mFeedListView = new FeedListView(getActivity());
         Log.d(TAG, "MyFragment::onCreate");
         mFeedListView.inflate(layout);
 

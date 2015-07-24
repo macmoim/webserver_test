@@ -43,7 +43,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
 
         //Initialising Fragment
         //Passing in the position so that position of the fragment is returned
-        MyFragment myFragment = MyFragment.getInstance(position, mContext);
+        MyFragment myFragment = MyFragment.getInstance(position);
 
         return myFragment;
     }

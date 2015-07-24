@@ -1,11 +1,8 @@
 package com.macmoim.pang;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -19,30 +16,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.android.volley.Cache;
-import com.android.volley.Cache.Entry;
-import com.android.volley.Request.Method;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.macmoim.pang.NavigationDrawer.NavigationDrawerCallbacks;
 import com.macmoim.pang.NavigationDrawer.NavigationDrawerFragment;
 import com.macmoim.pang.adapter.FeedListAdapter;
-import com.macmoim.pang.app.AppController;
-import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FeedItem;
 import com.macmoim.pang.tabs.MyPagerAdapter;
 import com.macmoim.pang.tabs.SlidingTabLayout;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -74,12 +55,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    private void onMakeNavigationDrawer(){
+    private void onMakeNavigationDrawer() {
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
     }
 
-    private void onMakeTabandPager(){
+    private void onMakeTabandPager() {
         mPager = (ViewPager) findViewById(R.id.pager);
         //Setting the Adapter on the view pager first. Passing the fragment manager through as an argument
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), this.getBaseContext()));
@@ -122,8 +103,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         FeedItem item = feedItems.get(position);
-
         Intent i = new Intent(this, PangEditorActivity.class);
+
         i.putExtra("edit", true);
         i.putExtra("thumb_path", item.getImge());
         startActivity(i);
