@@ -40,8 +40,13 @@
                     android:id="@+id/name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/feed_item_profile_name"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/feed_item_profile_name" />
+
+                <TextView
+                    android:id="@+id/user_id"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/feed_item_timestamp" />
 
                 <TextView
                     android:id="@+id/timestamp"

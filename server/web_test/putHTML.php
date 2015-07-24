@@ -79,6 +79,7 @@ function saveHTMLFile() {
 					file_type VARCHAR(40),
 					upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 					thumb_img_path varchar(100),
+					category varchar(20),
 					PRIMARY KEY (id)
 					);";
 	
@@ -153,8 +154,8 @@ function saveHTMLFile() {
 	$mysqli->autocommit ( false );
 	
 	$query = sprintf ( "INSERT INTO posts
-		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path)
-		VALUES ('khwan07', '%s', '%s','%s','%s','%s','%s','%s','%s')", $upload_filename, $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName);
+		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path,category)
+		VALUES ('khwan07', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName, $_POST ["category"]);
 	
 	$mysqli->query ( $query );
 	
@@ -185,7 +186,7 @@ function saveHTMLFile() {
 
 $value = "An error has occurred";
 // echo 'start: ';
-if (isset ( $_POST ["title"] ) && $_FILES ['html_file'] ['size'] > 0) {
+if (isset ( $_POST ["title"] ) && isset ( $_POST ["category"] )  && $_FILES ['html_file'] ['size'] > 0) {
 	
 	$value = saveHTMLFile();
 	

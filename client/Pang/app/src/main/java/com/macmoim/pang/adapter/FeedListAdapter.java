@@ -59,6 +59,7 @@ public class FeedListAdapter extends BaseAdapter {
 			imageLoader = AppController.getInstance().getImageLoader();
 
 		TextView name = (TextView) convertView.findViewById(R.id.name);
+		TextView user_id = (TextView) convertView.findViewById(R.id.user_id);
 		TextView timestamp = (TextView) convertView
 				.findViewById(R.id.timestamp);
 		TextView statusMsg = (TextView) convertView
@@ -72,6 +73,7 @@ public class FeedListAdapter extends BaseAdapter {
 		FeedItem item = feedItems.get(position);
 
 		name.setText(item.getName());
+		user_id.setText(item.getUserId());
 
 		// Converting timestamp into x ago format
 //		CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(

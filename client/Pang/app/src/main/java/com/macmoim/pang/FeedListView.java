@@ -1,6 +1,7 @@
 package com.macmoim.pang;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.Layout;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Cache;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -30,7 +32,7 @@ import java.util.Map;
 /**
  * Created by P11872 on 2015-07-24.
  */
-public class FeedListView {
+public class FeedListView implements AdapterView.OnItemClickListener {
     private final static String TAG = "FeedListView";
 
     private Activity mAct;
@@ -41,6 +43,7 @@ public class FeedListView {
 
     public FeedListView(Activity activity) {
         mAct = activity;
+
     }
 
     public void inflate(View layout) {
@@ -51,7 +54,7 @@ public class FeedListView {
 
         listAdapter = new FeedListAdapter(mAct, feedItems);
         listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener((AdapterView.OnItemClickListener) mAct);
+        listView.setOnItemClickListener(this);
 
         // These two lines not needed,
         // just to get the look of facebook (changing background color & hiding the icon)
@@ -96,6 +99,10 @@ public class FeedListView {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if(response != null && response.data != null){
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data="+new String(response.data));
+                }
             }
         });
 //	}
@@ -115,7 +122,8 @@ public class FeedListView {
 
                 FeedItem item = new FeedItem();
                 item.setId(feedObj.getInt("id"));
-                item.setName(feedObj.getString("filename"));
+                item.setName(feedObj.getString("title"));
+                item.setUserId(feedObj.getString("user_id"));
 
                 // Image might be null sometimes
                 String image = feedObj.isNull("img_path") ? null : feedObj
@@ -134,5 +142,22 @@ public class FeedListView {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        FeedItem item = feedItems.get(position);
+
+//        Intent i = new Intent(this, PangEditorActivity.class);
+//        i.putExtra("edit", true);
+//        i.putExtra("id", item.getId());
+//        startActivity(i);
+
+        Intent i = new Intent(mAct.getApplicationContext(), ViewerActivity.class);
+        i.putExtra("id", item.getId());
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mAct.getApplicationContext().startActivity(i);
+
     }
 }

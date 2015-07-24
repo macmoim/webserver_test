@@ -1,5 +1,5 @@
 <?php
-function get_post($thumb_path) {
+function get_post($id) {
 	$post_info = array ();
 	
 	// normally this info would be pulled from a database.
@@ -9,8 +9,8 @@ function get_post($thumb_path) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date
-	                   FROM posts WHERE thumb_img_path = '$thumb_path'";
+	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date, category
+	                   FROM posts WHERE id = '$id'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
 		if (isset ( $row ['db_filename'] )) {
@@ -20,7 +20,8 @@ function get_post($thumb_path) {
 					"upload_filename" => $row ['upload_filename'],
 					"db_filename" => $row ['db_filename'],
 					"filepath" => $row ['filepath'],
-					"upload_date" => $row ['upload_date'] 
+					"upload_date" => $row ['upload_date'],
+					"category" => $row ['category']
 			);
 		} else {
 			echo 'fail to get user info';
@@ -38,8 +39,8 @@ $possible_url = array (
 
 $value = "An error has occurred";
 
-if (isset ( $_POST ["thumb_path"] )) {
-	$value = get_post ( $_POST ["thumb_path"] );
+if (isset ( $_POST ["id"] )) {
+	$value = get_post ( $_POST ["id"] );
 } else {
 	$value = "Missing argument";
 }

@@ -2,17 +2,18 @@ package com.macmoim.pang.data;
 
 public class FeedItem {
 	private int id;
-	private String name, image, timeStamp;
+	private String name, image, timeStamp, userId;
 
 	public FeedItem() {
 	}
 
-	public FeedItem(int id, String name, String image, String timeStamp) {
+	public FeedItem(int id, String name, String userId, String image, String timeStamp) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.image = image;
 		this.timeStamp = timeStamp;
+		this.userId = userId;
 	}
 
 	public int getId() {
@@ -29,6 +30,14 @@ public class FeedItem {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getImge() {

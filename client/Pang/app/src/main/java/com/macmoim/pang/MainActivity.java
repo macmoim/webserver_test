@@ -2,7 +2,6 @@ package com.macmoim.pang;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -13,24 +12,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.macmoim.pang.NavigationDrawer.NavigationDrawerCallbacks;
 import com.macmoim.pang.NavigationDrawer.NavigationDrawerFragment;
-import com.macmoim.pang.adapter.FeedListAdapter;
-import com.macmoim.pang.data.FeedItem;
 import com.macmoim.pang.tabs.MyPagerAdapter;
 import com.macmoim.pang.tabs.SlidingTabLayout;
 
-import java.util.List;
-
-public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks, AdapterView.OnItemClickListener {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerCallbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private ListView listView;
-    private FeedListAdapter listAdapter;
-    private List<FeedItem> feedItems;
-    private String URL_FEED = "http://localhost:8080/web_test/image_test/getThumbImageList.php";//"http://api.androidhive.info/feed/feed.json";
 
     private Toolbar mToolbar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -100,14 +89,5 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerC
         //Toast.makeText(this, "Menu item selected -> " + position, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FeedItem item = feedItems.get(position);
-        Intent i = new Intent(this, PangEditorActivity.class);
 
-        i.putExtra("edit", true);
-        i.putExtra("thumb_path", item.getImge());
-        startActivity(i);
-
-    }
 }

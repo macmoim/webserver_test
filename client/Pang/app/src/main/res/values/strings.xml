@@ -14,4 +14,12 @@
         <item>TAB 4</item>
         <item>TAB 5</item>
     </string-array>
+
+    <string-array name="food_spinner">
+        <item>한식</item>
+        <item>중식</item>
+        <item>양식</item>
+        <item>일식</item>
+        <item>유럽식</item>
+    </string-array>
 </resources>

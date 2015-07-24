@@ -1,6 +1,7 @@
 package com.macmoim.pang;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,8 +12,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,12 +50,19 @@ import java.util.Map;
 /**
  * Created by P11872 on 2015-07-21.
  */
-public class PangEditorActivity extends Activity {
+public class PangEditorActivity extends ActionBarActivity {
     private static final String TAG = "PangEditorActivity";
     private RichEditor mEditor = null;
     private TextView mPreview;
+    private Spinner mSpinner;
+    private String mSelectedFood;
+    private EditText mTitleEdit;
 
     private ArrayList<String> mImageUrlArr;
+    private ProgressDialog mDialog;
+
+    private Toolbar mToolbar;
+
 
     static final int REQ_CODE_PICK_PICTURE = 1;
 
@@ -56,6 +70,8 @@ public class PangEditorActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ediotr_main);
+
+        onMaketoolbar();
 
         mEditor = (RichEditor) findViewById(R.id.editor);
 
@@ -257,12 +273,23 @@ public class PangEditorActivity extends Activity {
         findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mImageUrlArr == null || (mImageUrlArr != null && mImageUrlArr.size() == 0)) {
+                    Toast.makeText(getApplicationContext(), "이미지를 추가해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (mTitleEdit.getText() == null || "".equals(mTitleEdit.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Log.d(TAG, "titleedit " +mTitleEdit.getText().toString());
+                showDialog();
                 File file = saveHTML(mEditor.getHtml());
 
                 String url = "http://localhost:8080/web_test/putHTML.php";
 
                 Map<String, String> obj_body = new HashMap<String, String>();
-                obj_body.put("title", "testHTML.html");
+                obj_body.put("title", mTitleEdit.getText().toString());
+                obj_body.put("category", mSelectedFood);
                 obj_body.put("thumb_img_url", mImageUrlArr != null ? mImageUrlArr.get(0) : "");
 
                 Map<String, File> obj_file = new HashMap<String, File>();
@@ -297,10 +324,29 @@ public class PangEditorActivity extends Activity {
             }
         });
 
+        mTitleEdit = (EditText) findViewById(R.id.title);
+        final String[] spinnerArr = getResources().getStringArray(R.array.food_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
+        adapter.setDropDownViewResource(R.layout.food_spinner_item);
+        mSpinner = (Spinner) findViewById(R.id.food_spinner);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedFood = spinnerArr[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         if (getIntent().getBooleanExtra("edit", false)) {
-            String path = getIntent().getStringExtra("thumb_path");
-            if (path != null) {
-                editHTML(path);
+            int id = getIntent().getIntExtra("id", 0);
+            if (id > 0) {
+                editHTML(id);
             }
         }
     }
@@ -386,6 +432,7 @@ public class PangEditorActivity extends Activity {
             e.printStackTrace();
         }
 
+        removeDialog();
         Toast.makeText(getApplicationContext(), "html upload success " + id, Toast.LENGTH_SHORT).show();
     }
 
@@ -410,11 +457,11 @@ public class PangEditorActivity extends Activity {
         return savefile;
     }
 
-    private void editHTML(String thumb_path) {
+    private void editHTML(int id) {
 
         String url = "http://localhost:8080/web_test/getPost.php";
         Map<String, String> obj = new HashMap<String, String>();
-        obj.put("thumb_path", thumb_path);
+        obj.put("id", String.valueOf(id));
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 url, obj, new Response.Listener<JSONObject>() {
@@ -452,6 +499,12 @@ public class PangEditorActivity extends Activity {
     class ReadHtmlTask extends AsyncTask<String, Void, String> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog();
+        }
+
+        @Override
         protected String doInBackground(String... params) {
             StringBuffer contents = new StringBuffer("");
             try {
@@ -486,6 +539,7 @@ public class PangEditorActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mEditor.setHtml(s);
+            removeDialog();
         }
     }
 
@@ -582,6 +636,30 @@ public class PangEditorActivity extends Activity {
         AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
     }
 
+    private void showDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        } else {
+            mDialog = new ProgressDialog(this);
+        }
+
+        mDialog.show();
+
+    }
+
+    private void removeDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+        mDialog = null;
+    }
+
+    private void onMaketoolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -609,6 +687,9 @@ public class PangEditorActivity extends Activity {
         mPreview.setOnClickListener(null);
         mPreview = null;
         mImageUrlArr = null;
+        mSpinner.setOnItemSelectedListener(null);
+        mSpinner = null;
+        mTitleEdit = null;
         super.onDestroy();
 
     }
