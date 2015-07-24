@@ -43,21 +43,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-            <FrameLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:clickable="true"
-                android:layout_height="match_parent" >
-
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@null"
-                    />
-
-        </FrameLayout>
-
 
     </LinearLayout>
     <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
