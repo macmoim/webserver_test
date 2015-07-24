@@ -119,6 +119,10 @@ function saveHTMLFile() {
 	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
 	$imageName = $_POST['thumb_img_url'];
+
+	if(!is_dir($thumbServerPath)){
+			@mkdir($thumbServerPath);
+	}
 	
 	$exif_data = exif_read_data ( $imageServerPath . $imageName, 0, true );
 	
