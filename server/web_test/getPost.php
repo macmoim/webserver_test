@@ -9,7 +9,7 @@ function get_post($id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date, category
+	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path
 	                   FROM posts WHERE id = '$id'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
@@ -21,7 +21,8 @@ function get_post($id) {
 					"db_filename" => $row ['db_filename'],
 					"filepath" => $row ['filepath'],
 					"upload_date" => $row ['upload_date'],
-					"category" => $row ['category']
+					"category" => $row ['category'],
+					"thumb_img_path" => $row['thumb_img_path']
 			);
 		} else {
 			echo 'fail to get user info';
