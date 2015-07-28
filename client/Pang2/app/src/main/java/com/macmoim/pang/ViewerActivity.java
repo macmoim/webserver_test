@@ -1,19 +1,15 @@
 package com.macmoim.pang;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -22,20 +18,16 @@ import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.richeditor.RichViewer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +36,7 @@ import java.util.Map;
  */
 public class ViewerActivity extends AppCompatActivity {
     private static final String TAG = "ViewerActivity";
-    private WebView mViewer;
+    private RichViewer mViewer;
     private Toolbar mToolbar;
 
     @Override
@@ -63,11 +55,12 @@ public class ViewerActivity extends AppCompatActivity {
 
 //        loadBackdrop();
 
-        mViewer = (WebView) findViewById(R.id.viewer);
+        mViewer = (RichViewer) findViewById(R.id.richviewer);
         mViewer.setVerticalScrollBarEnabled(true);
         mViewer.getSettings().setJavaScriptEnabled(true);
         mViewer.getSettings().setDefaultTextEncodingName("UTF-8");
         mViewer.setWebChromeClient(new WebChromeClient());
+
 
         int id = getIntent().getIntExtra("id", 0);
         showHTML(id);
@@ -105,7 +98,9 @@ public class ViewerActivity extends AppCompatActivity {
                         Log.d(TAG, "showHTML path " + htmlPath);
 //                        ((TextView)findViewById(R.id.post_category)).setText(response.getString("category"));
 //                        ((TextView)findViewById(R.id.post_title)).setText(response.getString("title"));
-                        mViewer.loadUrl(htmlPath);
+//                        mViewer.loadUrl(htmlPath);
+                        new ReadHtmlTask().execute(htmlPath);
+
 
                         loadBackdrop(thumbImgPath);
 
@@ -128,6 +123,51 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
+    class ReadHtmlTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            StringBuffer contents = new StringBuffer("");
+            try {
+                URL url = new URL(params[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(true);
+
+                //connect
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+
+                //create a buffer...
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+
+                while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                    contents.append(new String(buffer, 0, bufferLength));
+                }
+
+            } catch (final MalformedURLException e) {
+                e.printStackTrace();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+            return contents.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            mViewer.setHtml(s);
+        }
+    }
+
     private void loadBackdrop(String url) {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
 //        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
@@ -143,71 +183,6 @@ public class ViewerActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.sample_actions, menu);
         return true;
     }
-
-//    class ReadHtmlTask extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            StringBuffer contents = new StringBuffer("");
-//            try {
-//                URL url = new URL(params[0]);
-//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//
-//                urlConnection.setRequestMethod("GET");
-//                urlConnection.setDoOutput(true);
-//
-//                //connect
-//                urlConnection.connect();
-//
-////                InputStream inputStream = urlConnection.getInputStream();
-//                InputStream input = new BufferedInputStream(url.openStream(),
-//                        8192);
-//
-//                // Output stream
-//                OutputStream output = new FileOutputStream(getApplicationContext().getFilesDir().toString()
-//                        + "temp.jpg");
-//
-//                //create a buffer...
-//                byte data[] = new byte[1024];
-//
-//                int count;
-//                while ((count = input.read(data)) != -1) {
-//                    // publishing the progress....
-//                    // After this onProgressUpdate will be called
-////                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-//
-//                    // writing data to file
-//                    output.write(data, 0, count);
-//                }
-//
-//                // flushing output
-//                output.flush();
-//
-//                // closing streams
-//                output.close();
-//                input.close();
-//
-//            } catch (final MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (final IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//
-//            }
-//            return getApplicationContext().getFilesDir().toString()
-//                    + "temp.jpg";
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//        }
-//    }
 
     @Override
     protected void onPause() {

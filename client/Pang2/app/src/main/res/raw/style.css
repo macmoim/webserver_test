@@ -38,3 +38,12 @@ body {
 #editor:focus {
         outline: 0px solid transparent;
 }
+
+.img_fit_window{
+    display: inline;
+    height: auto;
+    max-width: 85%;
+    border-radius: 25px;
+    background: #8AC007;
+    padding: 20px;
+}

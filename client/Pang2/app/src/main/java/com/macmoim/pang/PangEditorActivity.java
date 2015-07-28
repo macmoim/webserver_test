@@ -11,15 +11,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -66,8 +63,14 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
+    private Uri mCropImagedUri;
 
     static final int REQ_CODE_PICK_PICTURE = 1;
+
+    private static final int PROFILE_IMAGE_ASPECT_X = 4;
+    private static final int PROFILE_IMAGE_ASPECT_Y = 3;
+    private int PROFILE_IMAGE_OUTPUT_X;
+    private int PROFILE_IMAGE_OUTPUT_Y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,12 +257,34 @@ public class PangEditorActivity extends AppCompatActivity {
 //                        "http://www.1honeywan.com/dachshund/image/7.21/7.21_3_thumb.JPG",
 //                        "dachshund");
 
-                Intent i = new Intent(Intent.ACTION_PICK);
-                i.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                i.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
+                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth();
+                PROFILE_IMAGE_OUTPUT_Y = mEditor.getWidth() * 3/4;
+                Log.d(TAG, "cropintent x " + PROFILE_IMAGE_OUTPUT_X + " " + PROFILE_IMAGE_OUTPUT_Y);
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
+                intent.putExtra( "crop", "true" );
+                intent.putExtra( "aspectX", PROFILE_IMAGE_ASPECT_X );
+                intent.putExtra( "aspectY", PROFILE_IMAGE_ASPECT_Y );
+                intent.putExtra( "outputX", PROFILE_IMAGE_OUTPUT_X );
+                intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
+                intent.putExtra("scale", true );
+                //retrieve data on return
+                intent.putExtra("return-data", false);
+
+                File f = createNewFile("CROP_");
+                try {
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Log.e("io", ex.getMessage());
+                }
+
+                mCropImagedUri = Uri.fromFile(f);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
 
 
-                startActivityForResult(i, REQ_CODE_PICK_PICTURE);
+                startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
             }
         });
 
@@ -351,6 +376,30 @@ public class PangEditorActivity extends AppCompatActivity {
         }
     }
 
+    private File createNewFile(String prefix){
+        if(prefix==null || "".equalsIgnoreCase(prefix)){
+            prefix="IMG_";
+        }
+        File newDirectory = new File(Environment.getExternalStorageDirectory()+"/mypics/");
+        if(!newDirectory.exists()){
+            if(newDirectory.mkdir()){
+                Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath()+" directory created");
+            }
+        }
+        File file = new File(newDirectory,("temp"+".jpg"));
+        if(file.exists()){
+            //this wont be executed
+            file.delete();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -358,9 +407,10 @@ public class PangEditorActivity extends AppCompatActivity {
         if (requestCode == REQ_CODE_PICK_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
 
-                File filePath = new File(getRealPathFromURI(getApplicationContext(), data.getData()));
+//                File filePath = new File(getRealPathFromURI(getApplicationContext(), data.getData()));
 
-                new ResizeBitmapTask().execute(filePath);
+                Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
+                new ResizeBitmapTask().execute(new File(mCropImagedUri.getPath()));
             }
         }
 
@@ -390,7 +440,7 @@ public class PangEditorActivity extends AppCompatActivity {
             fileName = response.getString("file_url");
             width = response.getInt("width");
             height = response.getInt("height");
-            Log.d(TAG, "parseJsonFeed upload url " + url);
+            Log.d(TAG, "parseJsonFeed upload url " + url + " width " + width + " height " + height);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -398,28 +448,13 @@ public class PangEditorActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "upload success width " + width +" height " + height, Toast.LENGTH_SHORT).show();
 
 
-//        mEditor.insertImage(url,"food");
-        float ratio = 0f;
-        int fixedWidth = 0;
-        int fixedHeight = 0;
-        if (width > height) {
-            ratio = (float)width/(float)height;
-            fixedHeight = 100;
-            fixedWidth =(int) (fixedHeight * ratio);
-
-        } else {
-            ratio = (float)height/(float)width;
-            fixedWidth = 100;
-            fixedHeight =(int) (fixedWidth * ratio);
-        }
-
-
-        mEditor.insertImage(url,"food", fixedWidth, fixedHeight);
+        mEditor.insertImageFitWindow(url, "food"/*, width, height*/);
 
         if (mImageUrlArr == null) {
             mImageUrlArr = new ArrayList<>();
         }
         mImageUrlArr.add(fileName);
+
 
     }
 
@@ -553,25 +588,18 @@ public class PangEditorActivity extends AppCompatActivity {
             if (fileSize > 2*1024*1024) {
                 options.inSampleSize = 4;
             } else if (fileSize < 700*1024) {
-
+                return params[0];
             } else {
                 options.inSampleSize = 2;
             }
 
             Bitmap bitmap = BitmapFactory.decodeFile(params[0].getAbsolutePath(), options);
 
-            String dirPath = getFilesDir().getAbsolutePath();
-            File file = new File(dirPath);
-            if( !file.exists() ) {
-                file.mkdirs();
-            }
 
-            File savefile = new File(dirPath+"/temp");
             OutputStream out = null;
             try
             {
-                savefile.createNewFile();
-                out = new FileOutputStream(savefile);
+                out = new FileOutputStream(params[0]);
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             }
@@ -591,7 +619,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 }
             }
 
-            return savefile;
+            return params[0];
         }
 
         @Override
@@ -602,14 +630,14 @@ public class PangEditorActivity extends AppCompatActivity {
         }
     }
 
-    private void requestHTML(File filePath) {
+    private void requestHTML(File thumbFile) {
         String url = "http://localhost:8080/web_test/putImage.php";
 
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", "editor_image.jpg");
 
         Map<String, File> obj_file = new HashMap<String, File>();
-        obj_file.put("image", filePath);
+        obj_file.put("image", thumbFile);
 
         @SuppressWarnings("unchecked")
         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,

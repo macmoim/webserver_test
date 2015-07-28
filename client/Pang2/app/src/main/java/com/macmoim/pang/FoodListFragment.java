@@ -121,15 +121,6 @@ public class FoodListFragment extends Fragment {
                 feedItems));
     }
 
-    private List<String> getRandomSublist(String[] array, int amount) {
-        ArrayList<String> list = new ArrayList<>(amount);
-        Random random = new Random();
-        while (list.size() < amount) {
-            list.add(array[random.nextInt(array.length)]);
-        }
-        return list;
-    }
-
     /**
      * Parsing json reponse and passing the data to feed view list adapter
      * */
@@ -154,7 +145,8 @@ public class FoodListFragment extends Fragment {
 
                 Log.d(TAG, "parseJsonFeed dbname " + feedObj
                         .getString("img_path"));
-                feedItems.add(item);
+//                feedItems.add(item);
+                feedItems.add(0, item);
             }
 
             // notify data changes to list adapater

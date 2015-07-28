@@ -43,7 +43,7 @@
                 android:value="com.macmoim.pang.MainActivity" />
         </activity>
         <activity android:name="com.macmoim.pang.PangEditorActivity"
-            android:parentActivityName="com.macmoim.pang.MainActivity">
+            android:parentActivityName="com.macmoim.pang.MainActivity" >
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.macmoim.pang.MainActivity" />
         </activity>

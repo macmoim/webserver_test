@@ -141,6 +141,11 @@ RE.insertImage = function(url, alt, width, height) {
     RE.insertHTML(html);
 }
 
+RE.insertImageFitWindow = function(url, alt) {
+    var html = '<p><img class="img_fit_window" src="' + url + '" alt="' + alt + '" /><p/>';
+    RE.insertHTML(html);
+}
+
 RE.insertHTML = function(html) {
     RE.restorerange();
     document.execCommand('insertHTML', false, html);

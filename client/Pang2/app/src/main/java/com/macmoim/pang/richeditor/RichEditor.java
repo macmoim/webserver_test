@@ -65,13 +65,13 @@ public class RichEditor extends WebView {
     }
 
     private static final String SETUP_HTML = "file:///android_res/raw/editor.html";
-    private static final String CALLBACK_SCHEME = "re-callback://";
-    private static final String STATE_SCHEME = "re-state://";
-    private boolean isReady = false;
-    private String mContents;
-    private OnTextChangeListener mTextChangeListener;
-    private OnDecorationStateListener mDecorationStateListener;
-    private AfterInitialLoadListener mLoadListener;
+    protected static final String CALLBACK_SCHEME = "re-callback://";
+    protected static final String STATE_SCHEME = "re-state://";
+    protected boolean isReady = false;
+    protected String mContents;
+    protected OnTextChangeListener mTextChangeListener;
+    protected OnDecorationStateListener mDecorationStateListener;
+    protected AfterInitialLoadListener mLoadListener;
 
     public RichEditor(Context context) {
         this(context, null);
@@ -85,7 +85,7 @@ public class RichEditor extends WebView {
     public RichEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        setVerticalScrollBarEnabled(false);
+        setVerticalScrollBarEnabled(true);
         setHorizontalScrollBarEnabled(false);
         getSettings().setJavaScriptEnabled(true);
         setWebChromeClient(new WebChromeClient());
@@ -288,6 +288,11 @@ public class RichEditor extends WebView {
     public void insertImage(String url, String alt, int width, int height) {
         exec("javascript:RE.prepareInsert();");
         exec("javascript:RE.insertImage('" + url + "', '" + alt + "', '" + width + "', '" + height +"');");
+    }
+
+    public void insertImageFitWindow(String url, String alt) {
+        exec("javascript:RE.prepareInsert();");
+        exec("javascript:RE.insertImageFitWindow('" + url + "', '" + alt + "');");
     }
 
     public void insertLink(String href, String title) {

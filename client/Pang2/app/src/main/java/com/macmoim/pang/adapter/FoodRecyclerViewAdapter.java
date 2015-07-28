@@ -62,8 +62,8 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     }
 
     public FoodRecyclerViewAdapter(Activity activity, List<FoodItem> items) {
-        activity.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-        mBackground = mTypedValue.resourceId;
+//        activity.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
+//        mBackground = mTypedValue.resourceId;
         mValues = items;
         this.activity = activity;
 
@@ -74,7 +74,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item, parent, false);
-        view.setBackgroundResource(mBackground);
+//        view.setBackgroundResource(mBackground);
         return new ViewHolder(view);
     }
 
@@ -93,22 +93,28 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
             }
         });
 
-//        Glide.with(holder.mImageView.getContext())
-//                .load(Cheeses.getRandomCheeseDrawable())
-//                .fitCenter()
-//                .into(holder.mImageView);
-
-
         FoodItem item = mValues.get(position);
+
+//        URL url = null;
+//        try {
+//            url = new URL(item.getImge());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        if (url != null) {
+//            Glide.with(holder.mImageView.getContext())
+//                    .load(url)
+//                    .fitCenter()
+//                    .into(holder.mImageView);
+//        } else {
+        // user profile pic
+        holder.mImageView.setImageUrl(item.getImge(), imageLoader);
+//        }
 
         holder.mNameTv.setText(item.getName());
         holder.mUserIdTv.setText(item.getUserId());
 
         holder.mTimeStampTv.setText(item.getTimeStamp());
-
-
-        // user profile pic
-        holder.mImageView.setImageUrl(item.getImge(), imageLoader);
 
 
     }
