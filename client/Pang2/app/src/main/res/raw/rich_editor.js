@@ -142,7 +142,7 @@ RE.insertImage = function(url, alt, width, height) {
 }
 
 RE.insertImageFitWindow = function(url, alt) {
-    var html = '<p><img class="img_fit_window" src="' + url + '" alt="' + alt + '" /><p/>';
+    var html = '<p><img class="img_fit_window" src="' + url + '" alt="' + alt + '" /><br/><p/>';
     RE.insertHTML(html);
 }
 
