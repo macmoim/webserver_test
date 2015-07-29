@@ -17,11 +17,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -32,6 +34,7 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +57,7 @@ import java.util.Map;
 public class PangEditorActivity extends AppCompatActivity {
     private static final String TAG = "PangEditorActivity";
     private RichEditor mEditor = null;
-    private Spinner mSpinner;
+    private MaterialBetterSpinner mSpinner;
     private String mSelectedFood;
     private EditText mTitleEdit;
 
@@ -65,12 +68,20 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private Uri mCropImagedUri;
 
+    private WebAppInterface mWebAppInterface;
+
     static final int REQ_CODE_PICK_PICTURE = 1;
 
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private int PROFILE_IMAGE_OUTPUT_X;
     private int PROFILE_IMAGE_OUTPUT_Y;
+
+    private static final String UPLOAD_IMG_FOLDER = "http://localhost:8080/web_test/image_test/upload_image/";
+
+    interface HTMLListener {
+        void OnGetHTMLSourceCallback(String html);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +99,8 @@ public class PangEditorActivity extends AppCompatActivity {
 
         mEditor.setEditorHeight(200);
         mEditor.setPlaceholder("Insert text here...");
+        mWebAppInterface = new WebAppInterface(this);
+        mEditor.addJavascriptInterface(mWebAppInterface, "Android");
 
         findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +116,7 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
+        /*findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditor.setBold();
@@ -116,7 +129,6 @@ public class PangEditorActivity extends AppCompatActivity {
                 mEditor.setItalic();
             }
         });
-
 
         findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +158,54 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setHeading(4);
+            }
+        });
+
+        findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setHeading(5);
+            }
+        });
+
+        findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setHeading(6);
+            }
+        });
+        findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setIndent();
+            }
+        });
+
+        findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setOutdent();
+            }
+        });
+
+        findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.setBlockquote();
+            }
+        });
+
+        findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
+            }
+        });*/
+
         findViewById(R.id.action_heading1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,26 +227,6 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(4);
-            }
-        });
-
-        findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(5);
-            }
-        });
-
-        findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setHeading(6);
-            }
-        });
 
         findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
             boolean isChanged;
@@ -205,20 +245,6 @@ public class PangEditorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
                 isChanged = !isChanged;
-            }
-        });
-
-        findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setIndent();
-            }
-        });
-
-        findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setOutdent();
             }
         });
 
@@ -243,13 +269,6 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.setBlockquote();
-            }
-        });
-
         findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,18 +277,18 @@ public class PangEditorActivity extends AppCompatActivity {
 //                        "dachshund");
 
                 PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth();
-                PROFILE_IMAGE_OUTPUT_Y = mEditor.getWidth() * 3/4;
+                PROFILE_IMAGE_OUTPUT_Y = mEditor.getWidth() * 3 / 4;
                 Log.d(TAG, "cropintent x " + PROFILE_IMAGE_OUTPUT_X + " " + PROFILE_IMAGE_OUTPUT_Y);
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
-                intent.putExtra( "crop", "true" );
-                intent.putExtra( "aspectX", PROFILE_IMAGE_ASPECT_X );
-                intent.putExtra( "aspectY", PROFILE_IMAGE_ASPECT_Y );
-                intent.putExtra( "outputX", PROFILE_IMAGE_OUTPUT_X );
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
+                intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
+                intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
                 intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
-                intent.putExtra("scale", true );
+                intent.putExtra("scale", true);
                 //retrieve data on return
                 intent.putExtra("return-data", false);
 
@@ -288,82 +307,16 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
-            }
-        });
-
-        findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mImageUrlArr == null || (mImageUrlArr != null && mImageUrlArr.size() == 0)) {
-                    Toast.makeText(getApplicationContext(), "이미지를 추가해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (mTitleEdit.getText() == null || "".equals(mTitleEdit.getText().toString())) {
-                    Toast.makeText(getApplicationContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.d(TAG, "titleedit " +mTitleEdit.getText().toString());
-                showDialog();
-                File file = saveHTML(mEditor.getHtml());
-
-                String url = "http://localhost:8080/web_test/putHTML.php";
-
-                Map<String, String> obj_body = new HashMap<String, String>();
-                obj_body.put("title", mTitleEdit.getText().toString());
-                obj_body.put("category", mSelectedFood);
-                obj_body.put("thumb_img_url", mImageUrlArr != null ? mImageUrlArr.get(0) : "");
-
-                Map<String, File> obj_file = new HashMap<String, File>();
-                obj_file.put("html_file", file);
-
-                @SuppressWarnings("unchecked")
-                MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                        url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        if (response != null) {
-                            VolleyLog.d(TAG, "Response: " + response.toString());
-                            parseJsonHtml(response);
-                        }else{
-                            VolleyLog.d(TAG, "Error: response is null!!!!");
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        VolleyLog.d(TAG, "Error: " + error.getMessage());
-                        Log.d(TAG, "requestError : " + error.getMessage());
-                    }
-                });
-
-
-                // Adding request to volley request queue
-                AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
-            }
-        });
-
         mTitleEdit = (EditText) findViewById(R.id.title);
         final String[] spinnerArr = getResources().getStringArray(R.array.food_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
         adapter.setDropDownViewResource(R.layout.food_spinner_item);
-        mSpinner = (Spinner) findViewById(R.id.food_spinner);
+        mSpinner = (MaterialBetterSpinner) findViewById(R.id.food_spinner);
         mSpinner.setAdapter(adapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedFood = spinnerArr[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -376,18 +329,93 @@ public class PangEditorActivity extends AppCompatActivity {
         }
     }
 
-    private File createNewFile(String prefix){
-        if(prefix==null || "".equalsIgnoreCase(prefix)){
-            prefix="IMG_";
-        }
-        File newDirectory = new File(Environment.getExternalStorageDirectory()+"/mypics/");
-        if(!newDirectory.exists()){
-            if(newDirectory.mkdir()){
-                Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath()+" directory created");
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.editor_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_submit: {
+                if (mImageUrlArr == null || (mImageUrlArr != null && mImageUrlArr.size() == 0)) {
+                    Toast.makeText(getApplicationContext(), "이미지를 추가해주세요.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if (mTitleEdit.getText() == null || "".equals(mTitleEdit.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if (mSelectedFood == null || "".equals(mSelectedFood)) {
+                    Toast.makeText(getApplicationContext(), "항목을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                Log.d(TAG, "titleedit " + mTitleEdit.getText().toString());
+
+                showDialog();
+
+                mWebAppInterface.getCurrentHtml(new HTMLListener() {
+                    @Override
+                    public void OnGetHTMLSourceCallback(String html) {
+                        File file = saveHTML(/*mEditor.getHtml()*/html);
+
+                        String url = "http://localhost:8080/web_test/putHTML.php";
+
+                        Map<String, String> obj_body = new HashMap<String, String>();
+                        obj_body.put("title", mTitleEdit.getText().toString());
+                        obj_body.put("category", mSelectedFood);
+                        obj_body.put("thumb_img_url", mImageUrlArr != null ? mImageUrlArr.get(0) : "");
+
+                        Map<String, File> obj_file = new HashMap<String, File>();
+                        obj_file.put("html_file", file);
+
+                        @SuppressWarnings("unchecked")
+                        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                if (response != null) {
+                                    VolleyLog.d(TAG, "Response: " + response.toString());
+                                    parseJsonHtml(response);
+                                } else {
+                                    VolleyLog.d(TAG, "Error: response is null!!!!");
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                                Log.d(TAG, "requestError : " + error.getMessage());
+                            }
+                        });
+
+
+                        // Adding request to volley request queue
+                        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+                    }
+                });
+                return true;
             }
         }
-        File file = new File(newDirectory,("temp"+".jpg"));
-        if(file.exists()){
+        return super.onOptionsItemSelected(item);
+    }
+
+    private File createNewFile(String prefix) {
+        if (prefix == null || "".equalsIgnoreCase(prefix)) {
+            prefix = "IMG_";
+        }
+        File newDirectory = new File(Environment.getExternalStorageDirectory() + "/smtc/");
+        if (!newDirectory.exists()) {
+            if (newDirectory.mkdir()) {
+                Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath() + " directory created");
+            }
+        }
+        File file = new File(newDirectory, (prefix + "crop_temp.jpg"));
+        if (file.exists()) {
             //this wont be executed
             file.delete();
             try {
@@ -418,7 +446,7 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     public static String getRealPathFromURI(Context context, Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj,
                 null, null, null);
         int column_index = cursor
@@ -431,12 +459,12 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     private void parseJson(JSONObject response) {
-        String url="";
-        String fileName="";
-        int width=0;
-        int height=0;
+        String url = "";
+        String fileName = "";
+        int width = 0;
+        int height = 0;
         try {
-            url = "http://localhost:8080/web_test/image_test/upload_image/"+response.getString("file_url");
+            url = UPLOAD_IMG_FOLDER + response.getString("file_url");
             fileName = response.getString("file_url");
             width = response.getInt("width");
             height = response.getInt("height");
@@ -445,7 +473,7 @@ public class PangEditorActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Toast.makeText(getApplicationContext(), "upload success width " + width +" height " + height, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "upload success width " + width + " height " + height, Toast.LENGTH_SHORT).show();
 
 
         mEditor.insertImageFitWindow(url, "food"/*, width, height*/);
@@ -459,7 +487,7 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     private void parseJsonHtml(JSONObject response) {
-        String id="";
+        String id = "";
         try {
             id = response.getString("id");
             Log.d(TAG, "parseJsonFeed html upload id " + id);
@@ -474,18 +502,18 @@ public class PangEditorActivity extends AppCompatActivity {
     private File saveHTML(String htmlText) {
         String dirPath = getFilesDir().getAbsolutePath();
         File file = new File(dirPath);
-        if( !file.exists() ) {
+        if (!file.exists()) {
             file.mkdirs();
             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
         }
 
-        File savefile = new File(dirPath+"/test.html");
-        try{
+        File savefile = new File(dirPath + "/test.html");
+        try {
             FileOutputStream fos = new FileOutputStream(savefile);
             fos.write(htmlText.getBytes());
             fos.close();
             Toast.makeText(this, "Save Success", Toast.LENGTH_SHORT).show();
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -558,7 +586,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 byte[] buffer = new byte[1024];
                 int bufferLength = 0;
 
-                while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
                     contents.append(new String(buffer, 0, bufferLength));
                 }
 
@@ -585,9 +613,9 @@ public class PangEditorActivity extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             long fileSize = params[0].length();
-            if (fileSize > 2*1024*1024) {
+            if (fileSize > 2 * 1024 * 1024) {
                 options.inSampleSize = 4;
-            } else if (fileSize < 700*1024) {
+            } else if (fileSize < 700 * 1024) {
                 return params[0];
             } else {
                 options.inSampleSize = 2;
@@ -597,24 +625,16 @@ public class PangEditorActivity extends AppCompatActivity {
 
 
             OutputStream out = null;
-            try
-            {
+            try {
                 out = new FileOutputStream(params[0]);
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally
-            {
-                try
-                {
+            } finally {
+                try {
                     out.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -625,12 +645,15 @@ public class PangEditorActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(File s) {
             super.onPostExecute(s);
-            Log.d(TAG, "requestHTML path " + s.getAbsolutePath() + " size " + s.length());
-            requestHTML(s);
+            Log.d(TAG, "requestThumbImage path " + s.getAbsolutePath() + " size " + s.length());
+            requestThumbImage(s);
+            if (mEditor != null) {
+                mEditor.scrollTo(0, (int) (mEditor.getContentHeight() * mEditor.getScale()));
+            }
         }
     }
 
-    private void requestHTML(File thumbFile) {
+    private void requestThumbImage(File thumbFile) {
         String url = "http://localhost:8080/web_test/putImage.php";
 
         Map<String, String> obj_body = new HashMap<String, String>();
@@ -711,7 +734,45 @@ public class PangEditorActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(null);
         mSpinner = null;
         mTitleEdit = null;
+        mWebAppInterface = null;
         super.onDestroy();
 
     }
+
+    private class WebAppInterface {
+
+        HTMLListener mListener;
+        Context mContext;
+
+        /**
+         * Instantiate the interface and set the context
+         */
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        public void getCurrentHtml(HTMLListener l) {
+            mListener = l;
+            mEditor.loadUrl("javascript:showHTML()");
+        }
+
+        /**
+         * Show a toast from the web page
+         */
+        @JavascriptInterface
+        public void onImageDelClick(String value) {
+            String filename = (String) value.subSequence(value.lastIndexOf("/") + 1, value.length());
+            mImageUrlArr.remove(filename);
+        }
+
+        @JavascriptInterface
+        public void processHTML(String html) {
+            if (mListener != null) {
+                mListener.OnGetHTMLSourceCallback(html);
+            }
+            Log.e("resulthtml", html);
+        }
+    }
+
+
 }

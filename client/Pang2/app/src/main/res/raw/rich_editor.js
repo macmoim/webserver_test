@@ -15,6 +15,7 @@
  */
 
 var RE = {};
+var urlArray = new Array();
 
 RE.currentSelection;
 
@@ -142,8 +143,33 @@ RE.insertImage = function(url, alt, width, height) {
 }
 
 RE.insertImageFitWindow = function(url, alt) {
-    var html = '<p><img class="img_fit_window" src="' + url + '" alt="' + alt + '" /><br/><p/>';
+    urlArray.push(url);
+    var html = '<br/><p><div id="'+urlArray.indexOf(url)+'"> <div class="image-container" id="'+url+'"><img class="img_fit_window" src="' + url + '" alt="' + alt + '" />'
+    +' <input type="image" id="del" src="ic_close.png" alt="del" width="20" height="20" class="delete-button" onClick="onDelClick('+urlArray.indexOf(url)+');">'
+    +'</div></div></p><br/>';
+
     RE.insertHTML(html);
+}
+
+function onDelClick(index) {
+    var div = document.getElementById(urlArray[index]);
+    RE.deleteById(index);
+    Android.onImageDelClick(urlArray[index]);
+}
+
+RE.deleteById = function(id) {
+    var element = document.getElementById(id);
+    var range = document.createRange();
+    range.selectNodeContents(element);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('delete', false, null);
+
+}
+
+function showHTML() {
+    Android.processHTML(RE.editor.innerHTML);
 }
 
 RE.insertHTML = function(html) {

@@ -122,6 +122,47 @@ public class RichEditor extends WebView {
         loadUrl(SETUP_HTML);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    public RichEditor(Context context, AttributeSet attrs, int defStyleAttr, final String setup_url) {
+        super(context, attrs, defStyleAttr);
+
+        setVerticalScrollBarEnabled(true);
+        setHorizontalScrollBarEnabled(false);
+        getSettings().setJavaScriptEnabled(true);
+        setWebChromeClient(new WebChromeClient());
+        setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                isReady = url.equalsIgnoreCase(setup_url);
+                if (mLoadListener != null) {
+                    mLoadListener.onAfterInitialLoad(isReady);
+                }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                String decode;
+                try {
+                    decode = URLDecoder.decode(url, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    // No handling
+                    return false;
+                }
+
+                if (TextUtils.indexOf(url, CALLBACK_SCHEME) == 0) {
+                    callback(decode);
+                    return true;
+                } else if (TextUtils.indexOf(url, STATE_SCHEME) == 0) {
+                    stateCheck(decode);
+                    return true;
+                }
+
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        });
+        loadUrl(setup_url);
+    }
+
     public void setOnTextChangeListener(OnTextChangeListener listener) {
         mTextChangeListener = listener;
     }

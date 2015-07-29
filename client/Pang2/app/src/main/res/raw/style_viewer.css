@@ -54,7 +54,9 @@ body {
 }
 
 .delete-button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    visibility: hidden;
+}
+
+div {
+    pointer-events: none;
 }

@@ -2,18 +2,7 @@ package com.macmoim.pang.richeditor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
-import com.macmoim.pang.R;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * Copyright (C) 2015 Wasabeef
@@ -33,19 +22,19 @@ import java.net.URLEncoder;
 public class RichViewer extends RichEditor {
 
 
-
+    private static final String VIEWER_SETUP_URL = "file:///android_res/raw/viewer.html";
     public RichViewer(Context context) {
         this(context, null);
     }
 
     public RichViewer(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
-        setEnabled(false);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     public RichViewer(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+
+        super(context, attrs, defStyleAttr, VIEWER_SETUP_URL);
     }
 
 

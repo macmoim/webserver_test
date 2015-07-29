@@ -52,9 +52,6 @@ public class ViewerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-//        loadBackdrop();
-
         mViewer = (RichViewer) findViewById(R.id.richviewer);
         mViewer.setVerticalScrollBarEnabled(true);
         mViewer.getSettings().setJavaScriptEnabled(true);

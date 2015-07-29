@@ -37,5 +37,6 @@
 
     <string name="editor_title_hint">Insert title</string>
     <string name="new_edit">new post</string>
+    <string name="submit">submit</string>
 
 </resources>
