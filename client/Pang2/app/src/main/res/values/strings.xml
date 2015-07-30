@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,4 +41,7 @@
     <string name="new_edit">new post</string>
     <string name="submit">submit</string>
 
+    <!-- Log In-->
+    <string name="facebook_app_id">1072882002741607</string>
+    <string name="login_with_facebook">Login with Facebook</string>
 </resources>
