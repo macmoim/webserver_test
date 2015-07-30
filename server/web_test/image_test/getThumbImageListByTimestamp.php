@@ -1,5 +1,5 @@
 <?php
-function getImageList() {
+function getImageListByTimestamp($timestamp) {
 	$image_info = array ();
 	
 	// normally this info would be pulled from a database.
@@ -10,12 +10,11 @@ function getImageList() {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
 	$sql_query = "SELECT id, user_id, title, upload_filename, upload_date, thumb_img_path
-	                   FROM posts";
+	                   FROM posts WHERE upload_date > '$timestamp'";
 	if (isset($_POST['category'])) {
 		$ctg = $_POST['category'];
-		$sql_query .= " WHERE category = '$ctg'";
+		$sql_query .= " && category = '$ctg'";
 	}
-	$sql_query .= " ORDER BY upload_date";
 	if ($result = $mysqli->query ( $sql_query )) {
 		
 		if (count($result) > 0) {
@@ -55,8 +54,10 @@ $possible_url = array (
 
 $value = "An error has occurred";
 
-if (isset ( $_POST ["action"] ) && in_array ( $_POST ["action"], $possible_url )) {
-	$value = getImageList ();
+if (isset ( $_POST ["action"] ) && in_array ( $_POST ["action"], $possible_url ) && isset($_POST['timestamp'])) {
+	$timestamp = new DateTime($_POST['timestamp']);
+
+	$value = getImageListByTimestamp ($timestamp->format('Y-m-d H:i:s'));
 } else {
 	$value = "Missing argument";
 }

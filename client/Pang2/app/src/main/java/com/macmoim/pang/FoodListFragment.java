@@ -16,27 +16,22 @@
 
 package com.macmoim.pang;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -50,14 +45,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class FoodListFragment extends Fragment {
     private static final String TAG = "FoodListFragment";
 
     private String URL = "http://localhost:8080/web_test/image_test/getThumbImageList.php";
+    private String URL_REFRESH = "http://localhost:8080/web_test/image_test/getThumbImageListByTimestamp.php";
     private List<FoodItem> feedItems;
     RecyclerView rv;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    String mLatestTimestamp;
+
+    private static String REQ_TAG = "FOOD-REQ";
 
     public static FoodListFragment getInstance(int position) {
 
@@ -73,6 +73,8 @@ public class FoodListFragment extends Fragment {
         //Setting the argument of the fragment to be the position
         myFragment.setArguments(args);
 
+        REQ_TAG += position;
+
         //Return the fragment
         return myFragment;
     }
@@ -80,12 +82,33 @@ public class FoodListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rv = (RecyclerView) inflater.inflate(
+        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(
                 R.layout.fragment_cheese_list, container, false);
+
+
+        rv = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.recyclerview);
         setupRecyclerView(rv);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshList();
+            }
+
+
+        });
+
+        showList();
+
+        return mSwipeRefreshLayout;
+    }
+
+    private void showList() {
+        String category = getActivity().getResources().getStringArray(R.array.food_spinner)[getArguments().getInt("position")];
 
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("action", "get_thumb_images");
+        obj.put("category", category);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 URL, obj, new Response.Listener<JSONObject>() {
@@ -95,6 +118,9 @@ public class FoodListFragment extends Fragment {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     parseJsonFeed(response);
+                    if (feedItems != null && feedItems.size() > 0) {
+                        setLatestTimestamp(feedItems.get(0).getTimeStamp());
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -109,10 +135,45 @@ public class FoodListFragment extends Fragment {
         });
 //	}
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
-
-        return rv;
+        AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
+
+    private void refreshList() {
+        onStartRefresh();
+        String category = getActivity().getResources().getStringArray(R.array.food_spinner)[getArguments().getInt("position")];
+
+        Map<String, String> obj = new HashMap<String, String>();
+        obj.put("action", "get_thumb_images");
+        obj.put("category", category);
+        obj.put("timestamp", mLatestTimestamp);
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                URL_REFRESH, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJsonFeed(response);
+                }
+                onFinishRefresh();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if(response != null && response.data != null){
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+                onFinishRefresh();
+            }
+        });
+//	}
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
+    }
+
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
@@ -121,14 +182,33 @@ public class FoodListFragment extends Fragment {
                 feedItems));
     }
 
+    private void onStartRefresh() {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    private void onFinishRefresh() {
+        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if (feedItems != null && feedItems.size() > 0) {
+            setLatestTimestamp(feedItems.get(0).getTimeStamp());
+        }
+    }
+
     /**
      * Parsing json reponse and passing the data to feed view list adapter
      * */
     private void parseJsonFeed(JSONObject response) {
+        if (rv == null) {
+            return;
+        }
         try {
             JSONArray feedArray = response.getJSONArray("post_info");
 
-            for (int i = 0; i < feedArray.length(); i++) {
+            int length = feedArray.length();
+            for (int i = 0; i < length; i++) {
                 JSONObject feedObj = (JSONObject) feedArray.get(i);
 
                 FoodItem item = new FoodItem();
@@ -145,16 +225,34 @@ public class FoodListFragment extends Fragment {
 
                 Log.d(TAG, "parseJsonFeed dbname " + feedObj
                         .getString("img_path"));
-//                feedItems.add(item);
                 feedItems.add(0, item);
+
             }
 
             // notify data changes to list adapater
             rv.getAdapter().notifyDataSetChanged();
-//            listAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    private void setLatestTimestamp(String time) {
+        mLatestTimestamp = time;
+    }
+
+    @Override
+    public void onDestroyView() {
+//        AppController.getInstance().cancelPendingRequests(REQ_TAG);
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setOnRefreshListener(null);
+            mSwipeRefreshLayout.removeAllViews();
+        }
+        if (rv != null) {
+            rv.removeAllViews();
+            rv.setLayoutManager(null);
+            rv.setAdapter(null);
+            rv = null;
+        }
+        super.onDestroyView();
+    }
 }
