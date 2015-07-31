@@ -13,9 +13,9 @@ function getImageList() {
 	                   FROM posts";
 	if (isset($_POST['category'])) {
 		$ctg = $_POST['category'];
-		if (strcmp($ctg, "최근") == 0) {
+		if (strcmp($ctg, "Latest") == 0) {
 
-		} else if (strcmp($ctg, "인기") == 0) {
+		} else if (strcmp($ctg, "Popular") == 0) {
 
 		} else {
 			$sql_query .= " WHERE category = '$ctg'";	

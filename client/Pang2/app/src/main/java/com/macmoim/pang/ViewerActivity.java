@@ -45,8 +45,6 @@ public class ViewerActivity extends AppCompatActivity {
 
         setContentView(R.layout.viewer_main);
 
-        Intent intent = getIntent();
-
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -100,7 +100,9 @@ public class PangEditorActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
+        mImageUrlArr = new ArrayList<>();
         edit_manubar = (LinearLayout) findViewById(R.id.edit_menubar);
+
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -366,10 +368,6 @@ public class PangEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_submit: {
-                if (mImageUrlArr == null || (mImageUrlArr != null && mImageUrlArr.size() == 0)) {
-                    Toast.makeText(getApplicationContext(), "이미지를 추가해주세요.", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
                 if (mTitleEdit.getText() == null || "".equals(mTitleEdit.getText().toString())) {
                     Toast.makeText(getApplicationContext(), "제목을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return false;
@@ -392,7 +390,9 @@ public class PangEditorActivity extends AppCompatActivity {
                         Map<String, String> obj_body = new HashMap<String, String>();
                         obj_body.put("title", mTitleEdit.getText().toString());
                         obj_body.put("category", mSelectedFood);
-                        obj_body.put("thumb_img_url", mImageUrlArr != null ? mImageUrlArr.get(0) : "");
+                        if (mImageUrlArr.size()>0) {
+                            obj_body.put("thumb_img_url",  mImageUrlArr.get(0));
+                        }
 
                         Map<String, File> obj_file = new HashMap<String, File>();
                         obj_file.put("html_file", file);
@@ -505,9 +505,6 @@ public class PangEditorActivity extends AppCompatActivity {
 
         mEditor.insertImageFitWindow(url, "food"/*, width, height*/);
 
-        if (mImageUrlArr == null) {
-            mImageUrlArr = new ArrayList<>();
-        }
         mImageUrlArr.add(fileName);
 
         if (mEditor != null) {

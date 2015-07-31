@@ -22,8 +22,8 @@
     <string name="menu_settings">Settings</string>
 
     <string-array name="tabs">
-        <item>최근</item>
-        <item>인기</item>
+        <item>Latest</item>
+        <item>Popular</item>
         <item>한식</item>
         <item>중식</item>
         <item>양식</item>

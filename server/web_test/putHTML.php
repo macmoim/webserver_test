@@ -118,8 +118,26 @@ function saveHTMLFile() {
 	// save thumbnail
 	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
 	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	$defaultImagePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/';
 	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
-	$imageName = $_POST['thumb_img_url'];
+	$imageName;
+	if (isset($_POST['thumb_img_url'])) {
+		$imageName = $_POST['thumb_img_url'];
+	} else {
+		$imageName = 'default_backdrop_img.jpg';
+		if(!is_dir($imageServerPath)){
+			@mkdir($imageServerPath);
+		}	
+
+	// copy default image file 
+		if(!file_exists($imageServerPath.$imageName)) {  // file check
+		      if(!copy($defaultImagePath.$imageName, $imageServerPath.$imageName)) { //copy 
+		            echo "<center>default image file copy error</center>"; // fail 
+		      } else if(file_exists($imageServerPath.$imageName)) { // success
+
+		      } 
+	 	}
+	}
 
 	if(!is_dir($thumbServerPath)){
 			@mkdir($thumbServerPath);
