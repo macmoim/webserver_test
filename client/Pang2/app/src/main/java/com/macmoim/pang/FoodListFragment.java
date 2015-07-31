@@ -128,7 +128,7 @@ public class FoodListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
-                if(response != null && response.data != null){
+                if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
             }
@@ -163,7 +163,7 @@ public class FoodListFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
-                if(response != null && response.data != null){
+                if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
                 onFinishRefresh();
@@ -178,8 +178,7 @@ public class FoodListFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new FoodRecyclerViewAdapter(getActivity(),
-                feedItems));
+        recyclerView.setAdapter(new FoodRecyclerViewAdapter(getActivity(), feedItems));
     }
 
     private void onStartRefresh() {
@@ -199,7 +198,7 @@ public class FoodListFragment extends Fragment {
 
     /**
      * Parsing json reponse and passing the data to feed view list adapter
-     * */
+     */
     private void parseJsonFeed(JSONObject response) {
         if (rv == null) {
             return;

@@ -102,4 +102,29 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"/>
 
+    <LinearLayout
+        android:id="@+id/foot_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <ImageButton
+            android:id="@+id/foot_favorit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:src="@drawable/joa"/>
+
+        <ImageButton
+            android:id="@+id/foot_reply"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/reply"/>
+    </LinearLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>
