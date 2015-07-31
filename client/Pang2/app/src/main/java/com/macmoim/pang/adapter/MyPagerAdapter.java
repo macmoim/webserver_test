@@ -32,7 +32,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         //Initialising the strings array of tabs
         mContext = context;
-        tabText = mContext.getResources().getStringArray(R.array.food_spinner);
+        tabText = mContext.getResources().getStringArray(R.array.tabs);
 
     }
 
@@ -85,6 +85,6 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return tabText.length;
     }
 }

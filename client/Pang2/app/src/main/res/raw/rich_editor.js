@@ -144,7 +144,7 @@ RE.insertImage = function(url, alt, width, height) {
 
 RE.insertImageFitWindow = function(url, alt) {
     urlArray.push(url);
-    var html = '<br/><p><div id="'+urlArray.indexOf(url)+'"> <div class="image-container" id="'+url+'"><img class="img_fit_window" src="' + url + '" alt="' + alt + '" />'
+    var html = '<br/><p><div id="'+urlArray.indexOf(url)+'"> <div class="image-container" ><img class="img_fit_window" id="'+url+'" src="' + url + '" alt="' + alt + '" />'
     +' <input type="image" id="del" src="ic_close.png" alt="del" width="20" height="20" class="delete-button" onClick="onDelClick('+urlArray.indexOf(url)+');">'
     +'</div></div></p><br/>';
 
@@ -152,7 +152,6 @@ RE.insertImageFitWindow = function(url, alt) {
 }
 
 function onDelClick(index) {
-    var div = document.getElementById(urlArray[index]);
     RE.deleteById(index);
     Android.onImageDelClick(urlArray[index]);
 }
@@ -166,6 +165,7 @@ RE.deleteById = function(id) {
     sel.addRange(range);
     document.execCommand('delete', false, null);
 
+    urlArray.splice(id, 1);
 }
 
 function showHTML() {

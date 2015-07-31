@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -483,6 +484,11 @@ public class PangEditorActivity extends AppCompatActivity {
         }
         mImageUrlArr.add(fileName);
 
+        if (mEditor != null) {
+            mEditor.scrollTo(0, (int) (mEditor.getContentHeight() * mEditor.getScaleY()) + 5000);
+        }
+
+        openKeyBoard();
 
     }
 
@@ -647,9 +653,6 @@ public class PangEditorActivity extends AppCompatActivity {
             super.onPostExecute(s);
             Log.d(TAG, "requestThumbImage path " + s.getAbsolutePath() + " size " + s.length());
             requestThumbImage(s);
-            if (mEditor != null) {
-                mEditor.scrollTo(0, (int) (mEditor.getContentHeight() * mEditor.getScale()));
-            }
         }
     }
 
@@ -705,6 +708,16 @@ public class PangEditorActivity extends AppCompatActivity {
         mDialog = null;
     }
 
+    public void openKeyBoard(){
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+    //For close keyboard
+    public void closeKeyBoard(){
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+    }
+
 
     @Override
     protected void onStart() {
@@ -718,6 +731,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        closeKeyBoard();
         super.onPause();
     }
 

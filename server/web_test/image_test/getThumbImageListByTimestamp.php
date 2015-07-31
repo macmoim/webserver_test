@@ -13,7 +13,14 @@ function getImageListByTimestamp($timestamp) {
 	                   FROM posts WHERE upload_date > '$timestamp'";
 	if (isset($_POST['category'])) {
 		$ctg = $_POST['category'];
-		$sql_query .= " && category = '$ctg'";
+		if (strcmp($ctg, "최근") == 0) {
+			
+		} else if (strcmp($ctg, "인기") == 0) {
+
+		} else {
+			$sql_query .= " && category = '$ctg'";	
+		}
+		
 	}
 	if ($result = $mysqli->query ( $sql_query )) {
 		

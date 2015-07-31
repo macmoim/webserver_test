@@ -13,7 +13,14 @@ function getImageList() {
 	                   FROM posts";
 	if (isset($_POST['category'])) {
 		$ctg = $_POST['category'];
-		$sql_query .= " WHERE category = '$ctg'";
+		if (strcmp($ctg, "최근") == 0) {
+
+		} else if (strcmp($ctg, "인기") == 0) {
+
+		} else {
+			$sql_query .= " WHERE category = '$ctg'";	
+		}
+		
 	}
 	$sql_query .= " ORDER BY upload_date";
 	if ($result = $mysqli->query ( $sql_query )) {

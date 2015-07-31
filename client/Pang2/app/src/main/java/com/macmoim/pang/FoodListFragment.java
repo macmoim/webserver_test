@@ -104,7 +104,7 @@ public class FoodListFragment extends Fragment {
     }
 
     private void showList() {
-        String category = getActivity().getResources().getStringArray(R.array.food_spinner)[getArguments().getInt("position")];
+        String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("action", "get_thumb_images");
@@ -140,7 +140,7 @@ public class FoodListFragment extends Fragment {
 
     private void refreshList() {
         onStartRefresh();
-        String category = getActivity().getResources().getStringArray(R.array.food_spinner)[getArguments().getInt("position")];
+        String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("action", "get_thumb_images");
