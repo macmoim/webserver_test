@@ -17,14 +17,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -61,6 +64,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private MaterialBetterSpinner mSpinner;
     private String mSelectedFood;
     private EditText mTitleEdit;
+    private LinearLayout edit_manubar;
 
     private ArrayList<String> mImageUrlArr;
     private ProgressDialog mDialog;
@@ -96,7 +100,18 @@ public class PangEditorActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
+        edit_manubar = (LinearLayout) findViewById(R.id.edit_menubar);
         mEditor = (RichEditor) findViewById(R.id.editor);
+        mEditor.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (edit_manubar.getVisibility() == View.GONE) {
+                    edit_manubar.setVisibility(View.VISIBLE);
+                    mEditor.focusEditor();
+                }
+                return false;
+            }
+        });
 
         mEditor.setEditorHeight(200);
         mEditor.setPlaceholder("Insert text here...");
@@ -309,6 +324,17 @@ public class PangEditorActivity extends AppCompatActivity {
         });
 
         mTitleEdit = (EditText) findViewById(R.id.title);
+        mTitleEdit.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (edit_manubar.getVisibility() == View.VISIBLE) {
+                    edit_manubar.setVisibility(View.GONE);
+                    mTitleEdit.requestFocus();
+                }
+                return false;
+            }
+        });
+
         final String[] spinnerArr = getResources().getStringArray(R.array.food_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
         adapter.setDropDownViewResource(R.layout.food_spinner_item);
@@ -749,6 +775,7 @@ public class PangEditorActivity extends AppCompatActivity {
         mSpinner = null;
         mTitleEdit = null;
         mWebAppInterface = null;
+        edit_manubar = null;
         super.onDestroy();
 
     }
