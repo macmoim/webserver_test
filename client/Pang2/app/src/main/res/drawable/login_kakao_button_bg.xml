@@ -3,9 +3,4 @@
     <item
         android:drawable="@drawable/login_button_fb_bg"
         android:id="@+id/t_bg" />
-    <item
-        android:top="0dp" android:left="0dp">
-<!--        <bitmap android:src="@drawable/icon_twitter"
-            android:gravity="left" />-->
-    </item>
 </layer-list>
