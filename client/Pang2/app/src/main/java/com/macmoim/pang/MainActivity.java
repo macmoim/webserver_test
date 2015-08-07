@@ -85,6 +85,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_home:
+                        break;
+
+                    case R.id.nav_foavorite:
+                        break;
+
+                    case R.id.nav_profile:
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        break;
+
+                    case R.id.nav_notice:
+                        break;
+                }
+                return false;
+            }
+        });
+
         // test login activity :: after delete
         mLogIn = (Button) findViewById(R.id.login);
         mLogIn.setOnClickListener(
@@ -92,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(MainActivity.this, LogInActivity.class));
+
                     }
                 }
         );

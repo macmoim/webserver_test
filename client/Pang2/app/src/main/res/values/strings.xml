@@ -42,6 +42,7 @@
     <string name="editor_title_hint">Insert title</string>
     <string name="new_edit">new post</string>
     <string name="submit">submit</string>
+    <string name="editor_hint">Insert</string>
 
     <!-- Log In-->
     <string name="facebook_app_id">1072882002741607</string>
@@ -60,4 +61,7 @@
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
     </style>
+
+    <string name="save">저장 되었습니다.</string>
+    <string name="failsave">저장에 실패 하였습니다. </string>
 </resources>
