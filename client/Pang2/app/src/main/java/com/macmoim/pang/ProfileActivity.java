@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -17,9 +19,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONObject;
 
@@ -37,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
+    private ViewHolder nViewHolder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra("id", 0);
 
         mFeedItem = new FeedItem();
+        nViewHolder = new ViewHolder(this);
         loadBackdrop();
         setFloationAction();
 
@@ -69,10 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        ViewHolder nViewHolder = new ViewHolder(this);
         mFeedItem.set_mName(nViewHolder.getName());
         mFeedItem.set_mEmail(nViewHolder.getEmail());
-        mFeedItem.set_mGender(nViewHolder.getEmail());
+        mFeedItem.set_mGender(nViewHolder.getGender());
         mFeedItem.set_mScore(nViewHolder.getScore());
     }
 
@@ -145,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
         private EditText nEmailView = null;
         private EditText nGenderView = null;
         private EditText nScoreView = null;
+        private MaterialBetterSpinner mSpinner;
+        private String mSelectedGender;
 
         public ViewHolder(Activity activity) {
             this.mActivity = activity;
@@ -152,6 +158,19 @@ public class ProfileActivity extends AppCompatActivity {
             nEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
             nGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
             nScoreView = (EditText) mActivity.findViewById(R.id.textViewScoreLabelValue);
+
+            final String[] spinnerArr = getResources().getStringArray(R.array.gender_spinner);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
+            adapter.setDropDownViewResource(R.layout.food_spinner_item);
+
+            mSpinner = (MaterialBetterSpinner) findViewById(R.id.textViewGenderValue);
+            mSpinner.setAdapter(adapter);
+            mSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mSelectedGender = spinnerArr[position];
+                }
+            });
 
         }
 
@@ -164,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public String getGender() {
-            return String.valueOf(nGenderView.getText());
+            return mSelectedGender;
         }
 
         public String getScore() {
