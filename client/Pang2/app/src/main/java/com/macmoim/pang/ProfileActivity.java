@@ -1,8 +1,10 @@
 package com.macmoim.pang;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
     private ViewHolder nViewHolder;
+    private int __ID = 0;
 
 
     @Override
@@ -52,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        int id = getIntent().getIntExtra("id", 0);
+        __ID = getIntent().getIntExtra("id", 0);
 
         mFeedItem = new FeedItem();
         nViewHolder = new ViewHolder(this);
@@ -61,14 +64,23 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+    final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setData();
+            onRequestData();
+        }
+    };
+
     private void setFloationAction() {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.profile_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setData();
-                onRequestData();
+                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                        .setAction("New Post", mSnackBarClickListener).show();
             }
         });
     }
@@ -83,7 +95,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void onRequestData() {
 
         Map<String, String> obj = new HashMap<String, String>();
-        obj.put("user_id", "");
+        // temp
+
+        String id = String.valueOf(((int) (Math.random() * 1000000) + 1));
+        obj.put("user_id", id);
         obj.put("user_name", mFeedItem.get_mName());
         obj.put("user_email", mFeedItem.get_mEmail());
         obj.put("user_score", mFeedItem.get_mScore());

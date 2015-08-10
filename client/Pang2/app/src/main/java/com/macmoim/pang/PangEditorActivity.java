@@ -1,5 +1,6 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -485,6 +487,7 @@ public class PangEditorActivity extends AppCompatActivity {
         return result;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void parseJson(JSONObject response) {
         String url = "";
         String fileName = "";

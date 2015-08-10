@@ -151,7 +151,9 @@
                         android:layout_alignLeft="@+id/textViewGenderValue"
                         android:layout_alignStart="@+id/textViewGenderValue"
                         android:layout_below="@+id/textViewGenderValue"
-                        android:hint="@string/editor_hint"
+                        android:text="35점"
+                        android:focusable="false"
+                        android:inputType="none"
                         android:singleLine="true"
                         android:textSize="18sp" />
 
@@ -172,7 +174,7 @@
                         android:fadeScrollbars="true"
                         android:gravity="top"
                         android:cursorVisible="true"
-                        android:hint="자기 소개"
+                        android:hint="inset text"
                         android:background="@drawable/edit_box_background"
                         android:textSize="18sp"/>
 
