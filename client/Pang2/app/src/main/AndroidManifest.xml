@@ -81,6 +81,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.macmoim.pang.MainActivity" />
         </activity>
+        <activity
+            android:name="com.macmoim.pang.CommentActivity"
+            android:parentActivityName="com.macmoim.pang.ViewerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.ViewerActivity" />
+        </activity>
     </application>
 
 </manifest>
