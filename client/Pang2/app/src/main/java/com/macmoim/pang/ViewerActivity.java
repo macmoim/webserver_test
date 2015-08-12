@@ -551,6 +551,12 @@ public class ViewerActivity extends AppCompatActivity {
             mRankingStartArr.clear();
             mRankingStartArr = null;
         }
+        if (mCommentRv != null) {
+            mCommentRv.removeAllViews();
+            mCommentRv.setLayoutManager(null);
+            mCommentRv.setAdapter(null);
+            mCommentRv = null;
+        }
         mViewer = null;
         mRankingLayout = null;
         super.onDestroy();
