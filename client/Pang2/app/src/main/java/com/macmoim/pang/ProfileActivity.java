@@ -1,10 +1,14 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,12 +25,19 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.bumptech.glide.Glide;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +54,12 @@ public class ProfileActivity extends AppCompatActivity {
     private FeedItem mFeedItem;
     private ViewHolder nViewHolder;
     private int __ID = 0;
+    private boolean editsate = false;
+    private Uri mCropImagedUri;
+    static final int REQ_CODE_PICK_PICTURE = 1;
+    private String mImagefileName;
+    private String mImageURL;
+    ImageView backdropimageView;
 
 
     @Override
@@ -59,19 +76,43 @@ public class ProfileActivity extends AppCompatActivity {
 
         mFeedItem = new FeedItem();
         nViewHolder = new ViewHolder(this);
-        loadBackdrop();
+        nViewHolder.setviewAllFocus(false);
+
+        backdropimageView = (ImageView) findViewById(R.id.profile_backdrop);
+        backdropimageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editsate) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                    intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
+                    intent.putExtra("crop", "true");
+                    intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
+                    intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
+                    intent.putExtra("outputX", 640);
+                    intent.putExtra("outputY", 480);
+                    intent.putExtra("scale", true);
+                    //retrieve data on return
+                    intent.putExtra("return-data", false);
+
+                    File f = createNewFile("CROP_");
+                    try {
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                        Log.e("io", ex.getMessage());
+                    }
+
+                    mCropImagedUri = Uri.fromFile(f);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+
+                    startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
+                }
+            }
+        });
+        OnGetData();
         setFloationAction();
 
     }
-
-
-    final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setData();
-            onRequestData();
-        }
-    };
 
     private void setFloationAction() {
 
@@ -79,17 +120,98 @@ public class ProfileActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("New Post", mSnackBarClickListener).show();
+                if (editsate) {
+
+                    if (mFeedItem.get_mName() == null) {
+                        Toast.makeText(getApplicationContext(), "input name text", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if ((mFeedItem.get_mEmail() == null)) {
+                        Toast.makeText(getApplicationContext(), "input email text", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (mFeedItem.get_mIntro() == null) {
+                        Toast.makeText(getApplicationContext(), "input intro text", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (mImageURL == null) {
+                        Toast.makeText(getApplicationContext(), "input image", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    onRequestData();
+                    editsate = false;
+                    nViewHolder.setviewAllFocus(false);
+                    Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
+                } else {
+                    editsate = true;
+                    nViewHolder.setviewAllFocus(true);
+                    Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    private void setData() {
-        mFeedItem.set_mName(nViewHolder.getName());
-        mFeedItem.set_mEmail(nViewHolder.getEmail());
-        mFeedItem.set_mGender(nViewHolder.getGender());
-        mFeedItem.set_mScore(nViewHolder.getScore());
+    private void setData(JSONObject response) throws JSONException {
+        mFeedItem.set_mName(response.getString("user_name"));
+        mFeedItem.set_mEmail(response.getString("user_email"));
+        mFeedItem.set_mGender(response.getString("user_score"));
+        mFeedItem.set_mScore(response.getString("user_gender"));
+        mFeedItem.set_mIntro(response.getString("user_intro"));
+        mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
+        mImagefileName = response.getString("profile_img_url");
+    }
+
+    private void OnGetData() {
+
+        Map<String, String> obj = new HashMap<String, String>();
+        // temp
+
+        obj.put("user_id", "420158");
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                _GET_URL, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    JSONObject val = response;
+                    showJSONResponseData(val);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
+    private void ShowView(JSONObject response) throws JSONException {
+        nViewHolder.setName(response.getString("user_name"));
+        nViewHolder.setEmail(response.getString("user_email"));
+        nViewHolder.setmScore(response.getString("user_score"));
+        nViewHolder.setGender(response.getString("user_gender"));
+        nViewHolder.setIntro(response.getString("user_intro"));
+        loadBackdrop();
+    }
+
+    private void showJSONResponseData(JSONObject response) {
+        try {
+            setData(response);
+            ShowView(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void onRequestData() {
@@ -99,11 +221,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         String id = String.valueOf(((int) (Math.random() * 1000000) + 1));
         obj.put("user_id", id);
-        obj.put("user_name", mFeedItem.get_mName());
-        obj.put("user_email", mFeedItem.get_mEmail());
-        obj.put("user_score", mFeedItem.get_mScore());
-        obj.put("user_gender", mFeedItem.get_mGender());
-        obj.put("user_bookmark", "sdfasfd");
+        obj.put("user_name", nViewHolder.getName());
+        obj.put("user_email", nViewHolder.getEmail());
+        obj.put("user_score", nViewHolder.getScore());
+        obj.put("user_gender", nViewHolder.getGender());
+        obj.put("user_intro", nViewHolder.getIntro());
+        obj.put("profile_img_url", mImagefileName);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 _POST_URL, obj, new Response.Listener<JSONObject>() {
@@ -112,6 +235,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
+                    showJSONResponseData(response);
                     Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -120,7 +244,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
-                Toast.makeText(getApplicationContext(), getText(R.string.failsave), Toast.LENGTH_SHORT).show();
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
@@ -137,14 +260,120 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void loadBackdrop() {
-        ImageView imageView = (ImageView) findViewById(R.id.profile_backdrop);
-        imageView.setImageResource(R.drawable.person);
+
+        if ((mImageURL == null)) {
+            backdropimageView.setImageResource(R.drawable.person);
+        } else {
+            backdropimageView.setImageURI(Uri.parse(mImageURL));
+        }
+        try {
+            Glide.with(this).load(new URL(mImageURL)).centerCrop().into(backdropimageView);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
+
+
+    private File createNewFile(String prefix) {
+        if (prefix == null || "".equalsIgnoreCase(prefix)) {
+            prefix = "IMG_";
+        }
+        File newDirectory = new File(Environment.getExternalStorageDirectory() + "/smtc/");
+        if (!newDirectory.exists()) {
+            if (newDirectory.mkdir()) {
+                Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath() + " directory created");
+            }
+        }
+        File file = new File(newDirectory, (prefix + "crop_profile_temp.jpg"));
+        if (file.exists()) {
+            //this wont be executed
+            file.delete();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sample_actions, menu);
+        //getMenuInflater().inflate(R.menu.sample_actions, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == REQ_CODE_PICK_PICTURE) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
+
+                File mFile = new File(mCropImagedUri.getPath());
+                requestThumbImage(mFile);
+            }
+        }
+    }
+
+    private void requestThumbImage(File thumbFile) {
+        String url = "http://localhost:8080/web_test/putProfileImage.php";
+
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("title", "profile_image.jpg");
+
+        Map<String, File> obj_file = new HashMap<String, File>();
+        obj_file.put("image", thumbFile);
+
+        @SuppressWarnings("unchecked")
+        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJson(response);
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "requestError : " + error.getMessage());
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void parseJson(JSONObject response) {
+        int width = 0;
+        int height = 0;
+        try {
+            mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("file_url");
+            mImagefileName = response.getString("file_url");
+            width = response.getInt("width");
+            height = response.getInt("height");
+            Log.d(TAG, "parseJsonFeed upload url " + mImageURL + " width " + width + " height " + height);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(getApplicationContext(), "upload success width " + width + " height " + height, Toast.LENGTH_SHORT).show();
+
+        loadBackdrop();
+
+
     }
 
     @Override
@@ -161,18 +390,20 @@ public class ProfileActivity extends AppCompatActivity {
     private class ViewHolder {
         private Activity mActivity;
         private EditText nNameView = null;
-        private EditText nEmailView = null;
-        private EditText nGenderView = null;
-        private EditText nScoreView = null;
+        private EditText mEmailView = null;
+        private EditText mGenderView = null;
+        private EditText mScoreView = null;
+        private EditText mIntroView = null;
         private MaterialBetterSpinner mSpinner;
         private String mSelectedGender;
 
         public ViewHolder(Activity activity) {
             this.mActivity = activity;
             nNameView = (EditText) mActivity.findViewById(R.id.textViewNameValue);
-            nEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
-            nGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
-            nScoreView = (EditText) mActivity.findViewById(R.id.textViewScoreLabelValue);
+            mEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
+            mGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
+            mScoreView = (EditText) mActivity.findViewById(R.id.textViewScoreLabelValue);
+            mIntroView = (EditText) mActivity.findViewById(R.id.textviewIntroLabelValue);
 
             final String[] spinnerArr = getResources().getStringArray(R.array.gender_spinner);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
@@ -189,12 +420,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
 
+        public void setviewAllFocus(boolean state) {
+            nNameView.setFocusableInTouchMode(state);
+            nNameView.setFocusable(state);
+            mEmailView.setFocusableInTouchMode(state);
+            mEmailView.setFocusable(state);
+            mGenderView.setFocusableInTouchMode(state);
+            mScoreView.setFocusableInTouchMode(state);
+            mScoreView.setFocusable(state);
+            mIntroView.setFocusableInTouchMode(state);
+            mIntroView.setFocusable(state);
+        }
+
         public String getName() {
-            return String.valueOf(nNameView.getText());
+            return String.valueOf((nNameView.getText() == null) ? ("") : nNameView.getText());
         }
 
         public String getEmail() {
-            return String.valueOf(nEmailView.getText());
+            return String.valueOf((mEmailView.getText() == null) ? ("") : nNameView.getText());
         }
 
         public String getGender() {
@@ -202,7 +445,31 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public String getScore() {
-            return String.valueOf(nScoreView.getText());
+            return String.valueOf((mScoreView.getText() == null) ? ("") : nNameView.getText());
+        }
+
+        public String getIntro() {
+            return String.valueOf((mIntroView.getText() == null) ? ("") : nNameView.getText());
+        }
+
+        public void setName(String value) {
+            nNameView.setText(value);
+        }
+
+        public void setEmail(String value) {
+            mEmailView.setText(value);
+        }
+
+        public void setGender(String value) {
+            mGenderView.setText(value);
+        }
+
+        public void setmScore(String value) {
+            mScoreView.setText(value);
+        }
+
+        public void setIntro(String value) {
+            mIntroView.setText(value);
         }
 
 
@@ -213,6 +480,10 @@ public class ProfileActivity extends AppCompatActivity {
         private String _mEmail;
         private String _mGender;
         private String _mScore;
+        private String _mIntro;
+
+        private FeedItem() {
+        }
 
         public String get_mName() {
             return _mName;
@@ -260,6 +531,19 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 this._mScore = _mScore;
             }
+        }
+
+        public void set_mIntro(String _mIntro) {
+            if (_mIntro == null) {
+                this._mIntro = "";
+            } else {
+                this._mIntro = _mIntro;
+            }
+
+        }
+
+        public String get_mIntro() {
+            return _mIntro;
         }
     }
 

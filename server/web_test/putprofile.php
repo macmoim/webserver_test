@@ -6,7 +6,9 @@ function putProfile(){
 	$email = $_POST ['user_email'];
 	$gender = $_POST ['user_gender'];
 	$score = $_POST ['user_score'];
-	$bookmark = $_POST ['user_bookmark'];
+	$intro = $_POST['user_intro'];
+	$img_url = $_POST['profile_img_url'];
+
 	$dbname = 'db_chat_member_test';
 
 	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
@@ -21,11 +23,12 @@ function putProfile(){
 						user_email varchar(20),
 						user_gender varchar(10),
 						user_score varchar(10),
-						user_bookmark varchar(20)
+						user_intro varchar(500),
+						profile_img_url varchar(20)
 						);";
 
-	$sql_query = "insert into profiles (user_id, user_name, user_email, user_gender, user_score, user_bookmark) 
-	values('$user_id', '$name', '$email','$gender','$score', '$bookmark')";
+	$sql_query = "insert into profiles (user_id, user_name, user_email, user_gender, user_score,user_intro,profile_img_url) 
+	values('$user_id', '$name', '$email','$gender','$score', '$intro','$img_url')";
 	
 	$mysqli->query ( $create_table );
 
