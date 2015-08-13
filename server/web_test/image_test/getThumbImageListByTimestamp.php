@@ -11,17 +11,20 @@ function getImageListByTimestamp($timestamp) {
 	}
 	$sql_query = "SELECT id, user_id, title, upload_filename, upload_date, thumb_img_path
 	                   FROM posts WHERE upload_date > '$timestamp'";
+	$sql_order_by = "";
 	if (isset($_POST['category'])) {
 		$ctg = $_POST['category'];
 		if (strcmp($ctg, "Latest") == 0) {
 			
 		} else if (strcmp($ctg, "Popular") == 0) {
-
+			$sql_order_by = " ORDER BY rank";
 		} else {
 			$sql_query .= " && category = '$ctg'";	
 		}
 		
 	}
+	$sql_query .= $sql_order_by;
+	
 	if ($result = $mysqli->query ( $sql_query )) {
 		
 		if (count($result) > 0) {

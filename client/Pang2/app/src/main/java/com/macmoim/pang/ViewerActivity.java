@@ -1,10 +1,12 @@
 package com.macmoim.pang;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -54,11 +57,13 @@ public class ViewerActivity extends AppCompatActivity {
     private Button mLikeBtn;
     private boolean isLikeCheck;
     private ViewGroup mRankingLayout;
+    private Rect mRankingLayoutRect;
     private ArrayList<ImageView> mRankingStartArr;
     private int mStar;
 
-
+    private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
+    private String mUserId;
 
     private RecyclerView mCommentRv;
     private ArrayList<FoodCommentItem> foodCommentItems;
@@ -69,10 +74,11 @@ public class ViewerActivity extends AppCompatActivity {
 
         setContentView(R.layout.viewer_main);
 
+        mUserId = getRandomID();
+
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         mViewer = (RichViewer) findViewById(R.id.richviewer);
         mViewer.setVerticalScrollBarEnabled(false);
@@ -101,12 +107,8 @@ public class ViewerActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.comment_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
-                intent.putExtra("post_id", getIntent().getIntExtra("id", 0));
-                intent.putExtra("post_user_id", postUserId);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
 
+                startAddCommentActivity();
             }
         });
 
@@ -116,17 +118,16 @@ public class ViewerActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.ranking_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeRankingLayoutVisibleState();
+                showRankingView();
             }
         });
 
-        ((Button) findViewById(R.id.ranking_send_btn)).setOnClickListener(new View.OnClickListener(){
+        ((Button) findViewById(R.id.ranking_send_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeRankingLayoutVisibleState();
+                closeRankingView();
             }
         });
-
 
 
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
@@ -141,6 +142,22 @@ public class ViewerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_ADD_COMMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                getComment();
+            }
+        }
+    }
+
+    private void startAddCommentActivity() {
+        Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
+        intent.putExtra("post_id", getIntent().getIntExtra("id", 0));
+        intent.putExtra("post_user_id", postUserId);
+        startActivityForResult(intent, REQ_ADD_COMMENT);
     }
 
     private void showHTML(int id) {
@@ -226,7 +243,7 @@ public class ViewerActivity extends AppCompatActivity {
                 byte[] buffer = new byte[1024];
                 int bufferLength = 0;
 
-                while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
                     contents.append(new String(buffer, 0, bufferLength));
                 }
 
@@ -263,9 +280,7 @@ public class ViewerActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(new FoodCommentRecyclerViewAdapter(ViewerActivity.this,
                 foodCommentItems));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            recyclerView.setNestedScrollingEnabled(true);
-        }
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     private void setLikeBtnBg(boolean isLike) {
@@ -289,10 +304,13 @@ public class ViewerActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+                if (response != null && mCommentRv != null) {
                     try {
                         JSONArray feedArray = response.getJSONArray("comment_info");
 
+                        if (foodCommentItems != null) {
+                            foodCommentItems.clear();
+                        }
                         int length = feedArray.length();
                         for (int i = 0; i < length; i++) {
                             JSONObject feedObj = (JSONObject) feedArray.get(i);
@@ -304,7 +322,7 @@ public class ViewerActivity extends AppCompatActivity {
                             item.setComment(feedObj.getString("comment"));
                             item.setTimeStamp(feedObj.getString("upload_date"));
 
-                            Log.d(TAG, "getcomment comment " +feedObj.getString("comment") );
+                            Log.d(TAG, "getcomment comment " + feedObj.getString("comment"));
 
                             foodCommentItems.add(0, item);
                         }
@@ -329,11 +347,10 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
 
-
     private void getLike() {
         String url = "http://localhost:8080/web_test/getLike.php";
         int post_id = getIntent().getIntExtra("id", 0);
-        String like_user_id = "khwan0710";
+        String like_user_id = mUserId;
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("user_id", like_user_id);
         obj.put("post_id", String.valueOf(post_id));
@@ -371,7 +388,7 @@ public class ViewerActivity extends AppCompatActivity {
     private void putLike(boolean like) {
         String url = "http://localhost:8080/web_test/putLike.php";
         int post_id = getIntent().getIntExtra("id", 0);
-        String like_user_id = "khwan0710";
+        String like_user_id = mUserId;
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("user_id", like_user_id);
         obj.put("like", like ? "1" : "0");
@@ -409,7 +426,7 @@ public class ViewerActivity extends AppCompatActivity {
     private void getStar() {
         String url = "http://localhost:8080/web_test/getStar.php";
         int post_id = getIntent().getIntExtra("id", 0);
-        String star_user_id = "khwan0710";
+        String star_user_id = mUserId;
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("user_id", star_user_id);
         obj.put("post_id", String.valueOf(post_id));
@@ -424,7 +441,7 @@ public class ViewerActivity extends AppCompatActivity {
                 if (response != null) {
                     try {
                         int star = response.getInt("star");
-                        setRankStar(star-1);
+                        setRankStar(star - 1);
                         Log.d(TAG, "star get " + star);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -444,10 +461,10 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
-    private void putStar(final int star) {
+    private void putStar(int star) {
         String url = "http://localhost:8080/web_test/putStar.php";
         int post_id = getIntent().getIntExtra("id", 0);
-        String like_user_id = "khwan0710";
+        String like_user_id = mUserId;
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("user_id", like_user_id);
         obj.put("star", String.valueOf(star));
@@ -464,7 +481,6 @@ public class ViewerActivity extends AppCompatActivity {
                     try {
                         int star_id = response.getInt("id");
                         Log.d(TAG, "star add db id " + star_id);
-                        setRankStar(star-1);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -488,42 +504,56 @@ public class ViewerActivity extends AppCompatActivity {
         return true;
     }
 
-    private void changeRankingLayoutVisibleState() {
-        int visible = mRankingLayout.getVisibility();
-        if (visible == View.VISIBLE) {
-            mRankingLayout.setVisibility(View.GONE);
-        } else {
+    private void showRankingView() {
+        if (mRankingLayout == null) {
+            return;
+        }
+        if (mRankingLayout.getVisibility() == View.GONE) {
             mRankingLayout.setVisibility(View.VISIBLE);
+            mRankingLayout.getHitRect(mRankingLayoutRect);
+        }
+    }
+
+    private void closeRankingView() {
+        if (mRankingLayout == null) {
+            return;
+        }
+        if (mRankingLayout.getVisibility() == View.VISIBLE) {
+            mRankingLayout.setVisibility(View.GONE);
+            putStar(mStar);
         }
     }
 
     private void setupRankingStarView() {
         mRankingStartArr = new ArrayList<>();
         StarClickListener starListener = new StarClickListener();
-        mRankingStartArr.add((ImageView)findViewById(R.id.star1));
-        mRankingStartArr.add((ImageView)findViewById(R.id.star2));
-        mRankingStartArr.add((ImageView)findViewById(R.id.star3));
-        mRankingStartArr.add((ImageView)findViewById(R.id.star4));
-        mRankingStartArr.add((ImageView)findViewById(R.id.star5));
+        mRankingStartArr.add((ImageView) findViewById(R.id.star1));
+        mRankingStartArr.add((ImageView) findViewById(R.id.star2));
+        mRankingStartArr.add((ImageView) findViewById(R.id.star3));
+        mRankingStartArr.add((ImageView) findViewById(R.id.star4));
+        mRankingStartArr.add((ImageView) findViewById(R.id.star5));
 
         for (ImageView v : mRankingStartArr) {
             v.setOnClickListener(starListener);
         }
+
+        mRankingLayoutRect = new Rect();
     }
 
     private class StarClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             int clickedIndex = mRankingStartArr.indexOf(v);
-            putStar(clickedIndex+1);
+            setRankStar(clickedIndex);
+
         }
     }
 
     private void setRankStar(int starIndexInArray) {
-        mStar = starIndexInArray+1;
+        mStar = starIndexInArray + 1;
         int length = mRankingStartArr.size();
-        for (int i=0; i<length; i++) {
-            if (i<=starIndexInArray) {
+        for (int i = 0; i < length; i++) {
+            if (i <= starIndexInArray) {
                 mRankingStartArr.get(i).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_sel));
             } else {
                 mRankingStartArr.get(i).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor));
@@ -531,6 +561,26 @@ public class ViewerActivity extends AppCompatActivity {
         }
     }
 
+    private String getRandomID() {
+        return String.valueOf(((int) (Math.random() * 1000000) + 1));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mRankingLayoutRect.contains((int)event.getX(), (int)event.getY())) {
+            closeRankingView();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mRankingLayout != null && mRankingLayout.getVisibility() == View.VISIBLE) {
+            closeRankingView();
+            return;
+        }
+        super.onBackPressed();
+    }
 
     @Override
     protected void onPause() {
@@ -551,6 +601,9 @@ public class ViewerActivity extends AppCompatActivity {
             mRankingStartArr.clear();
             mRankingStartArr = null;
         }
+        if (mRankingLayout != null) {
+            mRankingLayout = null;
+        }
         if (mCommentRv != null) {
             mCommentRv.removeAllViews();
             mCommentRv.setLayoutManager(null);
@@ -558,7 +611,7 @@ public class ViewerActivity extends AppCompatActivity {
             mCommentRv = null;
         }
         mViewer = null;
-        mRankingLayout = null;
+        mRankingLayoutRect = null;
         super.onDestroy();
 
     }

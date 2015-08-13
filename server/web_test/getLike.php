@@ -10,7 +10,7 @@ function get_like($user_id, $post_id, $post_user_id) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
 	$sql_query = "SELECT like_bool
-	                   FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id' AND post_user_id = '$post_user_id'";
+	                   FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id'";
 	
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();

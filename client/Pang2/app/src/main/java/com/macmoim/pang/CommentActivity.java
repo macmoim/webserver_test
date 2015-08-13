@@ -1,5 +1,7 @@
 package com.macmoim.pang;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class CommentActivity extends AppCompatActivity {
     private static final String TAG = "CommentActivity";
     private EditText mCommentEdit;
+    private ProgressDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void putComment() {
+        showDialog();
         String url = "http://localhost:8080/web_test/putComment.php";
         int post_id = getIntent().getIntExtra("post_id", 0);
         String postUserId = getIntent().getStringExtra("post_user_id");
@@ -93,17 +97,39 @@ public class CommentActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                removeDialog();
+                setResult(Activity.RESULT_OK);
+                finish();
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                removeDialog();
             }
         });
 
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
+    private void showDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        } else {
+            mDialog = new ProgressDialog(this);
+        }
+
+        mDialog.show();
+
+    }
+
+    private void removeDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+        mDialog = null;
     }
 
     @Override

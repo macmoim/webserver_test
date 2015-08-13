@@ -92,7 +92,12 @@ public class FoodListFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshList();
+                String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
+                if ("Popular".equals(category)) {
+                    refreshListWithClearingArray();
+                } else {
+                    refreshListByTimeStamp();
+                }
             }
 
 
@@ -117,7 +122,7 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response);
+                    parseJsonFeed(response, false);
                     if (feedItems != null && feedItems.size() > 0) {
                         setLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
@@ -138,7 +143,7 @@ public class FoodListFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
 
-    private void refreshList() {
+    private void refreshListByTimeStamp() {
         onStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
@@ -154,7 +159,42 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response);
+                    parseJsonFeed(response, false);
+                }
+                onFinishRefresh();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+                onFinishRefresh();
+            }
+        });
+//	}
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
+    }
+
+    private void refreshListWithClearingArray() {
+        onStartRefresh();
+        String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
+
+        Map<String, String> obj = new HashMap<String, String>();
+        obj.put("action", "get_thumb_images");
+        obj.put("category", category);
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                URL, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJsonFeed(response, true);
                 }
                 onFinishRefresh();
             }
@@ -199,9 +239,12 @@ public class FoodListFragment extends Fragment {
     /**
      * Parsing json reponse and passing the data to feed view list adapter
      */
-    private void parseJsonFeed(JSONObject response) {
+    private void parseJsonFeed(JSONObject response, boolean toClearArray) {
         if (rv == null) {
             return;
+        }
+        if (toClearArray) {
+            feedItems.clear();
         }
         try {
             JSONArray feedArray = response.getJSONArray("post_info");

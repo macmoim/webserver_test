@@ -17,28 +17,33 @@ function saveStar() {
 					);";
 	
 	$mysqli->query ( $create_table );
+
+	$query_select = sprintf ( "SELECT star
+				FROM stars WHERE user_id = '%s' AND post_id = '%s' AND post_user_id = '%s'",
+			 $_POST["user_id"],$_POST["post_id"],$_POST["post_user_id"]);
 	
-	$query_update = sprintf ( "UPDATE stars
-				SET star = '%s' WHERE user_id = '%s' AND post_id = '%s' AND post_user_id = '%s'",
-			$_POST["star"], $_POST["user_id"],$_POST["post_id"],$_POST["post_user_id"]);
 	
-	$mysqli->query ( $query_update );
+	
 	// check update success
-	if ($mysqli->affected_rows == 0) {
+	$result = $mysqli->query ( $query_select );
+	if ($result->num_rows > 0) {
+		$query_update = sprintf ( "UPDATE stars
+				SET star = '%s' WHERE user_id = '%s' AND post_id = '%s' AND post_user_id = '%s' LIMIT 1",
+				$_POST["star"], $_POST["user_id"],$_POST["post_id"],$_POST["post_user_id"]);
+		$mysqli->query($query_update);
+	} else {
 		$query_insert = sprintf ( "INSERT INTO stars
 			(user_id, star, post_id, post_user_id)
-			VALUES ('%s','%s', '%s','%s')", 
+			VALUES ('%s','%s', '%s','%s')",
 				$_POST["user_id"],$_POST["star"],$_POST["post_id"],$_POST["post_user_id"]);
 		
 		$mysqli->query ( $query_insert );
 		
-		 $debug_msg = "insert star success";
+		$debug_msg = "insert star success";
 		
 		if ($mysqli->error) {
 			echo "Failed to insert like db: (" . $mysqli->error . ") ";
 		}
-		
-	} else {
 	}
 	
 	$insert_id = $mysqli->insert_id;
@@ -47,7 +52,55 @@ function saveStar() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
+	putRank();
 	return $like_saving_info;//$debug_msg;
+}
+
+function putRank() {
+	include "./image_test/dbconfig.php";
+	$debug_msg = "not work";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	// add rank COLUMN if not exists COLUMN rank in TABLE posts
+	$table_name = "posts";
+	$column_name = "rank";
+	$check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
+				$table_name, $column_name);
+	$result = $mysqli->query($check_rank_query);
+	$exists = $result->num_rows ? TRUE : FALSE;
+	if ($exists) {
+	} else {
+		$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s float", 
+				$table_name, $column_name);
+		$mysqli->query($alter_add_query);
+	}
+	
+	// put rank to TABLE posts
+	$get_all_stars_query = sprintf( "SELECT star FROM stars WHERE  post_id = '%s' AND post_user_id = '%s'",
+			$_POST["post_id"],$_POST["post_user_id"]);
+	$result = $mysqli->query($get_all_stars_query);
+	$star_count = $result->num_rows;
+	if ($star_count > 0) {
+		$sum_star=0;
+		while ( $row = $result->fetch_assoc () ) {
+			$sum_star += $row['star'];
+		}
+		$rank_point = $sum_star / $star_count;
+		
+		$rank_point_update_query = sprintf ( "UPDATE posts
+				SET rank = '%s' WHERE id = '%s'",
+			$rank_point, $_POST["post_id"]);
+		$mysqli->query($rank_point_update_query);
+		if ($mysqli->error) {
+			echo "Failed to insert rank to posts TABLE: (" . $mysqli->error . ") ";
+		}
+	}
+	
+	$mysqli->close();
 }
 
 $value = "An error has occurred";
