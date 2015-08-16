@@ -91,9 +91,15 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
+                        Intent intent = new Intent(MainActivity.this, MyPostActivity.class);
+                        intent.putExtra("user_id", "khwan07");
+                        startActivity(intent);
                         break;
 
                     case R.id.nav_foavorite:
+                        Intent tmptent = new Intent(MainActivity.this, LikeActivity.class);
+                        tmptent.putExtra("user_id", "338272");
+                        startActivity(tmptent);
                         break;
 
                     case R.id.nav_profile:
