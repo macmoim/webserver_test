@@ -75,7 +75,7 @@ public class CommentActivity extends AppCompatActivity {
         String url = "http://localhost:8080/web_test/putComment.php";
         int post_id = getIntent().getIntExtra("post_id", 0);
         String postUserId = getIntent().getStringExtra("post_user_id");
-        String comment_user_id = "khwan0710";
+        String comment_user_id = getIntent().getStringExtra("comment_user_id");//"khwan0710";
         String comment = mCommentEdit.getText().toString();
         Map<String, String> obj = new HashMap<String, String>();
         obj.put("post_id", String.valueOf(post_id));

@@ -155,6 +155,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     private void startAddCommentActivity() {
         Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
+        intent.putExtra("comment_user_id", mUserId);
         intent.putExtra("post_id", getIntent().getIntExtra("id", 0));
         intent.putExtra("post_user_id", postUserId);
         startActivityForResult(intent, REQ_ADD_COMMENT);
@@ -567,7 +568,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mRankingLayoutRect.contains((int)event.getX(), (int)event.getY())) {
+        if (!mRankingLayoutRect.contains((int)event.getX(), (int)event.getY())) {
             closeRankingView();
         }
         return super.onTouchEvent(event);
