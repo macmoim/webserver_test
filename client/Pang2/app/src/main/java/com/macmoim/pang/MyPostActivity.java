@@ -103,4 +103,8 @@ public class MyPostActivity extends RequestFeedListActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

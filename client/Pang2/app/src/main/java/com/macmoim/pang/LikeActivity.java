@@ -36,37 +36,37 @@ public class LikeActivity extends RequestFeedListActivity {
 
     @Override
     protected void ShowList() {
-            Map<String, String> obj = new HashMap<String, String>();
-            obj.put("user_id", user_id);
+        Map<String, String> obj = new HashMap<String, String>();
+        obj.put("user_id", user_id);
 
 
-            CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                    URL, obj, new Response.Listener<JSONObject>() {
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                URL, obj, new Response.Listener<JSONObject>() {
 
-                @Override
-                public void onResponse(JSONObject response) {
-                    VolleyLog.d(TAG, "Response: " + response.toString());
-                    if (response != null) {
-                        parseJsonFeed(response);
-                        if (feedItems != null && feedItems.size() > 0) {
-                            setLatestTimestamp(feedItems.get(0).getTimeStamp());
-                        }
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJsonFeed(response);
+                    if (feedItems != null && feedItems.size() > 0) {
+                        setLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
-                    }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-            });
+            }
+        });
 //	}
-            // Adding request to volley request queue
-            AppController.getInstance().addToRequestQueue(jsonReq);
-        }
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
 
     protected void parseJsonFeed(JSONObject response) {
         if (rv == null) {
@@ -104,5 +104,8 @@ public class LikeActivity extends RequestFeedListActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

@@ -74,6 +74,22 @@ class RequestFeedListActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(feedItems != null){
+            feedItems.clear();
+            feedItems = null;
+        }
+
+        if(mLatestTimestamp != null){
+            mLatestTimestamp = null;
+        }
+
+        if(user_id != null){
+            user_id = null;
+        }
+
+        if(rv != null){
+            rv = null;
+        }
         super.onDestroy();
     }
 }
