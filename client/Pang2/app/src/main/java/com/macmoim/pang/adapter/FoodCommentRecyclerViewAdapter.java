@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.macmoim.pang.R;
 import com.macmoim.pang.data.FoodCommentItem;
 
@@ -29,10 +31,12 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         public final TextView mCommentTv;
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
+        public final ImageView mProfilePic;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mProfilePic = (ImageView) view.findViewById(R.id.profilePic);
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
             mTimeStampTv = (TextView) view
                     .findViewById(R.id.timestamp);
@@ -66,6 +70,11 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
 
 
         FoodCommentItem item = mValues.get(position);
+
+        Glide.with(holder.mProfilePic.getContext())
+                .load(item.getProfileImgUrl())
+                .fitCenter()
+                .into(holder.mProfilePic);
 
         holder.mUserIdTv.setText(item.getCommentUserId());
         holder.mTimeStampTv.setText(item.getTimeStamp());

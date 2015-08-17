@@ -1,0 +1,113 @@
+<?php
+function rest_get($id) {
+	$post_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT user_id, user_name, user_email, user_score, user_gender, user_intro, profile_img_url
+	                   FROM profiles WHERE user_id = '$id'";
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['user_name'] )) {
+			$post_info = array (
+					"user_id" => $row ['user_id'],
+					"user_name" => $row ['user_name'],
+					"user_email" => $row ['user_email'],
+					"user_score" => $row ['user_score'],
+					"user_gender" => $row ['user_gender'],
+					"user_intro" => $row ['user_intro'],
+					"profile_img_url" => $row ['profile_img_url']
+			);
+		} else {
+			echo 'fail to get user info';
+		}
+	}
+	
+	$mysqli->close ();
+	
+	return $post_info;
+}
+
+function rest_post(){
+	$user_id = $_POST ['user_id'];
+	$name = $_POST ['user_name'];
+	$email = $_POST ['user_email'];
+	$gender = $_POST ['user_gender'];
+	$score = $_POST ['user_score'];
+	$intro = $_POST['user_intro'];
+	$img_url = $_POST['profile_img_url'];
+
+	$dbname = 'db_chat_member_test';
+
+	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+	$create_table = "create table if not exists profiles(
+						id int primary key auto_increment,
+						user_id varchar(12) unique,
+						user_name varchar(10),
+						user_email varchar(20),
+						user_gender varchar(10),
+						user_score varchar(10),
+						user_intro varchar(500),
+						profile_img_url varchar(20)
+						);";
+
+	$sql_query = "insert into profiles (user_id, user_name, user_email, user_gender, user_score,user_intro,profile_img_url) 
+	values('$user_id', '$name', '$email','$gender','$score', '$intro','$img_url')";
+	
+	$mysqli->query ( $create_table );
+
+	$mysqli->query ( $sql_query );
+
+	if ($mysqli->error) {
+		echo "Failed to insert profiles db: (" . $mysqli->error . ") ";
+	}
+	$insert_id = $mysqli->insert_id;
+
+	if ($mysqli->insert_id) {
+		echo 'insert success';
+		$value = "success";
+	} else {
+		echo 'insert fail';
+		$value = "insert fail";
+	}
+
+	$mysqli->close ();
+	return $value;
+}
+
+$value = "An error has occurred";
+$method = $_SERVER['REQUEST_METHOD'];
+$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+
+switch ($method) {
+  case 'PUT':
+    rest_put($request);  
+    break;
+  case 'POST':
+    $value = rest_post();  
+    break;
+  case 'GET':
+    //printf('request get %s' , var_dump($request));
+    $value = rest_get($request[0]);  
+    break;
+  case 'DELETE':
+    rest_delete($request);  
+    break;
+  default:
+  	$value = "Missing argument fail profile rest";
+    rest_error($request);  
+    break;
+}
+
+// return JSON array
+exit ( json_encode ( $value ) );
+?>

@@ -32,7 +32,7 @@ public class naviHeaderView{
     private ImageView mCircleImage = null;
     private TextView mNameView = null;
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
-    private static final String _GET_URL = "http://localhost:8080/web_test/getprofile.php";
+    private static final String _GET_URL = "http://localhost:8080/web_test/profile.php";
 
 
     public naviHeaderView(Activity activity) {
@@ -52,8 +52,10 @@ public class naviHeaderView{
 
         obj.put("user_id", "420158");
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                _GET_URL, obj, new Response.Listener<JSONObject>() {
+        String url = _GET_URL + "/" + "420158" + "/";
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

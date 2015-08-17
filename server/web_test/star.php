@@ -1,5 +1,34 @@
 <?php
-function saveStar() {
+function rest_get($user_id, $post_id) {
+	$star_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	include "./image_test/dbconfig.php";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT star
+	                   FROM stars WHERE user_id = '$user_id' AND post_id = '$post_id'";
+	
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['star'] )) {
+			$star_info = array (
+					"star" => $row ['star'],
+			);
+		} else {
+			echo 'fail to get star info';
+		}
+	}
+	
+	$mysqli->close ();
+	
+	return $star_info;
+}
+
+function rest_post() {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -52,11 +81,11 @@ function saveStar() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
-	putRank();
+	saveRank();
 	return $like_saving_info;//$debug_msg;
 }
 
-function putRank() {
+function saveRank() {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -104,14 +133,29 @@ function putRank() {
 }
 
 $value = "An error has occurred";
-// echo 'start: ';
-if (isset ( $_POST ["post_id"] ) && isset ( $_POST ["post_user_id"] )
-		&& isset ( $_POST ["user_id"] ) && isset ( $_POST ["star"] )) {
-	$value = saveStar();
-	
-} else {
-	$value = "Missing argument";
+$method = $_SERVER['REQUEST_METHOD'];
+$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+
+switch ($method) {
+  case 'PUT':
+    rest_put($request);  
+    break;
+  case 'POST':
+    $value = rest_post();  
+    break;
+  case 'GET':
+    //printf('request get %s' , var_dump($request));
+    $value = rest_get($request[0], $request[1]);  
+    break;
+  case 'DELETE':
+    rest_delete($request);  
+    break;
+  default:
+  	$value = "Missing argument fail star rest";
+    rest_error($request);  
+    break;
 }
+
 // return JSON array
 exit ( json_encode ( $value ) );
 ?>

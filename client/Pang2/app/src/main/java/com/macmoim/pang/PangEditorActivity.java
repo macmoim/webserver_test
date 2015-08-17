@@ -62,6 +62,9 @@ import java.util.Map;
  */
 public class PangEditorActivity extends AppCompatActivity {
     private static final String TAG = "PangEditorActivity";
+
+    private static final String URL_POST = "http://localhost:8080/web_test/post.php";
+
     private RichEditor mEditor = null;
     private MaterialBetterSpinner mSpinner;
     private String mSelectedFood;
@@ -387,7 +390,6 @@ public class PangEditorActivity extends AppCompatActivity {
                     public void OnGetHTMLSourceCallback(String html) {
                         File file = saveHTML(/*mEditor.getHtml()*/html);
 
-                        String url = "http://localhost:8080/web_test/putHTML.php";
 
                         Map<String, String> obj_body = new HashMap<String, String>();
                         obj_body.put("title", mTitleEdit.getText().toString());
@@ -401,7 +403,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
                         @SuppressWarnings("unchecked")
                         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+                                URL_POST, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
 
                             @Override
                             public void onResponse(JSONObject response) {
@@ -554,12 +556,11 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private void editHTML(int id) {
 
-        String url = "http://localhost:8080/web_test/getPost.php";
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("id", String.valueOf(id));
+        String url = URL_POST + "/"+String.valueOf(id)+"/";
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                url, obj, new Response.Listener<JSONObject>() {
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

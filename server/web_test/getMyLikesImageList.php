@@ -9,7 +9,8 @@ function get_my_like($user_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT posts.id, posts.user_id as p_user_id, posts.title, posts.upload_filename, posts.upload_date, posts.thumb_img_path FROM posts JOIN likes ON posts.id = likes.post_id WHERE likes.user_id = '$user_id'";
+	$sql_query = "SELECT posts.id, posts.user_id as p_user_id, posts.title, posts.upload_filename, posts.upload_date, posts.thumb_img_path 
+						FROM posts JOIN likes ON posts.id = likes.post_id WHERE likes.user_id = '$user_id'";
 	
 	if ($result = $mysqli->query ( $sql_query )) {
 		if (count ( $result ) > 0) {

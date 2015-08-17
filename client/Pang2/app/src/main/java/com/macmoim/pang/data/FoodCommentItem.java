@@ -1,18 +1,20 @@
 package com.macmoim.pang.data;
 
 public class FoodCommentItem {
+    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
     private int postId;
-    private String postUserId, commentUserId, timeStamp, comment;
+    private String postUserId, commentUserId, timeStamp, comment, profileImgUrl;
 
     public FoodCommentItem() {
     }
 
-    public FoodCommentItem(int postId, String postUserId, String commentUserId, String comment, String timeStamp) {
+    public FoodCommentItem(int postId, String postUserId, String commentUserId, String comment, String timeStamp, String profileImageUrl) {
         super();
         this.postId = postId;
         this.postUserId = postUserId;
         this.commentUserId = commentUserId;
         this.timeStamp = timeStamp;
+        this.profileImgUrl = profileImageUrl;
     }
 
 
@@ -54,5 +56,13 @@ public class FoodCommentItem {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getProfileImgUrl() {
+        return profileImgUrl;
+    }
+
+    public void setProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = UPLOAD_PROFILE_IMAGE_FOLDER+profileImgUrl;
     }
 }

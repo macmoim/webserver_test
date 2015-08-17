@@ -47,8 +47,7 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
-    private static final String _POST_URL = "http://localhost:8080/web_test/putprofile.php";
-    private static final String _GET_URL = "http://localhost:8080/web_test/getprofile.php";
+    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile.php";
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
@@ -167,13 +166,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void OnGetData() {
 
-        Map<String, String> obj = new HashMap<String, String>();
-        // temp
+//        Map<String, String> obj = new HashMap<String, String>();
+//        // temp
+//
+//        obj.put("user_id", "420158");
 
-        obj.put("user_id", "420158");
+        String url = _URL_PROFILE + "/" + "420158" + "/";
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                _GET_URL, obj, new Response.Listener<JSONObject>() {
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -229,7 +230,7 @@ public class ProfileActivity extends AppCompatActivity {
         obj.put("profile_img_url", mImagefileName);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                _POST_URL, obj, new Response.Listener<JSONObject>() {
+                _URL_PROFILE, obj, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

@@ -1,4 +1,43 @@
 <?php
+ini_set('display_startup_errors',1);
+ini_set('display_errors',1);
+error_reporting(-1);
+
+function rest_get($id) {
+	$post_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path
+	                   FROM posts WHERE id = '$id'";
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['db_filename'] )) {
+			$post_info = array (
+					"user_id" => $row ['user_id'],
+					"title" => $row ['title'],
+					"upload_filename" => $row ['upload_filename'],
+					"db_filename" => $row ['db_filename'],
+					"filepath" => $row ['filepath'],
+					"upload_date" => $row ['upload_date'],
+					"category" => $row ['category'],
+					"thumb_img_path" => $row['thumb_img_path']
+			);
+		} else {
+			echo 'fail to get user info';
+		}
+	}
+	
+	$mysqli->close ();
+	
+	return $post_info;
+}
+
 function resize_image($file, $w, $h, $crop = FALSE) {
 	list ( $width, $height ) = getimagesize ( $file );
 	$r = $width / $height;
@@ -25,7 +64,7 @@ function resize_image($file, $w, $h, $crop = FALSE) {
 
 	return $dst;
 }
-function saveHTMLFile() {
+function rest_post() {
 	include "serverconfig.php";
 	include "./image_test/dbconfig.php";
 // 	echo "saveHTMLFile filename: ".$_FILES ['html_file'] ['name'];
@@ -121,6 +160,9 @@ function saveHTMLFile() {
 	$defaultImagePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/';
 	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
 	$imageName;
+
+	// echo 'thumb_img_url '.$_POST['thumb_img_url'];
+
 	if (isset($_POST['thumb_img_url'])) {
 		$imageName = $_POST['thumb_img_url'];
 	} else {
@@ -203,14 +245,29 @@ function saveHTMLFile() {
 }
 
 $value = "An error has occurred";
-// echo 'start: ';
-if (isset ( $_POST ["title"] ) && isset ( $_POST ["category"] )  && $_FILES ['html_file'] ['size'] > 0) {
-	
-	$value = saveHTMLFile();
-	
-} else {
-	$value = "Missing argument";
+$method = $_SERVER['REQUEST_METHOD'];
+$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+
+switch ($method) {
+  case 'PUT':
+    rest_put($request);  
+    break;
+  case 'POST':
+    $value = rest_post();  
+    break;
+  case 'GET':
+    //printf('request get %s' , var_dump($request));
+    $value = rest_get($request[0]);  
+    break;
+  case 'DELETE':
+    rest_delete($request);  
+    break;
+  default:
+  	$value = "Missing argument fail post rest";
+    rest_error($request);  
+    break;
 }
+
 // return JSON array
 exit ( json_encode ( $value ) );
 ?>

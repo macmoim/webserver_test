@@ -1,5 +1,34 @@
 <?php
-function saveLike() {
+function rest_get($user_id, $post_id) {
+	$like_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	include "./image_test/dbconfig.php";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT like_bool
+	                   FROM likes WHERE user_id = '$user_id' AND post_id = '$post_id'";
+	
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['like_bool'] )) {
+			$like_info = array (
+					"like" => $row ['like_bool'],
+			);
+		} else {
+			echo 'fail to get like info';
+		}
+	}
+	
+	$mysqli->close ();
+	
+	return $like_info;
+}
+
+function rest_post() {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -51,14 +80,29 @@ function saveLike() {
 }
 
 $value = "An error has occurred";
-// echo 'start: ';
-if (isset ( $_POST ["post_id"] ) && isset ( $_POST ["post_user_id"] )
-		&& isset ( $_POST ["user_id"] ) && isset ( $_POST ["like"] )) {
-	$value = saveLike();
-	
-} else {
-	$value = "Missing argument";
+$method = $_SERVER['REQUEST_METHOD'];
+$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+
+switch ($method) {
+  case 'PUT':
+    rest_put($request);  
+    break;
+  case 'POST':
+    $value = rest_post();  
+    break;
+  case 'GET':
+    //printf('request get %s' , var_dump($request));
+    $value = rest_get($request[0], $request[1]);  
+    break;
+  case 'DELETE':
+    rest_delete($request);  
+    break;
+  default:
+  	$value = "Missing argument fail like rest";
+    rest_error($request);  
+    break;
 }
+
 // return JSON array
 exit ( json_encode ( $value ) );
 ?>
