@@ -40,12 +40,11 @@ body {
 }
 
 .img_fit_window{
-    display: inline;
+    display: block;
     height: auto;
-    max-width: 85%;
-    border-radius: 25px;
-    background: #8AC007;
-    padding: 20px;
+    max-width: 100%;
+    border-radius: 10px;
+    margin:0 auto;
 }
 
 .image-container {
