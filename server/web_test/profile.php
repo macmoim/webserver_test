@@ -84,30 +84,30 @@ function rest_post(){
 	return $value;
 }
 
-$value = "An error has occurred";
-$method = $_SERVER['REQUEST_METHOD'];
-$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+// $value = "An error has occurred";
+// $method = $_SERVER['REQUEST_METHOD'];
+// $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 
-switch ($method) {
-  case 'PUT':
-    rest_put($request);  
-    break;
-  case 'POST':
-    $value = rest_post();  
-    break;
-  case 'GET':
-    //printf('request get %s' , var_dump($request));
-    $value = rest_get($request[0]);  
-    break;
-  case 'DELETE':
-    rest_delete($request);  
-    break;
-  default:
-  	$value = "Missing argument fail profile rest";
-    rest_error($request);  
-    break;
-}
+// switch ($method) {
+//   case 'PUT':
+//     rest_put($request);  
+//     break;
+//   case 'POST':
+//     $value = rest_post();  
+//     break;
+//   case 'GET':
+//     //printf('request get %s' , var_dump($request));
+//     $value = rest_get($request[0]);  
+//     break;
+//   case 'DELETE':
+//     rest_delete($request);  
+//     break;
+//   default:
+//   	$value = "Missing argument fail profile rest";
+//     rest_error($request);  
+//     break;
+// }
 
-// return JSON array
-exit ( json_encode ( $value ) );
+// // return JSON array
+// exit ( json_encode ( $value ) );
 ?>

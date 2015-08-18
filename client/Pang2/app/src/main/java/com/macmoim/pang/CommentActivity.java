@@ -32,6 +32,8 @@ public class CommentActivity extends AppCompatActivity {
     private EditText mCommentEdit;
     private ProgressDialog mDialog;
 
+    private static final String URL_COMMENT = "http://localhost:8080/web_test/comment";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,6 @@ public class CommentActivity extends AppCompatActivity {
 
     private void putComment() {
         showDialog();
-        String url = "http://localhost:8080/web_test/comment.php";
         int post_id = getIntent().getIntExtra("post_id", 0);
         String postUserId = getIntent().getStringExtra("post_user_id");
         String comment_user_id = getIntent().getStringExtra("comment_user_id");//"khwan0710";
@@ -84,7 +85,7 @@ public class CommentActivity extends AppCompatActivity {
         obj.put("comment", comment);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                url, obj, new Response.Listener<JSONObject>() {
+                URL_COMMENT, obj, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

@@ -47,7 +47,8 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
-    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile.php";
+    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
+    private static final String _URL_PROFILE_IMAGE = "http://localhost:8080/web_test/profile/image";
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
@@ -171,7 +172,7 @@ public class ProfileActivity extends AppCompatActivity {
 //
 //        obj.put("user_id", "420158");
 
-        String url = _URL_PROFILE + "/" + "420158" + "/";
+        String url = _URL_PROFILE + "/" + "420158";
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
@@ -323,8 +324,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void requestThumbImage(File thumbFile) {
-        String url = "http://localhost:8080/web_test/putProfileImage.php";
-
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", "profile_image.jpg");
 
@@ -333,7 +332,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         @SuppressWarnings("unchecked")
         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+                _URL_PROFILE_IMAGE, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

@@ -41,16 +41,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FoodListFragment extends Fragment {
     private static final String TAG = "FoodListFragment";
 
-    private String URL = "http://localhost:8080/web_test/image_test/getThumbImageList.php";
-    private String URL_REFRESH = "http://localhost:8080/web_test/image_test/getThumbImageListByTimestamp.php";
+    private String URL = "http://localhost:8080/web_test/thumbImageList";
     private List<FoodItem> feedItems;
     RecyclerView rv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -111,12 +110,18 @@ public class FoodListFragment extends Fragment {
     private void showList() {
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("action", "get_thumb_images");
-        obj.put("category", category);
+        String ctg = category;
+        try {
+            ctg = URLEncoder.encode(category, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL, obj, new Response.Listener<JSONObject>() {
+        String url = URL + "/" + ctg;
+
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -147,13 +152,17 @@ public class FoodListFragment extends Fragment {
         onStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("action", "get_thumb_images");
-        obj.put("category", category);
-        obj.put("timestamp", mLatestTimestamp);
+        String ctg = category;
+        try {
+            ctg = URLEncoder.encode(category, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL_REFRESH, obj, new Response.Listener<JSONObject>() {
+        String url = URL + "/" + ctg + "/" + mLatestTimestamp;
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -183,12 +192,17 @@ public class FoodListFragment extends Fragment {
         onStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("action", "get_thumb_images");
-        obj.put("category", category);
+        String ctg = category;
+        try {
+            ctg = URLEncoder.encode(category, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL, obj, new Response.Listener<JSONObject>() {
+        String url = URL + "/" + ctg;
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

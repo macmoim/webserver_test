@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,9 +52,10 @@ import java.util.Map;
 public class ViewerActivity extends AppCompatActivity {
     private static final String TAG = "ViewerActivity";
 
-    private static final String URL_LIKE = "http://localhost:8080/web_test/like.php";
-    private static final String URL_STAR = "http://localhost:8080/web_test/star.php";
-    private static final String URL_POST = "http://localhost:8080/web_test/post.php";
+    private static final String URL_LIKE = "http://localhost:8080/web_test/like";
+    private static final String URL_STAR = "http://localhost:8080/web_test/star";
+    private static final String URL_POST = "http://localhost:8080/web_test/post";
+    private static final String URL_COMMENT = "http://localhost:8080/web_test/comment";
 
     private RichViewer mViewer;
     private Toolbar mToolbar;
@@ -168,7 +168,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     private void showHTML(int id) {
 
-        String url = URL_POST + "/" + String.valueOf(id) + "/";
+        String url = URL_POST + "/" + String.valueOf(id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
@@ -297,14 +297,11 @@ public class ViewerActivity extends AppCompatActivity {
 
     private void getComment() {
         final int post_id = getIntent().getIntExtra("id", 0);
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("post_id", String.valueOf(post_id));
-        obj.put("post_user_id", postUserId);
 
-        String url = "http://localhost:8080/web_test/comment.php"+"/"+String.valueOf(post_id);
+        String url = URL_COMMENT+"/"+String.valueOf(post_id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, obj, new Response.Listener<JSONObject>() {
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -357,7 +354,7 @@ public class ViewerActivity extends AppCompatActivity {
         int post_id = getIntent().getIntExtra("id", 0);
         String like_user_id = mUserId;
 
-        String url = URL_LIKE + "/"+like_user_id+"/"+String.valueOf(post_id)+"/";
+        String url = URL_LIKE + "/"+like_user_id+"/"+String.valueOf(post_id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
@@ -397,6 +394,7 @@ public class ViewerActivity extends AppCompatActivity {
         obj.put("post_id", String.valueOf(post_id));
         obj.put("post_user_id", postUserId);
 
+
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 URL_LIKE, obj, new Response.Listener<JSONObject>() {
 
@@ -430,7 +428,7 @@ public class ViewerActivity extends AppCompatActivity {
         int post_id = getIntent().getIntExtra("id", 0);
         String star_user_id = mUserId;
 
-        String url = URL_STAR + "/" + star_user_id + "/" + String.valueOf(post_id) + "/";
+        String url = URL_STAR + "/" + star_user_id + "/" + String.valueOf(post_id);
 
                 CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {

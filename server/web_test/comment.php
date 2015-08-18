@@ -12,7 +12,7 @@ function rest_get($post_id) {
 	//$sql_query = "SELECT comment_user_id, comment, upload_date
 	//                   FROM post_comment WHERE post_id = '$post_id' AND post_user_id = '$post_user_id'";
 
-	$sql_query = "SELECT * FROM post_comment JOIN profiles 
+	$sql_query = "SELECT * FROM post_comment LEFT JOIN profiles 
 						ON post_comment.comment_user_id = profiles.user_id 
 						WHERE post_comment.post_id = '$post_id'";
 	
@@ -89,30 +89,30 @@ function rest_post() {
 	return $comment_saving_info;
 }
 
-$value = "An error has occurred";
-$method = $_SERVER['REQUEST_METHOD'];
-$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+// $value = "An error has occurred";
+// $method = $_SERVER['REQUEST_METHOD'];
+// $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 
-switch ($method) {
-  case 'PUT':
-    rest_put($request);  
-    break;
-  case 'POST':
-    $value = rest_post();  
-    break;
-  case 'GET':
-  	//printf('request %s', var_dump($request));
-    $value = rest_get($request[0]);  
-    break;
-  case 'DELETE':
-    rest_delete($request);  
-    break;
-  default:
-  	$value = "Missing argument fail comment rest";
-    rest_error($request);  
-    break;
-}
+// switch ($method) {
+//   case 'PUT':
+//     rest_put($request);  
+//     break;
+//   case 'POST':
+//     $value = rest_post();  
+//     break;
+//   case 'GET':
+//   	//printf('request %s', var_dump($request));
+//     $value = rest_get($request[0]);  
+//     break;
+//   case 'DELETE':
+//     rest_delete($request);  
+//     break;
+//   default:
+//   	$value = "Missing argument fail comment rest";
+//     rest_error($request);  
+//     break;
+// }
 
-// return JSON array
-exit ( json_encode ( $value ) );
+// // return JSON array
+// exit ( json_encode ( $value ) );
 ?>

@@ -38,6 +38,47 @@ function rest_get($id) {
 	return $post_info;
 }
 
+function get_post($user_id) {
+	$post_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT id,user_id, title, upload_filename, db_filename, filepath, upload_date, thumb_img_path
+	                   FROM posts WHERE user_id = '$user_id'";
+	if ($result = $mysqli->query ( $sql_query )) {
+	
+		if (count ( $result ) > 0) {
+			
+			while ( $row = $result->fetch_assoc () ) {
+				
+				array_push ( $post_info, array (
+					"id" => $row ['id'],
+					"title" => $row ['title'],
+					"user_id" => $row ['user_id'],
+					"filename" => $row ['upload_filename'],
+					"date" => $row ['upload_date'],
+					"img_path" => $row ['thumb_img_path']
+				) );
+			}
+
+			$image_list = array (
+					'my_post' => $post_info 
+			);
+		}else{
+			echo 'fail to get user info';
+		}
+	}
+
+	$mysqli->close ();
+	
+	return $image_list;
+}
+
 function resize_image($file, $w, $h, $crop = FALSE) {
 	list ( $width, $height ) = getimagesize ( $file );
 	$r = $width / $height;
@@ -161,8 +202,6 @@ function rest_post() {
 	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
 	$imageName;
 
-	// echo 'thumb_img_url '.$_POST['thumb_img_url'];
-
 	if (isset($_POST['thumb_img_url'])) {
 		$imageName = $_POST['thumb_img_url'];
 	} else {
@@ -244,30 +283,30 @@ function rest_post() {
 	return $html_saving_info;
 }
 
-$value = "An error has occurred";
-$method = $_SERVER['REQUEST_METHOD'];
-$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+// $value = "An error has occurred";
+// $method = $_SERVER['REQUEST_METHOD'];
+// $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 
-switch ($method) {
-  case 'PUT':
-    rest_put($request);  
-    break;
-  case 'POST':
-    $value = rest_post();  
-    break;
-  case 'GET':
-    //printf('request get %s' , var_dump($request));
-    $value = rest_get($request[0]);  
-    break;
-  case 'DELETE':
-    rest_delete($request);  
-    break;
-  default:
-  	$value = "Missing argument fail post rest";
-    rest_error($request);  
-    break;
-}
+// switch ($method) {
+//   case 'PUT':
+//     rest_put($request);  
+//     break;
+//   case 'POST':
+//     $value = rest_post();  
+//     break;
+//   case 'GET':
+//     //printf('request get %s' , var_dump($request));
+//     $value = rest_get($request[0]);  
+//     break;
+//   case 'DELETE':
+//     rest_delete($request);  
+//     break;
+//   default:
+//   	$value = "Missing argument fail post rest";
+//     rest_error($request);  
+//     break;
+// }
 
-// return JSON array
-exit ( json_encode ( $value ) );
+// // return JSON array
+// exit ( json_encode ( $value ) );
 ?>

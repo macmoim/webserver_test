@@ -19,7 +19,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -63,7 +62,8 @@ import java.util.Map;
 public class PangEditorActivity extends AppCompatActivity {
     private static final String TAG = "PangEditorActivity";
 
-    private static final String URL_POST = "http://localhost:8080/web_test/post.php";
+    private static final String URL_POST = "http://localhost:8080/web_test/post";
+    private static final String URL_POST_IMAGE = "http://localhost:8080/web_test/post/image";
 
     private RichEditor mEditor = null;
     private MaterialBetterSpinner mSpinner;
@@ -401,6 +401,7 @@ public class PangEditorActivity extends AppCompatActivity {
                         Map<String, File> obj_file = new HashMap<String, File>();
                         obj_file.put("html_file", file);
 
+
                         @SuppressWarnings("unchecked")
                         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
                                 URL_POST, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
@@ -556,7 +557,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private void editHTML(int id) {
 
-        String url = URL_POST + "/"+String.valueOf(id)+"/";
+        String url = URL_POST + "/"+String.valueOf(id);
 
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
@@ -684,8 +685,6 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     private void requestThumbImage(File thumbFile) {
-        String url = "http://localhost:8080/web_test/putImage.php";
-
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", "editor_image.jpg");
 
@@ -694,7 +693,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
         @SuppressWarnings("unchecked")
         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                url, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+                URL_POST_IMAGE, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

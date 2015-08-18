@@ -16,15 +16,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by P11872 on 2015-08-16.
  */
 public class LikeActivity extends RequestFeedListActivity {
 
-    private String URL = "http://localhost:8080/web_test/getMyLikesImageList.php";
+    private String URL = "http://localhost:8080/web_test/like";
     private String user_id;
 
     @Override
@@ -36,12 +33,10 @@ public class LikeActivity extends RequestFeedListActivity {
 
     @Override
     protected void ShowList() {
-        Map<String, String> obj = new HashMap<String, String>();
-        obj.put("user_id", user_id);
+        String url = URL + "/" + user_id;
 
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL, obj, new Response.Listener<JSONObject>() {
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

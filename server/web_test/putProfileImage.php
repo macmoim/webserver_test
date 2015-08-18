@@ -1,7 +1,11 @@
 <?php
-
-
 function saveImageFile() {
+	if (isset ( $_POST ["title"] ) && $_FILES ['image'] ['size'] > 0) {
+	} else {
+		$value = "Missing argument";
+		return $value;
+	}
+
 	$arr = array();
 	// echo 'temp filename : '.$_FILES['image']['tmp_name'].'<br>';
 	// echo 'temp filesize : '.$_FILES['image']['size'].'<br>';
@@ -27,15 +31,15 @@ function saveImageFile() {
 	return $arr;
 }
 
-$value = "nothing";
-// echo 'start: ';
-if (isset ( $_POST ["title"] ) && $_FILES ['image'] ['size'] > 0) {
+// $value = "nothing";
+// // echo 'start: ';
+// if (isset ( $_POST ["title"] ) && $_FILES ['image'] ['size'] > 0) {
 	
-	$value = saveImageFile();
+// 	$value = saveImageFile();
 	
-} else {
-	$value = "Missing argument";
-}
-// return JSON array
-exit ( json_encode ( $value ) );
+// } else {
+// 	$value = "Missing argument";
+// }
+// // return JSON array
+// exit ( json_encode ( $value ) );
 ?>
