@@ -9,13 +9,14 @@ function rest_get($user_id, $post_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT star
+	$sql_query = "SELECT id, star
 	                   FROM stars WHERE user_id = '$user_id' AND post_id = '$post_id'";
 	
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
 		if (isset ( $row ['star'] )) {
 			$star_info = array (
+					"id" => $row ['id'],
 					"star" => $row ['star'],
 			);
 		} else {
@@ -81,11 +82,11 @@ function rest_post() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
-	saveRank();
+	saveRank($insert_id, $_POST["post_id"]);
 	return $like_saving_info;//$debug_msg;
 }
 
-function saveRank() {
+function saveRank($id, $post_id) {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -130,6 +131,49 @@ function saveRank() {
 	}
 	
 	$mysqli->close();
+}
+
+function rest_put($id, $star, $post_id) {
+	include "./image_test/dbconfig.php";
+	$debug_msg = "not work";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	$create_table = "CREATE TABLE if not exists stars (
+					id int auto_increment,
+					user_id varchar(30),
+					star int,
+					post_id int,
+					post_user_id varchar(30),
+					PRIMARY KEY (id)
+					);";
+	
+	$mysqli->query ( $create_table );
+
+	
+	
+
+	$query_update = sprintf ( "UPDATE stars
+			SET star = '%s' WHERE id = '%s'",
+			$star, $id);
+	$mysqli->query($query_update);
+
+	$ret_val = "fail";
+	if ($mysqli->affected_rows == 0) {
+		
+		
+	} else {
+		$ret_val = "success";
+	}
+	
+	$star_saving_info = array (
+			"ret" => $ret_val
+	);
+	$mysqli->close ();
+	saveRank($id, $post_id);
+	return $star_saving_info;//$debug_msg;
 }
 
 // $value = "An error has occurred";

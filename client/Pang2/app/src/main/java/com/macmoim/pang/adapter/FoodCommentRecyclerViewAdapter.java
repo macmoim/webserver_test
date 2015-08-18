@@ -71,10 +71,17 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
 
         FoodCommentItem item = mValues.get(position);
 
-        Glide.with(holder.mProfilePic.getContext())
-                .load(item.getProfileImgUrl())
-                .fitCenter()
-                .into(holder.mProfilePic);
+        if (item.getProfileImgUrl() != null) {
+            Glide.with(holder.mProfilePic.getContext())
+                    .load(item.getProfileImgUrl())
+                    .fitCenter()
+                    .into(holder.mProfilePic);
+        } else {
+            Glide.with(holder.mProfilePic.getContext())
+                    .load(R.drawable.person)
+                    .fitCenter()
+                    .into(holder.mProfilePic);
+        }
 
         holder.mUserIdTv.setText(item.getCommentUserId());
         holder.mTimeStampTv.setText(item.getTimeStamp());

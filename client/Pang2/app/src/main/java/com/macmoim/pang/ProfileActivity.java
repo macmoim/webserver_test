@@ -49,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
     private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
     private static final String _URL_PROFILE_IMAGE = "http://localhost:8080/web_test/profile/image";
+    private static final String _URL_PROFILE_IMAGE_UPDATE = "http://localhost:8080/web_test/profile/image/update";
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
@@ -61,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String mImageURL;
     ImageView backdropimageView;
 
+    private int mProfileDbId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +144,11 @@ public class ProfileActivity extends AppCompatActivity {
                         return;
                     }
 
-                    onRequestData();
+                    if (mProfileDbId != -1) {
+                        onRequestUpdateData();
+                    } else {
+                        onRequestData();
+                    }
                     editsate = false;
                     nViewHolder.setviewAllFocus(false);
                     Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
@@ -163,6 +169,9 @@ public class ProfileActivity extends AppCompatActivity {
         mFeedItem.set_mIntro(response.getString("user_intro"));
         mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
         mImagefileName = response.getString("profile_img_url");
+        if (response.has("id")) {
+            mProfileDbId = response.getInt("id");
+        }
     }
 
     private void OnGetData() {
@@ -254,6 +263,55 @@ public class ProfileActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
+    private void onRequestUpdateData() {
+        Map<String, String> obj = new HashMap<String, String>();
+        // temp
+
+        String id = String.valueOf(((int) (Math.random() * 1000000) + 1));
+        obj.put("user_id", id);
+        obj.put("user_name", nViewHolder.getName());
+        obj.put("user_email", nViewHolder.getEmail());
+        obj.put("user_score", nViewHolder.getScore());
+        obj.put("user_gender", nViewHolder.getGender());
+        obj.put("user_intro", nViewHolder.getIntro());
+        obj.put("profile_img_url", mImagefileName);
+
+        String url = _URL_PROFILE + "/" + mProfileDbId;
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.PUT,
+                url, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    String ret = "";
+                    try {
+                        ret = response.getString("ret_val");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if ("success".equals(ret)) {
+//                        showJSONResponseData(response);
+                        Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), getText(R.string.failsave), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
 
     @Override
     protected void onResume() {
@@ -318,7 +376,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
 
                 File mFile = new File(mCropImagedUri.getPath());
-                requestThumbImage(mFile);
+                if (mProfileDbId != -1) {
+                    requestUpdateThumbImage(mFile);
+                } else {
+                    requestThumbImage(mFile);
+                }
             }
         }
     }
@@ -333,6 +395,39 @@ public class ProfileActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
                 _URL_PROFILE_IMAGE, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    parseJson(response);
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "requestError : " + error.getMessage());
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+    }
+
+    private void requestUpdateThumbImage(File thumbFile) {
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("title", "profile_image.jpg");
+        obj_body.put("filename_old", mImagefileName);
+
+        Map<String, File> obj_file = new HashMap<String, File>();
+        obj_file.put("image", thumbFile);
+
+        @SuppressWarnings("unchecked")
+        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                _URL_PROFILE_IMAGE_UPDATE, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -437,19 +532,19 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public String getEmail() {
-            return String.valueOf((mEmailView.getText() == null) ? ("") : nNameView.getText());
+            return String.valueOf((mEmailView.getText() == null) ? ("") : mEmailView.getText());
         }
 
         public String getGender() {
-            return mSelectedGender;
+            return mSelectedGender == null ? (String.valueOf((mGenderView.getText() == null) ? ("") : mGenderView.getText())) : mSelectedGender;
         }
 
         public String getScore() {
-            return String.valueOf((mScoreView.getText() == null) ? ("") : nNameView.getText());
+            return String.valueOf((mScoreView.getText() == null) ? ("") : mScoreView.getText());
         }
 
         public String getIntro() {
-            return String.valueOf((mIntroView.getText() == null) ? ("") : nNameView.getText());
+            return String.valueOf((mIntroView.getText() == null) ? ("") : mIntroView.getText());
         }
 
         public void setName(String value) {

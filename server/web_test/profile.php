@@ -9,12 +9,13 @@ function rest_get($id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT user_id, user_name, user_email, user_score, user_gender, user_intro, profile_img_url
+	$sql_query = "SELECT id, user_id, user_name, user_email, user_score, user_gender, user_intro, profile_img_url
 	                   FROM profiles WHERE user_id = '$id'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
 		if (isset ( $row ['user_name'] )) {
 			$post_info = array (
+					"id" => $row ['id'],
 					"user_id" => $row ['user_id'],
 					"user_name" => $row ['user_name'],
 					"user_email" => $row ['user_email'],
@@ -72,12 +73,127 @@ function rest_post(){
 	}
 	$insert_id = $mysqli->insert_id;
 
+	$ret = array();
 	if ($mysqli->insert_id) {
-		echo 'insert success';
-		$value = "success";
+		$ret['ret_val'] = "success";
+		$ret['id'] = $insert_id;
+		
+		$value = $ret;
 	} else {
-		echo 'insert fail';
-		$value = "insert fail";
+		$ret['ret_val'] = "fail";
+		$value = $ret;
+	}
+
+	$mysqli->close ();
+	return $value;
+}
+
+function rest_put_all($id, $user_id, $name, $email, $gender, $score, $intro, $img_url){
+
+	$dbname = 'db_chat_member_test';
+
+	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+	$create_table = "create table if not exists profiles(
+						id int primary key auto_increment,
+						user_id varchar(12) unique,
+						user_name varchar(10),
+						user_email varchar(20),
+						user_gender varchar(10),
+						user_score varchar(10),
+						user_intro varchar(500),
+						profile_img_url varchar(20)
+						);";
+
+	$sql_query = "UPDATE profiles SET user_name = '$name', user_email = '$email',
+	 					user_gender = '$gender', user_score = '$score', user_intro = '$intro',
+	 					profile_img_url = '$img_url' WHERE id = '$id' ";
+
+	
+	$mysqli->query ( $create_table );
+
+	$mysqli->query ( $sql_query );
+
+	if ($mysqli->error) {
+		echo "Failed to update profiles db: (" . $mysqli->error . ") ";
+	}
+
+	$ret = array();
+	if ($mysqli->affected_rows == 0) {
+		$ret['ret_val'] = "fail";
+		$value = $ret;
+		
+		
+	} else {
+		$ret['ret_val'] = "success";
+		$ret['id'] = $id;
+		$ret['user_id'] = $user_id;
+		$ret['user_name'] = $name;
+		$ret['user_email'] = $email;
+		$ret['user_score'] = $score;
+		$ret['user_gender'] = $gender;
+		$ret['user_intro'] = $intro;
+		$ret['profile_img_url'] = $img_url;
+		
+		$value = $ret;
+	}
+
+	$mysqli->close ();
+	return $value;
+}
+
+function rest_put($id, $keys, $values){
+
+	$dbname = 'db_chat_member_test';
+
+	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+	$create_table = "create table if not exists profiles(
+						id int primary key auto_increment,
+						user_id varchar(12) unique,
+						user_name varchar(10),
+						user_email varchar(20),
+						user_gender varchar(10),
+						user_score varchar(10),
+						user_intro varchar(500),
+						profile_img_url varchar(20)
+						);";
+
+	$sql_query = "UPDATE profiles SET ";
+
+	$arr_size = count($keys);
+	for ($count=0; $count<$arr_size; $count++) {
+		$sql_query .=" $keys[$count] = '$values[$count]'";
+		if ($count != $arr_size-1) {
+			$sql_query .= ", ";
+		}
+	}
+	$sql_query .= " WHERE id = '$id'";
+
+	$mysqli->query ( $create_table );
+
+	$mysqli->query ( $sql_query );
+
+	if ($mysqli->error) {
+		echo "Failed to update profiles db: (" . $mysqli->error . ") ";
+	}
+
+	$ret = array();
+	if ($mysqli->affected_rows == 0) {
+		$ret['ret_val'] = "fail";
+		$value = $ret;
+		
+		
+	} else {
+		$ret['ret_val'] = "success";
+		
+		$value = $ret;
 	}
 
 	$mysqli->close ();

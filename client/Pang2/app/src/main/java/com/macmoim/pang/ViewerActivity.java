@@ -65,6 +65,8 @@ public class ViewerActivity extends AppCompatActivity {
     private Rect mRankingLayoutRect;
     private ArrayList<ImageView> mRankingStartArr;
     private int mStar;
+    private int mLikeDbId = -1;
+    private int mStarDbId = -1;
 
     private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
@@ -298,7 +300,7 @@ public class ViewerActivity extends AppCompatActivity {
     private void getComment() {
         final int post_id = getIntent().getIntExtra("id", 0);
 
-        String url = URL_COMMENT+"/"+String.valueOf(post_id);
+        String url = URL_COMMENT + "/" + String.valueOf(post_id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
@@ -354,7 +356,7 @@ public class ViewerActivity extends AppCompatActivity {
         int post_id = getIntent().getIntExtra("id", 0);
         String like_user_id = mUserId;
 
-        String url = URL_LIKE + "/"+like_user_id+"/"+String.valueOf(post_id);
+        String url = URL_LIKE + "/" + like_user_id + "/" + String.valueOf(post_id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
@@ -366,6 +368,7 @@ public class ViewerActivity extends AppCompatActivity {
                     try {
                         String like = response.getString("like");
                         isLikeCheck = ("0".equals(like) ? false : true);
+                        mLikeDbId = response.getInt("id");
                         Log.d(TAG, "like get " + like);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -386,25 +389,42 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     private void putLike(boolean like) {
+
+        String url = URL_LIKE;
+        int method = Request.Method.POST;
+
+        Map<String, String> obj = new HashMap<String, String>();
         int post_id = getIntent().getIntExtra("id", 0);
         String like_user_id = mUserId;
-        Map<String, String> obj = new HashMap<String, String>();
         obj.put("user_id", like_user_id);
         obj.put("like", like ? "1" : "0");
         obj.put("post_id", String.valueOf(post_id));
         obj.put("post_user_id", postUserId);
 
+        // check insert or update
+        if (mLikeDbId == -1) {
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL_LIKE, obj, new Response.Listener<JSONObject>() {
+        } else {
+            method = Request.Method.PUT;
+            obj.put("id", String.valueOf(mLikeDbId));
+            url += "/" + mLikeDbId + "/" + (like ? "1" : "0");
+        }
+
+        Request jsonReq = new CustomRequest(method,
+                url, obj, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     try {
-                        int like_id = response.getInt("id");
-                        Log.d(TAG, "like add db id " + like_id);
+                        if (response.has("id")) {
+                            int like_id = response.getInt("id");
+                            mLikeDbId = like_id;
+                            Log.d(TAG, "like add db id " + like_id);
+                        } else {
+                            Log.d(TAG, "like update " + response.get("ret"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -430,7 +450,7 @@ public class ViewerActivity extends AppCompatActivity {
 
         String url = URL_STAR + "/" + star_user_id + "/" + String.valueOf(post_id);
 
-                CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -438,13 +458,13 @@ public class ViewerActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     try {
+                        mStarDbId = response.getInt("id");
                         int star = response.getInt("star");
                         setRankStar(star - 1);
                         Log.d(TAG, "star get " + star);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    setLikeBtnBg(isLikeCheck);
                 }
             }
         }, new Response.ErrorListener() {
@@ -460,6 +480,8 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     private void putStar(int star) {
+        String url = URL_STAR;
+        int method = Request.Method.POST;
         int post_id = getIntent().getIntExtra("id", 0);
         String like_user_id = mUserId;
         Map<String, String> obj = new HashMap<String, String>();
@@ -468,16 +490,27 @@ public class ViewerActivity extends AppCompatActivity {
         obj.put("post_id", String.valueOf(post_id));
         obj.put("post_user_id", postUserId);
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
-                URL_STAR, obj, new Response.Listener<JSONObject>() {
+        if (mStarDbId != -1) {
+            method = Request.Method.PUT;
+            obj.put("id", String.valueOf(mStarDbId));
+            url += "/" + mStarDbId + "/" + star;
+        }
+
+        CustomRequest jsonReq = new CustomRequest(method,
+                url, obj, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     try {
-                        int star_id = response.getInt("id");
-                        Log.d(TAG, "star add db id " + star_id);
+                        if (response.has("id")) {
+                            int star_id = response.getInt("id");
+                            Log.d(TAG, "star add db id " + star_id);
+                            mStarDbId = star_id;
+                        } else {
+                            Log.d(TAG, "star update " + response.get("ret"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -564,7 +597,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mRankingLayoutRect.contains((int)event.getX(), (int)event.getY())) {
+        if (!mRankingLayoutRect.contains((int) event.getX(), (int) event.getY())) {
             closeRankingView();
         }
         return super.onTouchEvent(event);

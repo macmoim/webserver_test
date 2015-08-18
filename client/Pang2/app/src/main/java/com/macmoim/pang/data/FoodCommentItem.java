@@ -63,6 +63,10 @@ public class FoodCommentItem {
     }
 
     public void setProfileImgUrl(String profileImgUrl) {
-        this.profileImgUrl = UPLOAD_PROFILE_IMAGE_FOLDER+profileImgUrl;
+        if (profileImgUrl == null || "null".equals(profileImgUrl)) {
+            this.profileImgUrl = null;
+        } else {
+            this.profileImgUrl = UPLOAD_PROFILE_IMAGE_FOLDER+profileImgUrl;
+        }
     }
 }

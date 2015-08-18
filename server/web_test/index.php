@@ -52,6 +52,13 @@ $app->post('/star', function () use ($app) {
 	exit ( json_encode ( $value ) );
 });
 
+$app->put('/star/:id/:star', function ($id, $star) use ($app) {
+	$put_vars = $app->request->put();
+	include 'star.php';
+	$value = rest_put($id, $star, $put_vars['post_id']);
+	exit ( json_encode ( $value ) );
+});
+
 $app->get('/like/:user_id(/)(/:post_id)', function ($user_id, $post_id = NULL) {
 	include 'like.php';
 	if (isset($post_id)) {
@@ -66,6 +73,13 @@ $app->get('/like/:user_id(/)(/:post_id)', function ($user_id, $post_id = NULL) {
 $app->post('/like', function () use ($app) {
 	include 'like.php';
 	$value = rest_post();
+	exit ( json_encode ( $value ) );
+});
+
+$app->put('/like/:id/:like', function ($id, $like) use ($app) {
+	$put_vars = $app->request->put();
+	include 'like.php';
+	$value = rest_put($put_vars['id'], $put_vars['like']);
 	exit ( json_encode ( $value ) );
 });
 
@@ -93,9 +107,25 @@ $app->post('/profile', function () use ($app) {
 	exit ( json_encode ( $value ) );
 });
 
+$app->put('/profile/:id', function ($id) use ($app) {
+	include 'profile.php';
+	$put_vars = $app->request->put();
+
+	$keys = array_keys($put_vars);
+	$values = array_values($put_vars);
+	$value = rest_put($id, $keys, $values);
+	exit ( json_encode ( $value ) );
+});
+
 $app->post('/profile/image', function () use ($app) {
 	include 'putProfileImage.php';
 	$value = saveImageFile();
+	exit ( json_encode ( $value ) );
+});
+
+$app->post('/profile/image/update', function () use ($app) {
+	include 'putProfileImage.php';
+	$value = updateImageFile($app->request->post('filename_old'));	
 	exit ( json_encode ( $value ) );
 });
 
