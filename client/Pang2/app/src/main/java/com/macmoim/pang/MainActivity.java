@@ -35,6 +35,7 @@ import android.widget.Button;
 
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
+import com.macmoim.pang.data.CommonSharedPreperences;
 
 /**
  * TODO
@@ -56,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
+        if(!CheckLogin()){
+            startActivity(new Intent(MainActivity.this, LogInActivity.class));
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -64,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         naviHeaderView mNHview = new naviHeaderView(this);
-        mNHview.onDraw("420158");
+        mNHview.onDraw();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {
@@ -96,13 +101,11 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         Intent intent = new Intent(MainActivity.this, MyPostActivity.class);
-                        intent.putExtra("user_id", "khwan07");
                         startActivity(intent);
                         break;
 
                     case R.id.nav_foavorite:
                         Intent tmptent = new Intent(MainActivity.this, LikeActivity.class);
-                        tmptent.putExtra("user_id", "338272");
                         startActivity(tmptent);
                         break;
 
@@ -117,20 +120,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // test login activity :: after delete
-        mLogIn = (Button) findViewById(R.id.login);
-        mLogIn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, LogInActivity.class));
-
-                    }
-                }
-        );
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private boolean CheckLogin() {
+        String user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+        if(user_id == null){
+            return false;
+        }
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+//        boolean nResult = true;
+//        Profile _Profile = Profile.getCurrentProfile();
+//
+//
+//        Log.d("TTT", "_Profile =" + _Profile);
+//        //facebook
+//        if(_Profile == null){
+//            nResult = false;
+//        }
+        return true;
     }
 
     @Override

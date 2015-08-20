@@ -34,15 +34,7 @@ function rest_get($id) {
 	return $post_info;
 }
 
-function rest_post(){
-	$user_id = $_POST ['user_id'];
-	$name = $_POST ['user_name'];
-	$email = $_POST ['user_email'];
-	$gender = $_POST ['user_gender'];
-	$score = $_POST ['user_score'];
-	$intro = $_POST['user_intro'];
-	$img_url = $_POST['profile_img_url'];
-
+function rest_post( $keys, $values){
 	$dbname = 'db_chat_member_test';
 
 	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
@@ -52,17 +44,33 @@ function rest_post(){
 
 	$create_table = "create table if not exists profiles(
 						id int primary key auto_increment,
-						user_id varchar(12) unique,
-						user_name varchar(10),
-						user_email varchar(20),
+						user_id varchar(30) unique,
+						user_name varchar(30),
+						user_email varchar(30),
 						user_gender varchar(10),
 						user_score varchar(10),
 						user_intro varchar(500),
-						profile_img_url varchar(20)
+						profile_img_url varchar(100)
 						);";
 
-	$sql_query = "insert into profiles (user_id, user_name, user_email, user_gender, user_score,user_intro,profile_img_url) 
-	values('$user_id', '$name', '$email','$gender','$score', '$intro','$img_url')";
+	$sql_query = "insert into profiles (";
+
+	$arr_size = count($keys);
+	for ($count=0; $count<$arr_size; $count++) {
+		$sql_query .=" $keys[$count] ";
+		if ($count != $arr_size-1) {
+			$sql_query .= ", ";
+		}
+	}
+	$sql_query .= ") values (";
+	$arr_size = count($values);
+	for ($count=0; $count<$arr_size; $count++) {
+		$sql_query .=" '$values[$count]' ";
+		if ($count != $arr_size-1) {
+			$sql_query .= ", ";
+		}
+	}
+	$sql_query .= ")";
 	
 	$mysqli->query ( $create_table );
 
@@ -77,7 +85,11 @@ function rest_post(){
 	if ($mysqli->insert_id) {
 		$ret['ret_val'] = "success";
 		$ret['id'] = $insert_id;
-		
+		$arr_size = count($keys);
+		for ($count=0; $count<$arr_size; $count++) {
+			// array_push($ret, $keys[$count]=>$values[$count]);
+			$ret[$keys[$count]] = $values[$count];
+		}
 		$value = $ret;
 	} else {
 		$ret['ret_val'] = "fail";
@@ -92,7 +104,9 @@ function rest_put_all($id, $user_id, $name, $email, $gender, $score, $intro, $im
 
 	$dbname = 'db_chat_member_test';
 
-	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	include "./image_test/dbconfig.php";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -149,7 +163,8 @@ function rest_put($id, $keys, $values){
 
 	$dbname = 'db_chat_member_test';
 
-	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	include "./image_test/dbconfig.php";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}

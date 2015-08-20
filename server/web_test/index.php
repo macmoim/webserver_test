@@ -137,7 +137,11 @@ $app->get('/profile/:user_id', function ($user_id) {
 
 $app->post('/profile', function () use ($app) {
 	include 'profile.php';
-	$value = rest_post();
+	$put_vars = $app->request->post();
+
+	$keys = array_keys($put_vars);
+	$values = array_values($put_vars);
+	$value = rest_post($keys, $values);
 	exit ( json_encode ( $value ) );
 });
 

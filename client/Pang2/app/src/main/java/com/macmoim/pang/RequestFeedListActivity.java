@@ -17,6 +17,7 @@ import com.android.volley.VolleyLog;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodItem;
 
 import org.json.JSONArray;
@@ -39,6 +40,7 @@ class RequestFeedListActivity extends AppCompatActivity {
     protected String mLatestTimestamp;
     protected RecyclerView rv;
     protected String user_id;
+    protected String user_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ class RequestFeedListActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         rv = (RecyclerView) findViewById(R.id.feed_recyclerview);
+
+        user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+        user_name = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_NAME);
+
         setupRecyclerView(rv);
         ShowList();
     }

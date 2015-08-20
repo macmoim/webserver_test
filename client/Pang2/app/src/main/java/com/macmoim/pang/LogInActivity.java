@@ -1,35 +1,54 @@
 package com.macmoim.pang;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.macmoim.pang.app.AppController;
+import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.util.Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by P10452 on 2015-07-29.
  */
 public class LogInActivity extends AppCompatActivity {
     private static final String TAG = LogInActivity.class.getSimpleName();
-
+    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
     /* *************************************
      *                FACEBOOK             *
      ************************************* */
@@ -54,6 +73,8 @@ public class LogInActivity extends AppCompatActivity {
         /* Load the view and display it */
         setContentView(R.layout.activity_login);
         _GetSHAKey();
+        Profile _Profile = Profile.getCurrentProfile();
+        Log.e(TAG, "Profile = " + _Profile);
 
         /* *************************************
          *                FACEBOOK             *
@@ -69,26 +90,20 @@ public class LogInActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 _AccessTocken = loginResult.getAccessToken();
-                Profile _Profile = Profile.getCurrentProfile();
-                Log.e(TAG, "Profile = " + _Profile);
 
-                /* test */
-//                Bundle _Parameters = new Bundle();
-//                _Parameters.putString("fields", "id,name,last_name,link,email,picture");
-//                GraphRequest _Request = GraphRequest.newMeRequest(loginResult.getAccessToken(), ((jsonObject, graphResponse) -> {
-//                    String _Id = null;
-//                    if (jsonObject != null) {
-//                        try {
-//                            _Id = jsonObject.getString("id") ;
-//                            Log.e(TAG, "ID : " + _Id);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }));
-//                _Request.setParameters(_Parameters);
-//                _Request.executeAsync();
-                /* End of Test */
+                GraphRequest _Request = GraphRequest.newMeRequest(_AccessTocken, (new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                        if (jsonObject != null) {
+                            onRequestData(jsonObject);
+                        }
+                    }
+                }));
+
+                Bundle _Parameters = new Bundle();
+                _Parameters.putString("fields", "id,name,last_name,link,email,picture");
+                _Request.setParameters(_Parameters);
+                _Request.executeAsync();
             }
 
             @Override
@@ -170,6 +185,11 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
+
     private void _GetSHAKey() {
         try {
             PackageInfo _Info = getPackageManager().getPackageInfo("com.macmoim.pang",
@@ -191,4 +211,64 @@ public class LogInActivity extends AppCompatActivity {
 
         }
     }
+
+    private void onRequestData(JSONObject jsonObject) {
+        Map<String, String> obj = new HashMap<String, String>();
+
+        try {
+            obj.put("user_id", jsonObject.getString("id"));
+
+            if (jsonObject.getString("name") != null) {
+                obj.put("user_name", jsonObject.getString("name"));
+            } else {
+                obj.put("user_name", jsonObject.getString("id"));
+            }
+            //obj.put("profile_img_url", jsonObject.getString("picture"));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                _URL_PROFILE, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    String ret = "";
+                    try {
+                        ret = response.getString("ret_val");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if ("success".equals(ret)) {
+                        SavePreperences(response);
+                        Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), getText(R.string.failsave), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
+    private void SavePreperences(JSONObject response){
+        CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_ID,response.optString("user_id"));
+        CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_NAME, response.optString("user_name"));
+        finish();
+    }
+
 }

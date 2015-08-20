@@ -22,11 +22,9 @@ import org.json.JSONObject;
 public class LikeActivity extends RequestFeedListActivity {
 
     private String URL = "http://localhost:8080/web_test/like";
-    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        user_id = (String) getIntent().getExtras().get("user_id");
         super.onCreate(savedInstanceState);
 
     }

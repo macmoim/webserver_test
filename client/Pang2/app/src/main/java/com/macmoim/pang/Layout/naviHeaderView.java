@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.macmoim.pang.R;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ public class naviHeaderView{
     private Activity mActivity = null;
     private ImageView mCircleImage = null;
     private TextView mNameView = null;
+    private String user_id;
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
     private static final String _GET_URL = "http://localhost:8080/web_test/profile";
 
@@ -41,7 +43,8 @@ public class naviHeaderView{
         mNameView = (TextView) mActivity.findViewById(R.id.header_name);
     }
 
-    public void onDraw(String user_id ){
+    public void onDraw(){
+        user_id = CommonSharedPreperences.GetInstance(mActivity).getString(CommonSharedPreperences.KEY_ID);
         drawCPImage(user_id);
     }
 
@@ -50,9 +53,9 @@ public class naviHeaderView{
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
-        obj.put("user_id", "420158");
+        obj.put("user_id", user_id);
 
-        String url = _GET_URL + "/" + "420158";
+        String url = _GET_URL + "/" + user_id;
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {

@@ -16,6 +16,7 @@ import com.android.volley.VolleyLog;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodItem;
 
 import org.json.JSONArray;
@@ -29,14 +30,12 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
 
     private String URL = "http://localhost:8080/web_test/post/user";
     private String URL_DELETE = "http://localhost:8080/web_test/post";
-    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        user_id = (String) getIntent().getExtras().get("user_id");
         super.onCreate(savedInstanceState);
 
-        ((FoodRecyclerViewAdapter)rv.getAdapter()).setListener(this);
+        ((FoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     try {
-                        String result=response.getString("ret_val");
+                        String result = response.getString("ret_val");
                         if ("success".equals(result)) {
                             Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
                             ShowList();
@@ -182,15 +181,15 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
                     }
                 });
 
-        AlertDialog dialog = builder.create();    // ¾Ë¸²Ã¢ °´Ã¼ »ý¼º
-        dialog.show();    // ¾Ë¸²Ã¢ ¶ç¿ì±â
+        AlertDialog dialog = builder.create();    //  ï¿½Ë¸ï¿½Ã¢ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
+        dialog.show();    // ï¿½Ë¸ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
 
     }
 
 
     @Override
     protected void onDestroy() {
-        ((FoodRecyclerViewAdapter)rv.getAdapter()).setListener(null);
+        ((FoodRecyclerViewAdapter) rv.getAdapter()).setListener(null);
         super.onDestroy();
     }
 }

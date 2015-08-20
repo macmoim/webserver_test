@@ -28,6 +28,7 @@ import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -54,7 +55,8 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
     private FeedItem mFeedItem;
     private ViewHolder nViewHolder;
-    private int __ID = 0;
+    private String user_id = null;
+    private String user_name = null;
     private boolean editsate = false;
     private Uri mCropImagedUri;
     static final int REQ_CODE_PICK_PICTURE = 1;
@@ -74,7 +76,8 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        __ID = getIntent().getIntExtra("id", 0);
+        user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+        user_name = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_NAME);
 
         mFeedItem = new FeedItem();
         nViewHolder = new ViewHolder(this);
@@ -111,9 +114,25 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        findViewById(R.id.loginView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
+            }
+        });
         OnGetData();
         setFloationAction();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(editsate){
+
+        }else{
+            super.onBackPressed();
+        }
     }
 
     private void setFloationAction() {
@@ -162,6 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setData(JSONObject response) throws JSONException {
+        mFeedItem.set_mId(response.getString("user_id"));
         mFeedItem.set_mName(response.getString("user_name"));
         mFeedItem.set_mEmail(response.getString("user_email"));
         mFeedItem.set_mGender(response.getString("user_score"));
@@ -176,13 +196,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void OnGetData() {
 
-//        Map<String, String> obj = new HashMap<String, String>();
-//        // temp
-//
-//        obj.put("user_id", "420158");
+        String url = _URL_PROFILE + "/" + user_id;
 
-        String url = _URL_PROFILE + "/" + "420158";
-
+        Log.d("TTT","url =  "+url);
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
@@ -208,6 +224,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void ShowView(JSONObject response) throws JSONException {
+        nViewHolder.setID(response.getString("user_id"));
         nViewHolder.setName(response.getString("user_name"));
         nViewHolder.setEmail(response.getString("user_email"));
         nViewHolder.setmScore(response.getString("user_score"));
@@ -230,8 +247,7 @@ public class ProfileActivity extends AppCompatActivity {
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
-        String id = String.valueOf(((int) (Math.random() * 1000000) + 1));
-        obj.put("user_id", id);
+        obj.put("user_id", nViewHolder.getID());
         obj.put("user_name", nViewHolder.getName());
         obj.put("user_email", nViewHolder.getEmail());
         obj.put("user_score", nViewHolder.getScore());
@@ -267,8 +283,7 @@ public class ProfileActivity extends AppCompatActivity {
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
-        String id = String.valueOf(((int) (Math.random() * 1000000) + 1));
-        obj.put("user_id", id);
+        obj.put("user_id", nViewHolder.getID());
         obj.put("user_name", nViewHolder.getName());
         obj.put("user_email", nViewHolder.getEmail());
         obj.put("user_score", nViewHolder.getScore());
@@ -484,7 +499,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private class ViewHolder {
         private Activity mActivity;
-        private EditText nNameView = null;
+        private EditText mIDView = null;
+        private EditText mNameView = null;
         private EditText mEmailView = null;
         private EditText mGenderView = null;
         private EditText mScoreView = null;
@@ -494,7 +510,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         public ViewHolder(Activity activity) {
             this.mActivity = activity;
-            nNameView = (EditText) mActivity.findViewById(R.id.textViewNameValue);
+            mIDView = (EditText) mActivity.findViewById(R.id.textViewIDValue);
+            mNameView = (EditText) mActivity.findViewById(R.id.textViewNameValue);
             mEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
             mGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
             mScoreView = (EditText) mActivity.findViewById(R.id.textViewScoreLabelValue);
@@ -516,8 +533,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void setviewAllFocus(boolean state) {
-            nNameView.setFocusableInTouchMode(state);
-            nNameView.setFocusable(state);
+            mIDView.setFocusableInTouchMode(state);
+            mIDView.setFocusable(state);
+            mNameView.setFocusableInTouchMode(state);
+            mNameView.setFocusable(state);
             mEmailView.setFocusableInTouchMode(state);
             mEmailView.setFocusable(state);
             mGenderView.setFocusableInTouchMode(state);
@@ -527,8 +546,12 @@ public class ProfileActivity extends AppCompatActivity {
             mIntroView.setFocusable(state);
         }
 
+        public String getID(){
+            return String.valueOf((mIDView.getText() == null) ? ("") : mIDView.getText());
+        }
+
         public String getName() {
-            return String.valueOf((nNameView.getText() == null) ? ("") : nNameView.getText());
+            return String.valueOf((mNameView.getText() == null) ? ("") : mNameView.getText());
         }
 
         public String getEmail() {
@@ -547,8 +570,12 @@ public class ProfileActivity extends AppCompatActivity {
             return String.valueOf((mIntroView.getText() == null) ? ("") : mIntroView.getText());
         }
 
+        public void setID(String value) {
+            mIDView.setText(value);
+        }
+
         public void setName(String value) {
-            nNameView.setText(value);
+            mNameView.setText(value);
         }
 
         public void setEmail(String value) {
@@ -571,6 +598,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private class FeedItem {
+        private String _mId;
         private String _mName;
         private String _mEmail;
         private String _mGender;
@@ -639,6 +667,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         public String get_mIntro() {
             return _mIntro;
+        }
+
+        public String get_mId() {
+            return _mId;
+        }
+
+        public void set_mId(String _mId) {
+            if(_mId == null){
+                this._mId = "";
+            }else{
+                this._mId = _mId;
+            }
         }
     }
 
