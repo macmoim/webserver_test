@@ -1,9 +1,11 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.macmoim.pang.adapter.FoodCommentRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.richeditor.RichViewer;
@@ -81,7 +84,7 @@ public class ViewerActivity extends AppCompatActivity {
 
         setContentView(R.layout.viewer_main);
 
-        mUserId = getRandomID();
+        mUserId = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -289,6 +292,7 @@ public class ViewerActivity extends AppCompatActivity {
         recyclerView.setNestedScrollingEnabled(false);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setLikeBtnBg(boolean isLike) {
         if (isLike) {
             mLikeBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.like_sel));
@@ -589,10 +593,6 @@ public class ViewerActivity extends AppCompatActivity {
                 mRankingStartArr.get(i).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor));
             }
         }
-    }
-
-    private String getRandomID() {
-        return String.valueOf(((int) (Math.random() * 1000000) + 1));
     }
 
     @Override
