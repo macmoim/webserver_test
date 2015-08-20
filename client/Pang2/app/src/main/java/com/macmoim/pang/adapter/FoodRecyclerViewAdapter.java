@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
@@ -32,6 +35,18 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     private int mBackground;
     private List<FoodItem> mValues;
 
+    private Listener mListener;
+    private boolean mEnableDelete = false;
+
+    public interface Listener {
+        public void onDeleteButtonClick(int dbId);
+        public void onEditButtonClick(int dbId);
+    }
+
+    public void setListener(Listener l) {
+        mListener = l;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
 
@@ -40,6 +55,8 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         public final TextView mNameTv;
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
+        public final Button mDeleteBtn;
+        public final Button mEditBtn;
 
         public ViewHolder(View view) {
             super(view);
@@ -49,6 +66,8 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
             mTimeStampTv = (TextView) view
                     .findViewById(R.id.timestamp);
+            mDeleteBtn = (Button) view.findViewById(R.id.del_btn);
+            mEditBtn = (Button) view.findViewById(R.id.edit_btn);
         }
 
         @Override
@@ -68,6 +87,9 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         this.activity = activity;
 
 
+        if (activity instanceof MyPostActivity) {
+            mEnableDelete = true;
+        }
     }
 
     @Override
@@ -115,6 +137,25 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         holder.mUserIdTv.setText(item.getUserId());
 
         holder.mTimeStampTv.setText(item.getTimeStamp());
+
+        final int dbId = item.getId();
+        if (mEnableDelete) {
+            holder.mDeleteBtn.setVisibility(View.VISIBLE);
+            holder.mDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDeleteButtonClick(dbId);
+                }
+            });
+
+            holder.mEditBtn.setVisibility(View.VISIBLE);
+            holder.mEditBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onEditButtonClick(dbId);
+                }
+            });
+        }
 
 
     }

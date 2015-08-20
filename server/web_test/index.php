@@ -26,11 +26,22 @@ $app->get('/post/user/:user_id', function ($user_id) {
 	exit ( json_encode ( $value ) );
 });
 
+$app->get('/post/image/:id', function ($id) {
+	include 'post.php';
+	$value = rest_get_images_name($id);
+	exit ( json_encode ( $value ) );
+});
+
 $app->post('/post', function () use ($app) {
 	include 'post.php';
 	$value = rest_post();
 	exit ( json_encode ( $value ) );
+});
 
+$app->post('/post/html/update', function () use ($app) {
+	include 'post.php';
+	$value = rest_post_html_update();
+	exit ( json_encode ( $value ) );
 });
 
 $app->post('/post/image', function () use ($app) {
@@ -38,6 +49,29 @@ $app->post('/post/image', function () use ($app) {
 	$value = saveImageFile();
 	exit ( json_encode ( $value ) );
 
+});
+
+$app->delete('/post/:id', function ($id) {
+	include 'post.php';
+	$value = rest_delete($id);
+	exit ( json_encode ( $value ) );
+});
+
+$app->put('/post/:id', function ($id) use ($app) {
+	include 'post.php';
+	$put_vars = $app->request->put();
+	$images_name = null;
+	if (isset($put_vars['images_name'])) {
+		$images_name = $put_vars['images_name'];
+
+		unset($put_vars['images_name']);
+	}
+	
+
+	$keys = array_keys($put_vars);
+	$values = array_values($put_vars);
+	$value = rest_put($id, $keys, $values, $images_name);
+	exit ( json_encode ( $value ) );
 });
 
 $app->get('/star/:user_id/:post_id', function ($user_id, $post_id) {

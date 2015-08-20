@@ -1,13 +1,19 @@
 package com.macmoim.pang;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
@@ -19,15 +25,18 @@ import org.json.JSONObject;
 /**
  * Created by P11872 on 2015-08-16.
  */
-public class MyPostActivity extends RequestFeedListActivity {
+public class MyPostActivity extends RequestFeedListActivity implements FoodRecyclerViewAdapter.Listener {
 
     private String URL = "http://localhost:8080/web_test/post/user";
+    private String URL_DELETE = "http://localhost:8080/web_test/post";
     private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         user_id = (String) getIntent().getExtras().get("user_id");
         super.onCreate(savedInstanceState);
+
+        ((FoodRecyclerViewAdapter)rv.getAdapter()).setListener(this);
     }
 
     @Override
@@ -63,11 +72,54 @@ public class MyPostActivity extends RequestFeedListActivity {
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
+    @Override
+    protected void DeleteItem(int dbId) {
+        String url = URL_DELETE + "/" + dbId;
+
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.DELETE,
+                url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    try {
+                        String result=response.getString("ret_val");
+                        if ("success".equals(result)) {
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
+                            ShowList();
+                        } else {
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_fail), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+            }
+        });
+//	}
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
     protected void parseJsonFeed(JSONObject response) {
         if (rv == null) {
             return;
         }
         try {
+            if (feedItems != null && feedItems.size() > 0) {
+                feedItems.clear();
+            }
             JSONArray feedArray = response.getJSONArray("my_post");
 
             int length = feedArray.length();
@@ -100,7 +152,45 @@ public class MyPostActivity extends RequestFeedListActivity {
     }
 
     @Override
+    public void onDeleteButtonClick(int dbId) {
+        showDeleteDialog(dbId);
+    }
+
+    @Override
+    public void onEditButtonClick(int dbId) {
+        Intent intent = new Intent(this, PangEditorActivity.class);
+        intent.putExtra("edit", true);
+        intent.putExtra("id", dbId);
+        startActivity(intent);
+    }
+
+    private void showDeleteDialog(final int dbId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Delete post")
+                .setMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //finish();
+                        DeleteItem(dbId);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
+
+    }
+
+
+    @Override
     protected void onDestroy() {
+        ((FoodRecyclerViewAdapter)rv.getAdapter()).setListener(null);
         super.onDestroy();
     }
 }

@@ -150,7 +150,7 @@ function rest_post() {
 	
 	$create_table = "CREATE TABLE if not exists posts (
 					id int auto_increment,
-					user_id varchar(30) DEFAULT \"khwan07\",
+					user_id varchar(30),
 					title varchar(100),
 					upload_filename varchar(100),
 					db_filename varchar(100),
@@ -254,7 +254,7 @@ function rest_post() {
 	
 	$query = sprintf ( "INSERT INTO posts
 		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path,category)
-		VALUES ('khwan07', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName, $_POST ["category"]);
+		VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName, $_POST ["category"]);
 	
 	$mysqli->query ( $query );
 	
@@ -280,7 +280,392 @@ function rest_post() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
+
+	if (isset($_POST['images_name'])) {
+		insert_post_images($insert_id, $_POST['images_name']);	
+	}
+	
+
 	return $html_saving_info;
+}
+
+function insert_post_images($post_id, $images_name) {
+	include "./image_test/dbconfig.php";
+
+	$img_name_arr = explode(":", $images_name);
+
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	$create_table = "CREATE TABLE if not exists post_images (
+					id int auto_increment,
+					post_id int,
+					image_filename varchar(100),
+					PRIMARY KEY (id)
+					);";
+	
+	$mysqli->query ( $create_table );
+
+	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+
+	$arr_size = count($img_name_arr);
+	foreach ($img_name_arr as $imgname) {
+		$query = sprintf ( "INSERT INTO post_images
+										(post_id, image_filename)
+										VALUES ('%s', '%s')", $post_id, $imgname);
+	
+		$mysqli->query ( $query );
+		
+		if ($mysqli->error) {
+			echo "Failed to insert post_images db: (" . $mysqli->error . ") ";
+		}
+		$insert_id = $mysqli->insert_id;
+	}
+	
+	
+
+}
+
+function delete_post_images($post_id) {
+	include "./image_test/dbconfig.php";
+	
+
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	$query = "SELECT image_filename FROM post_images WHERE post_id = '$post_id'";
+
+	if ($result = $mysqli->query ( $query )) {
+		
+		if (count($result) > 0) {
+			
+			$images_name = array ();
+			while ( $row = $result->fetch_assoc () ) {
+				
+				
+				array_push ( $images_name, array (
+					"filename" => $row ['image_filename'],
+				) );
+				
+				
+			}
+
+			delete_images_by_name($images_name);
+			
+			
+
+			$sql_query = "DELETE FROM post_images WHERE post_id = '$post_id'";
+
+			$mysqli->query ( $sql_query );
+			if ($mysqli->error) {
+				echo 'delete post images error : '.$mysqli->error;
+				return FALSE;
+			}
+
+			return TRUE;
+		} else {
+			//echo 'delete post images no select result';
+			return TRUE;
+		}
+		return FALSE;
+	}
+}
+
+function delete_images_by_name($images_name) {
+	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	foreach ($images_name as $var) {
+		if (file_exists($imageServerPath.$var['filename'])) {
+			// do not delete default image.
+			if (strcmp("default_backdrop_img.jpg", $var['filename'])) {
+				unlink($imageServerPath.$var['filename']);	
+			} else {
+
+			}
+			
+		}	
+	}
+}
+
+function rest_delete($id) {
+	$post_to_delete_info = array ();
+	$thumbFolderPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	$htmlFolderPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	$imgfilename = array();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+	$sql_query_select = "SELECT db_filename, thumb_img_path
+	                   FROM posts WHERE id = '$id'";
+	if ($result = $mysqli->query ( $sql_query_select )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['db_filename'] )) {
+			$imgfilename = explode("/", $row['thumb_img_path']);
+			$post_to_delete_info = array (
+					"db_filename" => $htmlFolderPath.$row ['db_filename'],
+					"thumb_img_path" => $thumbFolderPath.end($imgfilename)
+			);
+		} else {
+			echo 'fail to get post_to_delete_info';
+		}
+	}
+
+	if (count($post_to_delete_info) > 0) {
+		// delete HTML file
+		if (file_exists($post_to_delete_info['db_filename'])) {
+				unlink($post_to_delete_info['db_filename']);
+		}
+		// delete thumbnail image file
+		if (file_exists($post_to_delete_info['thumb_img_path'])) {
+			// do not delete defaul thumbnail image.
+			if (strcmp("default_backdrop_img.jpg", end($imgfilename))) {
+				unlink($post_to_delete_info['thumb_img_path']);
+			} else {
+				
+			}
+		}
+	}
+	
+
+	$ret = array();
+	if (delete_post_images($id)) {
+		$sql_query = "DELETE FROM posts WHERE id = '$id'";
+
+		$mysqli->query ( $sql_query );
+		
+
+		if ($mysqli->affected_rows > 0) {
+			
+			$ret['ret_val'] = "success";
+		} else {
+			$ret['ret_val'] = "fail";
+		}
+		
+		
+	} else {
+		$ret['ret_val'] = "fail";
+	}
+
+	$mysqli->close ();
+	
+	
+	
+	return $ret;
+}
+
+function rest_put($post_id, $keys, $values, $images_name) {
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	// delete old html file
+	$sql_query = "SELECT db_filename FROM posts WHERE id = '$post_id'";
+
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['db_filename'] )) {
+			delete_html_file($row ['db_filename']);
+		} else {
+			echo 'fail to select old html file from db';
+		}
+	}
+
+	if (isset($images_name)) {
+		// delete old image file and add new image file
+		$img_name_arr = explode(":", $images_name);
+		$img_to_delete = array();
+
+		$query = "SELECT image_filename FROM post_images WHERE post_id = '$post_id'";
+
+		if ($result = $mysqli->query ( $query )) {
+			
+			if (count($result) > 0) {
+				
+				
+				while ( $row = $result->fetch_assoc () ) {
+					foreach ($img_name_arr as $new_img_file) {
+						if (strcmp($row ['image_filename'], $new_img_file)) {
+							// skip
+						} else {
+							// to delete
+							array_push ( $img_to_delete, array (
+								"filename" => $row ['image_filename'],
+							) );
+							continue;
+						}
+					}
+					
+				}
+
+				delete_images_by_name($img_to_delete);
+
+			} else {
+				//echo 'delete post images no select result';
+				
+			}
+
+		}
+	}
+	
+
+
+
+	// update post
+	$sql_query = "UPDATE posts SET ";
+
+	$arr_size = count($keys);
+	for ($count=0; $count<$arr_size; $count++) {
+		$sql_query .=" $keys[$count] = '$values[$count]'";
+		if ($count != $arr_size-1) {
+			$sql_query .= ", ";
+		}
+	}
+	$sql_query .= " WHERE id = '$post_id'";
+
+	$mysqli->query ( $sql_query );
+
+	if ($mysqli->error) {
+		echo "Failed to update posts db: (" . $mysqli->error . ") ";
+	}
+
+	$ret = array();
+	if ($mysqli->affected_rows == 0) {
+		$ret['ret_val'] = "fail";
+		
+		
+		
+	} else {
+		$ret['ret_val'] = "success";
+		
+		
+	}
+
+	$mysqli->close ();
+
+	return $ret;
+}
+
+function delete_html_file($filename_old) {
+	$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+
+	if(!is_dir($fileServerPath)){
+		return FALSE;
+	}
+
+	if (file_exists($fileServerPath.$filename_old)) {
+		unlink($fileServerPath.$filename_old);
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+function rest_get_images_name($post_id) {
+	$image_name_list = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT image_filename
+	                   FROM post_images WHERE post_id = '$post_id'";
+	if ($result = $mysqli->query ( $sql_query )) {
+		
+		if (count($result) > 0) {
+			
+			$image_name_info = array();
+			while ( $row = $result->fetch_assoc () ) {
+				
+				
+				array_push ( $image_name_info, array (
+					"image_filename" => $row ['image_filename'],
+					
+				) );
+				
+				
+			}
+			// array_push($user_list, 'user_info');
+			$image_name_list = array (
+					'image_name_info' => $image_name_info 
+			);
+		} else {
+			echo 'fail to get user info';
+		}
+	}
+	
+	$mysqli->close ();
+	
+	return $image_name_list;
+}
+
+function rest_post_html_update() {
+	if (! isset ( $_FILES ['html_file'] )) {
+		return ( "업로드 파일 존재하지 않음" );
+	}
+	
+	if ($_FILES ['html_file'] ['error'] > 0) {
+		switch ($_FILES ['html_file'] ['error']) {
+			case 1 :
+				return ( "php.ini 파일의 upload_max_filesize 설정값을 초과함(업로드 최대용량 초과)" );
+			case 2 :
+				return ( "Form에서 설정된 MAX_FILE_SIZE 설정값을 초과함(업로드 최대용량 초과)" );
+			case 3 :
+				return ( "파일 일부만 업로드 됨" );
+			case 4 :
+				return ( "업로드된 파일이 없음" );
+			case 6 :
+				return ( "사용가능한 임시폴더가 없음" );
+			case 7 :
+				return ( "디스크에 저장할수 없음" );
+			case 8 :
+				return ( "파일 업로드가 중지됨" );
+			default :
+				return ( "시스템 오류가 발생" );
+		} // switch
+	}
+	$ableExt = array (
+			'html'
+	);
+	$path = pathinfo ( $_FILES ['html_file'] ['name'] );
+	$ext = strtolower ( $path ['extension'] );
+	
+	if (! in_array ( $ext, $ableExt )) {
+		exit ( "허용되지 않는 확장자입니다." );
+	}
+
+	$time = explode ( ' ', microtime () );
+	$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' . strtoupper ( $ext );
+
+	// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
+	$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	if(!is_dir($fileServerPath)){
+		@mkdir($fileServerPath);
+	}
+
+	$ret = array();
+	if (move_uploaded_file ( $_FILES ['html_file'] ['tmp_name'], $fileServerPath . $fileName )) {
+				
+		$ret['ret_val'] = "success";	
+		$ret['updated_filename'] = $fileName;
+		
+	} else {
+		
+		$ret['ret_val'] = "fail";
+	} // if
+		
+	return $ret;
 }
 
 // $value = "An error has occurred";

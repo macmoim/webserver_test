@@ -69,4 +69,7 @@
 
     <string name="save">저장 되었습니다.</string>
     <string name="failsave">저장에 실패 하였습니다. </string>
+
+    <string name="delete_success">삭제 되었습니다.</string>
+    <string name="delete_fail">삭제에 실패 하였습니다. </string>
 </resources>

@@ -31,16 +31,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,6 +67,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private static final String URL_POST = "http://localhost:8080/web_test/post";
     private static final String URL_POST_IMAGE = "http://localhost:8080/web_test/post/image";
+    private static final String URL_POST_HTML_UPDATE = "http://localhost:8080/web_test/post/html/update";
 
     private RichEditor mEditor = null;
     private MaterialBetterSpinner mSpinner;
@@ -79,6 +83,10 @@ public class PangEditorActivity extends AppCompatActivity {
     private Uri mCropImagedUri;
 
     private WebAppInterface mWebAppInterface;
+
+    private boolean mEditMode = false;
+    private int mDbId = -1;
+    private String mUpdatedHtmlFilename;
 
     static final int REQ_CODE_PICK_PICTURE = 1;
 
@@ -358,6 +366,8 @@ public class PangEditorActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("edit", false)) {
             int id = getIntent().getIntExtra("id", 0);
             if (id > 0) {
+                mEditMode = true;
+                mDbId = id;
                 editHTML(id);
             }
         }
@@ -388,52 +398,186 @@ public class PangEditorActivity extends AppCompatActivity {
                 mWebAppInterface.getCurrentHtml(new HTMLListener() {
                     @Override
                     public void OnGetHTMLSourceCallback(String html) {
-                        File file = saveHTML(/*mEditor.getHtml()*/html);
-
-
-                        Map<String, String> obj_body = new HashMap<String, String>();
-                        obj_body.put("title", mTitleEdit.getText().toString());
-                        obj_body.put("category", mSelectedFood);
-                        if (mImageUrlArr.size()>0) {
-                            obj_body.put("thumb_img_url",  mImageUrlArr.get(0));
+                        if (mEditMode) {
+                            updatePostHTML(html);
+//                            updatePostDb();
+                        } else {
+                            insertPost(html);
                         }
-
-                        Map<String, File> obj_file = new HashMap<String, File>();
-                        obj_file.put("html_file", file);
-
-
-                        @SuppressWarnings("unchecked")
-                        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
-                                URL_POST, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
-
-                            @Override
-                            public void onResponse(JSONObject response) {
-
-                                if (response != null) {
-                                    VolleyLog.d(TAG, "Response: " + response.toString());
-                                    parseJsonHtml(response);
-                                } else {
-                                    VolleyLog.d(TAG, "Error: response is null!!!!");
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                                Log.d(TAG, "requestError : " + error.getMessage());
-                            }
-                        });
-
-
-                        // Adding request to volley request queue
-                        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
                     }
                 });
                 return true;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void insertPost(String html) {
+
+        File file = saveHTML(/*mEditor.getHtml()*/html);
+
+
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("user_id", "khwan07");
+        obj_body.put("title", mTitleEdit.getText().toString());
+        obj_body.put("category", mSelectedFood);
+        if (mImageUrlArr.size() > 0) {
+            // post thumbnail image name
+            obj_body.put("thumb_img_url", mImageUrlArr.get(0));
+
+            // post name of images in html file
+            String imgNames = "";
+            int length = mImageUrlArr.size();
+            for (int i = 0; i < length; i++) {
+                imgNames += mImageUrlArr.get(i) + (i == length - 1 ? "" : ":");
+            }
+            obj_body.put("images_name", imgNames);
+        }
+
+
+        Map<String, File> obj_file = new HashMap<String, File>();
+        obj_file.put("html_file", file);
+
+
+        @SuppressWarnings("unchecked")
+        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                URL_POST, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                if (response != null) {
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+                    parseJsonHtml(response);
+                } else {
+                    VolleyLog.d(TAG, "Error: response is null!!!!");
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "requestError : " + error.getMessage());
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+
+    }
+
+    private void updatePostHTML(String html) {
+
+        File file = saveHTML(html);
+
+
+        Map<String, File> obj_file = new HashMap<String, File>();
+        obj_file.put("html_file", file);
+
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("none", "none");
+
+
+        @SuppressWarnings("unchecked")
+        MultiPartGsonRequest<JSONObject> jsonReq = new MultiPartGsonRequest(Request.Method.POST,
+                URL_POST_HTML_UPDATE, JSONObject.class, obj_file, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                if (response != null) {
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+                    try {
+                        if ("success".equals(response.getString("ret_val"))) {
+                            Toast.makeText(getApplicationContext(), "html저장성공", Toast.LENGTH_SHORT).show();
+                            mUpdatedHtmlFilename = response.getString("updated_filename");
+                            updatePostDb();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "html저장 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+
+                    }
+                } else {
+                    VolleyLog.d(TAG, "Error: response is null!!!!");
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Log.d(TAG, "requestError : " + error.getMessage());
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
+
+    }
+
+    private void updatePostDb() {
+
+
+        Map<String, String> obj_body = new HashMap<String, String>();
+        obj_body.put("user_id", "khwan07");
+        obj_body.put("title", mTitleEdit.getText().toString());
+        obj_body.put("category", mSelectedFood);
+        obj_body.put("db_filename", mUpdatedHtmlFilename);
+        if (mImageUrlArr.size() > 0) {
+            // post thumbnail image name
+            obj_body.put("thumb_img_path", mImageUrlArr.get(0));
+
+            // post name of images in html file
+            String imgNames = "";
+            int length = mImageUrlArr.size();
+            for (int i = 0; i < length; i++) {
+                imgNames += mImageUrlArr.get(i) + (i == length - 1 ? "" : ":");
+            }
+            obj_body.put("images_name", imgNames);
+        }
+
+        String url = URL_POST + "/" + mDbId;
+        @SuppressWarnings("unchecked")
+        CustomRequest jsonReq = new CustomRequest(Request.Method.PUT,
+                url, obj_body, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                removeDialog();
+                if (response != null) {
+                    try {
+                        if ("success".equals(response.getString("ret_val"))) {
+                            Toast.makeText(getApplicationContext(), "post update 성공", Toast.LENGTH_SHORT).show();
+                            mUpdatedHtmlFilename = response.getString("updated_filename");
+                        } else {
+                            Toast.makeText(getApplicationContext(), "post update  실패", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "PangEditor onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+                removeDialog();
+            }
+        });
+
+
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq);
+
     }
 
     private File createNewFile(String prefix) {
@@ -555,9 +699,52 @@ public class PangEditorActivity extends AppCompatActivity {
         return savefile;
     }
 
-    private void editHTML(int id) {
+    private void getPostImageFilename(int id) {
+        String url = URL_POST_IMAGE + "/" + String.valueOf(id);
 
-        String url = URL_POST + "/"+String.valueOf(id);
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    try {
+                        JSONArray feedArray = response.getJSONArray("image_name_info");
+
+                        if (mImageUrlArr != null && mImageUrlArr.size() > 0) {
+                            mImageUrlArr.clear();
+                        }
+                        int length = feedArray.length();
+                        for (int i = 0; i < length; i++) {
+                            JSONObject feedObj = (JSONObject) feedArray.get(i);
+
+                            String filename = feedObj.getString("image_filename");
+                            mImageUrlArr.add(filename);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+            }
+        });
+
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq);
+    }
+
+    private void editHTML(int id) {
+        String url = URL_POST + "/" + String.valueOf(id);
 
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
@@ -573,6 +760,10 @@ public class PangEditorActivity extends AppCompatActivity {
                         htmlPath += response.getString("db_filename");
 
                         new ReadHtmlTask().execute(htmlPath);
+
+                        mTitleEdit.setText(response.getString("title"));
+                        mSelectedFood = response.getString("category");
+                        mSpinner.setText(mSelectedFood);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -734,14 +925,15 @@ public class PangEditorActivity extends AppCompatActivity {
         mDialog = null;
     }
 
-    public void openKeyBoard(){
+    public void openKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
+
     //For close keyboard
-    public void closeKeyBoard(){
+    public void closeKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
 

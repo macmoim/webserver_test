@@ -72,6 +72,8 @@ class RequestFeedListActivity extends AppCompatActivity {
 
     protected void ShowList(){}
 
+    protected void DeleteItem(int dbId){}
+
     @Override
     protected void onDestroy() {
         if(feedItems != null){
