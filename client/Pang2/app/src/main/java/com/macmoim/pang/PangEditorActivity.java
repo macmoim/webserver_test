@@ -38,7 +38,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -87,6 +86,9 @@ public class PangEditorActivity extends AppCompatActivity {
     private boolean mEditMode = false;
     private int mDbId = -1;
     private String mUpdatedHtmlFilename;
+    private String mThumbnailImageURL = "";
+
+    private SelectThumbImageDialog mSelThumbDialog;
 
     static final int REQ_CODE_PICK_PICTURE = 1;
 
@@ -368,6 +370,7 @@ public class PangEditorActivity extends AppCompatActivity {
             if (id > 0) {
                 mEditMode = true;
                 mDbId = id;
+                getPostImageFilename(mDbId);
                 editHTML(id);
             }
         }
@@ -393,23 +396,49 @@ public class PangEditorActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "titleedit " + mTitleEdit.getText().toString());
 
-                showDialog();
+                closeKeyBoard();
 
-                mWebAppInterface.getCurrentHtml(new HTMLListener() {
-                    @Override
-                    public void OnGetHTMLSourceCallback(String html) {
-                        if (mEditMode) {
-                            updatePostHTML(html);
-//                            updatePostDb();
-                        } else {
-                            insertPost(html);
-                        }
+                if (mImageUrlArr.size() > 0) {
+                    if (mSelThumbDialog != null) {
+                        mSelThumbDialog.setListener(null);
+                        mSelThumbDialog = null;
                     }
-                });
+
+                    mSelThumbDialog = new SelectThumbImageDialog(PangEditorActivity.this, mImageUrlArr);
+                    mSelThumbDialog.setListener(new SelectThumbImageDialog.Listener() {
+                        @Override
+                        public void onSeletedThumbnail(String url) {
+                            mThumbnailImageURL = url;
+                            Log.d(TAG, "onSeletedThumbnail " + url);
+                            sendRequest();
+                        }
+                    });
+                    mSelThumbDialog.show();
+                } else {
+                    sendRequest();
+                }
+
+
                 return true;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendRequest() {
+        showDialog();
+
+        mWebAppInterface.getCurrentHtml(new HTMLListener() {
+            @Override
+            public void OnGetHTMLSourceCallback(String html) {
+                if (mEditMode) {
+                    updatePostHTML(html);
+//                            updatePostDb();
+                } else {
+                    insertPost(html);
+                }
+            }
+        });
     }
 
     private void insertPost(String html) {
@@ -423,7 +452,7 @@ public class PangEditorActivity extends AppCompatActivity {
         obj_body.put("category", mSelectedFood);
         if (mImageUrlArr.size() > 0) {
             // post thumbnail image name
-            obj_body.put("thumb_img_url", mImageUrlArr.get(0));
+            obj_body.put("thumb_img_url", mThumbnailImageURL);
 
             // post name of images in html file
             String imgNames = "";
@@ -529,7 +558,7 @@ public class PangEditorActivity extends AppCompatActivity {
         obj_body.put("db_filename", mUpdatedHtmlFilename);
         if (mImageUrlArr.size() > 0) {
             // post thumbnail image name
-            obj_body.put("thumb_img_path", mImageUrlArr.get(0));
+            obj_body.put("thumb_img_path", mThumbnailImageURL);
 
             // post name of images in html file
             String imgNames = "";
@@ -960,6 +989,10 @@ public class PangEditorActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (mSelThumbDialog != null) {
+            mSelThumbDialog.setListener(null);
+            mSelThumbDialog = null;
+        }
         mEditor.destroy();
         mEditor = null;
         mImageUrlArr = null;

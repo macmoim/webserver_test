@@ -67,10 +67,13 @@ $app->put('/post/:id', function ($id) use ($app) {
 		unset($put_vars['images_name']);
 	}
 	
-
+	$thumb_img_url = null;
+	if (array_key_exists('thumb_img_path', $put_vars)) {
+		$thumb_img_url = $put_vars['thumb_img_path'];
+	}
 	$keys = array_keys($put_vars);
 	$values = array_values($put_vars);
-	$value = rest_put($id, $keys, $values, $images_name);
+	$value = rest_put($id, $keys, $values, $images_name, $thumb_img_url);
 	exit ( json_encode ( $value ) );
 });
 

@@ -195,15 +195,59 @@ function rest_post() {
 	$upload_date = date ( "Y-m-d H:i:s" );
 	
 	// create and save thumbnail
+	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
+	$thumb_url = isset($_POST['thumb_img_url']) ? $_POST['thumb_img_url'] : null;
+	$thumbimagename = save_thumbnail($thumb_url);
+
+	$mysqli->autocommit ( false );
+	
+	$query = sprintf ( "INSERT INTO posts
+		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path,category)
+		VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$thumbimagename, $_POST ["category"]);
+	
+	$mysqli->query ( $query );
+	
+	if ($mysqli->error) {
+		echo "Failed to insert posts db: (" . $mysqli->error . ") ";
+	}
+	$insert_id = $mysqli->insert_id;
+	
+	
+	
+	if ($mysqli->affected_rows > 0) {
+		// 9. 업로드 파일을 새로 만든 파일명으로 변경 및 이동
+		if (move_uploaded_file ( $_FILES ['html_file'] ['tmp_name'], $fileServerPath . $fileName )) {
+				
+				
+			$mysqli->commit ();
+		} else {
+			$mysqli->rollback ();
+			exit ( "업로드 실패" );
+		} // if
+	}
+	$html_saving_info = array (
+			"id" => $insert_id
+	);
+	$mysqli->close ();
+
+	if (isset($_POST['images_name'])) {
+		insert_post_images($insert_id, $_POST['images_name']);	
+	}
+	
+
+	return $html_saving_info;
+}
+
+function save_thumbnail($thumb_img_url) {
+	// create and save thumbnail
 	// save thumbnail
 	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
 	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 	$defaultImagePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/';
-	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
 	$imageName;
 
-	if (isset($_POST['thumb_img_url'])) {
-		$imageName = $_POST['thumb_img_url'];
+	if (isset($thumb_img_url)) {
+		$imageName = $thumb_img_url;
 	} else {
 		$imageName = 'default_backdrop_img.jpg';
 		if(!is_dir($imageServerPath)){
@@ -249,44 +293,8 @@ function rest_post() {
 		// 실패시 db에 저장했던 내용 취소를 위한 롤백
 		exit ( "thumbnail 실패" );
 	} // if
+	return $imageName;
 	
-	$mysqli->autocommit ( false );
-	
-	$query = sprintf ( "INSERT INTO posts
-		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path,category)
-		VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$imageName, $_POST ["category"]);
-	
-	$mysqli->query ( $query );
-	
-	if ($mysqli->error) {
-		echo "Failed to insert posts db: (" . $mysqli->error . ") ";
-	}
-	$insert_id = $mysqli->insert_id;
-	
-	
-	
-	if ($mysqli->affected_rows > 0) {
-		// 9. 업로드 파일을 새로 만든 파일명으로 변경 및 이동
-		if (move_uploaded_file ( $_FILES ['html_file'] ['tmp_name'], $fileServerPath . $fileName )) {
-				
-				
-			$mysqli->commit ();
-		} else {
-			$mysqli->rollback ();
-			exit ( "업로드 실패" );
-		} // if
-	}
-	$html_saving_info = array (
-			"id" => $insert_id
-	);
-	$mysqli->close ();
-
-	if (isset($_POST['images_name'])) {
-		insert_post_images($insert_id, $_POST['images_name']);	
-	}
-	
-
-	return $html_saving_info;
 }
 
 function insert_post_images($post_id, $images_name) {
@@ -302,7 +310,7 @@ function insert_post_images($post_id, $images_name) {
 	$create_table = "CREATE TABLE if not exists post_images (
 					id int auto_increment,
 					post_id int,
-					image_filename varchar(100),
+					image_filename varchar(100) unique,
 					PRIMARY KEY (id)
 					);";
 	
@@ -347,9 +355,7 @@ function delete_post_images($post_id) {
 			while ( $row = $result->fetch_assoc () ) {
 				
 				
-				array_push ( $images_name, array (
-					"filename" => $row ['image_filename'],
-				) );
+				array_push ( $images_name, $row ['image_filename']);
 				
 				
 			}
@@ -377,16 +383,26 @@ function delete_post_images($post_id) {
 
 function delete_images_by_name($images_name) {
 	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 	foreach ($images_name as $var) {
-		if (file_exists($imageServerPath.$var['filename'])) {
+		if (file_exists($imageServerPath.$var)) {
 			// do not delete default image.
-			if (strcmp("default_backdrop_img.jpg", $var['filename'])) {
-				unlink($imageServerPath.$var['filename']);	
+			if (strcmp("default_backdrop_img.jpg", $var)) {
+				unlink($imageServerPath.$var);	
 			} else {
 
 			}
 			
 		}	
+		if (file_exists($thumbServerPath.$var)) {
+			// do not delete default image.
+			if (strcmp("default_backdrop_img.jpg", $var)) {
+				unlink($thumbServerPath.$var);	
+			} else {
+
+			}
+			
+		}
 	}
 }
 
@@ -462,7 +478,7 @@ function rest_delete($id) {
 	return $ret;
 }
 
-function rest_put($post_id, $keys, $values, $images_name) {
+function rest_put($post_id, $keys, $values, $images_name, $thumbnail_img_url) {
 	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -481,50 +497,93 @@ function rest_put($post_id, $keys, $values, $images_name) {
 
 	if (isset($images_name)) {
 		// delete old image file and add new image file
-		$img_name_arr = explode(":", $images_name);
+		
+		$img_name_arr = explode(':', $images_name);
+		
+		
 		$img_to_delete = array();
+		$img_to_update = array();
 
 		$query = "SELECT image_filename FROM post_images WHERE post_id = '$post_id'";
 
 		if ($result = $mysqli->query ( $query )) {
 			
-			if (count($result) > 0) {
-				
-				
+			if ($result->num_rows > 0) {
+				$db_result = array();
 				while ( $row = $result->fetch_assoc () ) {
-					foreach ($img_name_arr as $new_img_file) {
-						if (strcmp($row ['image_filename'], $new_img_file)) {
-							// skip
-						} else {
-							// to delete
-							array_push ( $img_to_delete, array (
-								"filename" => $row ['image_filename'],
-							) );
-							continue;
-						}
-					}
-					
+					array_push ( $db_result, $row['image_filename']);
 				}
+				
+				
+				
+				$img_to_delete = array_diff($db_result, $img_name_arr);
+				
+				$img_to_update = array_diff($img_name_arr, $db_result);
+				
+				
 
 				delete_images_by_name($img_to_delete);
-
+				
 			} else {
 				//echo 'delete post images no select result';
-				
+				$img_to_update = $img_name_arr;
 			}
 
 		}
+
+		if (count($img_to_delete) > 0) {
+			foreach ($img_to_delete as $imgname) {
+				
+
+				$sql_query = "DELETE FROM post_images WHERE post_id = '$post_id' 
+									AND image_filename = '$imgname'";
+
+				$mysqli->query ( $sql_query );
+				
+				if ($mysqli->error) {
+					echo "Failed to delete post images : (" . $mysqli->error . ") ";
+				}
+				
+			}
+		}
+
+		if (count($img_to_update) > 0) {
+			foreach ($img_to_update as $imgname) {
+				$query = sprintf ( "INSERT INTO post_images
+												(post_id, image_filename)
+												VALUES ('%s', '%s')", $post_id, $imgname);
+			
+				$mysqli->query ( $query );
+				
+				if ($mysqli->error) {
+					echo "Failed to insert post_images db: (" . $mysqli->error . ") ";
+				}
+				
+			}
+		}
+		
 	}
 	
+	save_thumbnail($thumbnail_img_url);
 
 
+
+	$thumbUserPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
 
 	// update post
 	$sql_query = "UPDATE posts SET ";
 
 	$arr_size = count($keys);
 	for ($count=0; $count<$arr_size; $count++) {
-		$sql_query .=" $keys[$count] = '$values[$count]'";
+		if (strcmp($keys[$count], "thumb_img_path")) {
+			// not equal
+			$sql_query .=" $keys[$count] = '$values[$count]'";
+		} else {
+			// equal. add thumbnail server path to thumb_img_path
+			$thumb_path = $thumbUserPath.$values[$count];
+			$sql_query .=" $keys[$count] = '$thumb_path'";
+		}
+		
 		if ($count != $arr_size-1) {
 			$sql_query .= ", ";
 		}
@@ -667,31 +726,4 @@ function rest_post_html_update() {
 		
 	return $ret;
 }
-
-// $value = "An error has occurred";
-// $method = $_SERVER['REQUEST_METHOD'];
-// $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
-
-// switch ($method) {
-//   case 'PUT':
-//     rest_put($request);  
-//     break;
-//   case 'POST':
-//     $value = rest_post();  
-//     break;
-//   case 'GET':
-//     //printf('request get %s' , var_dump($request));
-//     $value = rest_get($request[0]);  
-//     break;
-//   case 'DELETE':
-//     rest_delete($request);  
-//     break;
-//   default:
-//   	$value = "Missing argument fail post rest";
-//     rest_error($request);  
-//     break;
-// }
-
-// // return JSON array
-// exit ( json_encode ( $value ) );
 ?>

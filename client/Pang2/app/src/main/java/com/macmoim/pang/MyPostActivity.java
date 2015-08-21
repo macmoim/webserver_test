@@ -181,8 +181,8 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
                     }
                 });
 
-        AlertDialog dialog = builder.create();    //  �˸�â ��ü ����
-        dialog.show();    // �˸�â ����
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 

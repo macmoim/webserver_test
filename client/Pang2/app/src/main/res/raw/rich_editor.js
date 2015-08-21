@@ -144,20 +144,22 @@ RE.insertImage = function(url, alt, width, height) {
 
 RE.insertImageFitWindow = function(url, alt) {
     urlArray.push(url);
-    var html = '<br/><p><div id="'+urlArray.indexOf(url)+'"> <div class="image-container" ><img class="img_fit_window" id="'+url+'" src="' + url + '" alt="' + alt + '" />'
-    +' <input type="image" id="del" src="ic_close.png" alt="del" width="20" height="20" class="delete-button" onClick="onDelClick('+urlArray.indexOf(url)+');">'
+    var html = '<br/><p><div id="'+url+'"> <div class="image-container" ><img class="img_fit_window" id="'+url+'" src="' + url + '" alt="' + alt + '" />'
+    +' <input type="image" id="del" src="ic_close.png" alt="del" width="20" height="20" class="delete-button" onClick="onDelClick(this);">'
     +'</div></div></p><br/>';
 
     RE.insertHTML(html);
 }
 
-function onDelClick(index) {
-    RE.deleteById(index);
-    Android.onImageDelClick(urlArray[index]);
+function onDelClick(elem) {
+    var url = elem.parentNode.parentNode.id;
+    Android.onImageDelClick(url);
+    RE.deleteById(url);
 }
 
-RE.deleteById = function(id) {
-    var element = document.getElementById(id);
+RE.deleteById = function(url) {
+    var id = urlArray.indexOf(url);
+    var element = document.getElementById(url);
     var range = document.createRange();
     range.selectNodeContents(element);
     var sel = window.getSelection();
