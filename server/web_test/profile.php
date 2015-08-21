@@ -245,11 +245,11 @@ function update_user_ranking() {
 	}
 
 	// alter user_id column to UNIQUE
-	$alter_unique_query = "ALTER TABLE profiles ADD UNIQUE (user_id)";
-	$mysqli->query($alter_unique_query);
-	if ($mysqli->error) {
-		echo "alter user_id column to unique error ".$mysqli->error;
-	}
+	// $alter_unique_query = "ALTER TABLE profiles ADD UNIQUE (user_id)";
+	// $mysqli->query($alter_unique_query);
+	// if ($mysqli->error) {
+	// 	echo "alter user_id column to unique error ".$mysqli->error;
+	// }
 
 	// sql query get user ranking from db order by like count and rank average.
 	$get_ranking_query = 

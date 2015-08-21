@@ -72,4 +72,7 @@
 
     <string name="delete_success">삭제 되었습니다.</string>
     <string name="delete_fail">삭제에 실패 하였습니다. </string>
+
+    <string name="score">SCORE</string>
+    <string name="ranking">RANKING</string>
 </resources>

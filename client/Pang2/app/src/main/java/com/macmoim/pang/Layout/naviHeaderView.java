@@ -116,7 +116,7 @@ public class naviHeaderView{
             e.printStackTrace();
         }
 
-        mRankingView.setText(ranking+"µî");
+        mRankingView.setText(ranking);
 
         try {
             score = response.getString("user_score");
@@ -124,7 +124,7 @@ public class naviHeaderView{
             e.printStackTrace();
         }
 
-        mScoreView.setText(score+"Á¡");
+        mScoreView.setText(score);
     }
 
 }

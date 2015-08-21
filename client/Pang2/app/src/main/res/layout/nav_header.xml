@@ -54,27 +54,49 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/layout1">
         <TextView
-            android:id="@+id/score_text"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="Score"
-            android:gravity="bottom|center_horizontal"
+            android:text="@string/score"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:textSize="20sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:layout_weight="1"
             android:paddingTop="5dp"
             android:textSize="24sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:background="@drawable/star_sel"/>
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ranking"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:textSize="20sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
         <TextView
             android:id="@+id/ranking_text"
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ranking"
-            android:gravity="bottom|center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:gravity="top|center_horizontal"
             android:layout_weight="1"
-            android:paddingTop="5dp"
             android:textSize="24sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:background="@drawable/ic_cup"/>
     </LinearLayout>
 
 </RelativeLayout>
