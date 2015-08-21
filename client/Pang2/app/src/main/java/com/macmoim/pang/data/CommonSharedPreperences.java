@@ -16,6 +16,10 @@ public class CommonSharedPreperences {
     // if you would like to register string key, then added to it
     public static String KEY_ID = "id";
     public static String KEY_NAME = "name";
+    public static String KEY_CATEGORY = "category";
+    public static String CATEGORYY_FACEBOOK = "facebook";
+    public static String CATEGORYY_GOOGLE = "google";
+    public static String CATEGORYY_KAKAO = "kakao";
 
 
     private static volatile CommonSharedPreperences mCommonSharedPreperences;
@@ -42,6 +46,11 @@ public class CommonSharedPreperences {
 
     public String getString(String key){
         return (mPref != null) ? mPref.getString(key,null) : null;
+    }
+
+    public void setDelete(String Category, String key){
+        mEditor.remove(Category);
+        mEditor.remove(key);
     }
 
     public void onDestory(){

@@ -198,7 +198,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         String url = _URL_PROFILE + "/" + user_id;
 
-        Log.d("TTT","url =  "+url);
+        Log.d("TTT", "url =  " + url);
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
@@ -230,6 +230,10 @@ public class ProfileActivity extends AppCompatActivity {
         nViewHolder.setmScore(response.getString("user_score"));
         nViewHolder.setGender(response.getString("user_gender"));
         nViewHolder.setIntro(response.getString("user_intro"));
+        String category = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_CATEGORY);
+        if(category != null) {
+            nViewHolder.setLoginView(category);
+        }
         loadBackdrop();
     }
 
@@ -500,6 +504,7 @@ public class ProfileActivity extends AppCompatActivity {
     private class ViewHolder {
         private Activity mActivity;
         private EditText mIDView = null;
+        private ImageView mloginView = null;
         private EditText mNameView = null;
         private EditText mEmailView = null;
         private EditText mGenderView = null;
@@ -511,6 +516,7 @@ public class ProfileActivity extends AppCompatActivity {
         public ViewHolder(Activity activity) {
             this.mActivity = activity;
             mIDView = (EditText) mActivity.findViewById(R.id.textViewIDValue);
+            mloginView = (ImageView) mActivity.findViewById(R.id.loginView);
             mNameView = (EditText) mActivity.findViewById(R.id.textViewNameValue);
             mEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
             mGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
@@ -533,8 +539,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void setviewAllFocus(boolean state) {
-            mIDView.setFocusableInTouchMode(state);
-            mIDView.setFocusable(state);
             mNameView.setFocusableInTouchMode(state);
             mNameView.setFocusable(state);
             mEmailView.setFocusableInTouchMode(state);
@@ -544,6 +548,7 @@ public class ProfileActivity extends AppCompatActivity {
             mScoreView.setFocusable(state);
             mIntroView.setFocusableInTouchMode(state);
             mIntroView.setFocusable(state);
+            mloginView.setFocusable(state);
         }
 
         public String getID(){
@@ -571,27 +576,41 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void setID(String value) {
-            mIDView.setText(value);
+            if(value != null)
+                mIDView.setText(value);
         }
 
         public void setName(String value) {
-            mNameView.setText(value);
+            if(value != null)
+                mNameView.setText(value);
         }
 
-        public void setEmail(String value) {
-            mEmailView.setText(value);
+        public void setEmail(String value)
+        {
+            if(value != null)
+                mEmailView.setText(value);
         }
 
-        public void setGender(String value) {
-            mGenderView.setText(value);
+        public void setGender(String value)
+        {
+            if(value != null)
+                mGenderView.setText(value);
         }
 
         public void setmScore(String value) {
-            mScoreView.setText(value);
+            if(value != null)
+                mScoreView.setText(value);
         }
 
         public void setIntro(String value) {
-            mIntroView.setText(value);
+            if(value != null)
+                mIntroView.setText(value);
+        }
+
+        public void setLoginView(String category){
+            if(category.equals(CommonSharedPreperences.CATEGORYY_FACEBOOK)) {
+                mloginView.setBackgroundResource(R.drawable.com_facebook_button_icon);
+            }
         }
 
 
