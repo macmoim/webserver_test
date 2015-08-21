@@ -1,13 +1,10 @@
 package com.macmoim.pang;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -59,8 +56,9 @@ public class LogInActivity extends AppCompatActivity {
     /* Used to track user logging in/out off Facebook */
     private AccessTokenTracker mFacebookAccessTokenTracker;
     private AccessToken _AccessTocken;
-
     private ProfileTracker mFaceBookProfileTracker;
+    private String mLoginCategory = null;
+    private boolean fackbookRequestState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +73,9 @@ public class LogInActivity extends AppCompatActivity {
         _GetSHAKey();
         Profile _Profile = Profile.getCurrentProfile();
         Log.e(TAG, "Profile = " + _Profile);
+        if(_Profile != null){
+            return;
+        }
 
         /* *************************************
          *                FACEBOOK             *
@@ -95,7 +96,11 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
                         if (jsonObject != null) {
+                            fackbookRequestState = true;
+                            mLoginCategory = CommonSharedPreperences.CATEGORYY_FACEBOOK;
                             onRequestData(jsonObject);
+                        }else{
+                            fackbookRequestState = false;
                         }
                     }
                 }));
@@ -142,6 +147,7 @@ public class LogInActivity extends AppCompatActivity {
         mFaceBookProfileTracker.startTracking();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -177,17 +183,63 @@ public class LogInActivity extends AppCompatActivity {
         if (token != null) {
             //mAuthProgressDialog.show();
         } else {
-            // Logged out of Facebook and currently authenticated with Firebase using Facebook, so do a logout
-//            if (this.mAuthData != null && this.mAuthData.getProvider().equals("facebook")) {
-//                mFirebaseRef.unauth();
-//                setAuthenticatedUser(null);
-//            }
+            // Logged out of Facebook and currently authenticated
+            Log.d("TTT", "logout");
+            //setDataDelete();
+            //setPreperencesDelete();
         }
+    }
+
+
+    private void setDataDelete() {
+        String url = _URL_PROFILE + "/" + CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.DELETE,
+                url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    String ret = "";
+                    try {
+                        ret = response.getString("ret_val");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if ("success".equals(ret)) {
+                        SavePreperences(response);
+                        Toast.makeText(getApplicationContext(), getText(R.string.delete_success), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), getText(R.string.delete_fail), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonReq);
+
+    }
+
+
+    private void setPreperencesDelete() {
+        CommonSharedPreperences.GetInstance(this).setDelete(CommonSharedPreperences.CATEGORYY_FACEBOOK, CommonSharedPreperences.KEY_ID);
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        if(AccessToken.getCurrentAccessToken() != null) {
+            super.onBackPressed();
+        }
     }
 
     private void _GetSHAKey() {
@@ -251,6 +303,7 @@ public class LogInActivity extends AppCompatActivity {
                     }
 
                 }
+                Log.d("TTT", "AAA");
             }
         }, new Response.ErrorListener() {
             @Override
@@ -260,14 +313,18 @@ public class LogInActivity extends AppCompatActivity {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
+                if(fackbookRequestState){
+                    finish();
+                }
             }
         });
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
-    private void SavePreperences(JSONObject response){
-        CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_ID,response.optString("user_id"));
+    private void SavePreperences(JSONObject response) {
+        CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_ID, response.optString("user_id"));
         CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_NAME, response.optString("user_name"));
+        CommonSharedPreperences.GetInstance(this).putString(CommonSharedPreperences.KEY_CATEGORY, mLoginCategory);
         finish();
     }
 

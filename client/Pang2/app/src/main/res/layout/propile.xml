@@ -77,6 +77,8 @@
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="bottom"
                             android:text="ID : "
+                            android:focusableInTouchMode="false"
+                            android:focusable="false"
                             android:textSize="18sp" />
 
                         <EditText
