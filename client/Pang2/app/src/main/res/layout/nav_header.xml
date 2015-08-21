@@ -20,12 +20,13 @@
     android:layout_height="192dp"
     android:background="?attr/colorPrimary"
     android:gravity="bottom"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="vertical">
@@ -40,8 +41,37 @@
             android:id="@+id/header_name"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:text="Username"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/layout1">
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Score"
+            android:gravity="bottom|center_horizontal"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        <TextView
+            android:id="@+id/ranking_text"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Ranking"
+            android:gravity="bottom|center_horizontal"
+            android:layout_weight="1"
             android:paddingTop="5dp"
             android:textSize="24sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />

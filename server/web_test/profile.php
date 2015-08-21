@@ -4,12 +4,14 @@ function rest_get($id) {
 	
 	// normally this info would be pulled from a database.
 	// build JSON array.
+
+	update_user_ranking();
 	
 	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT id, user_id, user_name, user_email, user_score, user_gender, user_intro, profile_img_url
+	$sql_query = "SELECT id, user_id, user_name, user_email, user_score, user_gender, user_intro, profile_img_url, user_ranking
 	                   FROM profiles WHERE user_id = '$id'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
@@ -22,7 +24,8 @@ function rest_get($id) {
 					"user_score" => $row ['user_score'],
 					"user_gender" => $row ['user_gender'],
 					"user_intro" => $row ['user_intro'],
-					"profile_img_url" => $row ['profile_img_url']
+					"profile_img_url" => $row ['profile_img_url'],
+					"user_ranking" => $row['user_ranking']
 			);
 		} else {
 			echo 'fail to get user info';
@@ -50,7 +53,8 @@ function rest_post( $keys, $values){
 						user_gender varchar(10),
 						user_score varchar(10),
 						user_intro varchar(500),
-						profile_img_url varchar(100)
+						profile_img_url varchar(100),
+						user_ranking int
 						);";
 
 	$sql_query = "insert into profiles (";
@@ -113,13 +117,14 @@ function rest_put_all($id, $user_id, $name, $email, $gender, $score, $intro, $im
 
 	$create_table = "create table if not exists profiles(
 						id int primary key auto_increment,
-						user_id varchar(12) unique,
-						user_name varchar(10),
-						user_email varchar(20),
+						user_id varchar(30) unique,
+						user_name varchar(30),
+						user_email varchar(30),
 						user_gender varchar(10),
 						user_score varchar(10),
 						user_intro varchar(500),
-						profile_img_url varchar(20)
+						profile_img_url varchar(100),
+						user_ranking int
 						);";
 
 	$sql_query = "UPDATE profiles SET user_name = '$name', user_email = '$email',
@@ -171,13 +176,14 @@ function rest_put($id, $keys, $values){
 
 	$create_table = "create table if not exists profiles(
 						id int primary key auto_increment,
-						user_id varchar(12) unique,
-						user_name varchar(10),
-						user_email varchar(20),
+						user_id varchar(30) unique,
+						user_name varchar(30),
+						user_email varchar(30),
 						user_gender varchar(10),
 						user_score varchar(10),
 						user_intro varchar(500),
-						profile_img_url varchar(20)
+						profile_img_url varchar(100),
+						user_ranking int
 						);";
 
 	$sql_query = "UPDATE profiles SET ";
@@ -213,6 +219,98 @@ function rest_put($id, $keys, $values){
 
 	$mysqli->close ();
 	return $value;
+}
+
+function update_user_ranking() {
+	include "./image_test/dbconfig.php";
+	$debug_msg = "not work";
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+	// add user_ranking COLUMN if not exists COLUMN user_ranking in TABLE profiles
+	$table_name = "profiles";
+	$column_name = "user_ranking";
+	$check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
+				$table_name, $column_name);
+	$result = $mysqli->query($check_rank_query);
+	$exists = $result->num_rows ? TRUE : FALSE;
+	if ($exists) {
+	} else {
+		$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s int", 
+				$table_name, $column_name);
+		$mysqli->query($alter_add_query);
+	}
+
+	// alter user_id column to UNIQUE
+	$alter_unique_query = "ALTER TABLE profiles ADD UNIQUE (user_id)";
+	$mysqli->query($alter_unique_query);
+	if ($mysqli->error) {
+		echo "alter user_id column to unique error ".$mysqli->error;
+	}
+
+	// sql query get user ranking from db order by like count and rank average.
+	$get_ranking_query = 
+	"SELECT count(like_bool) as count_sum, likes.user_id, posts.rank, likes.post_user_id, AVG(posts.rank) as rank_avg FROM likes 
+	JOIN posts ON likes.post_user_id = posts.user_id 
+	WHERE posts.rank > 0 AND likes.like_bool = 1 
+	GROUP BY posts.user_id 
+	ORDER BY count_sum DESC, rank_avg DESC";
+
+	$result = $mysqli->query($get_ranking_query);
+	$ranking_count = $result->num_rows;
+	if ($ranking_count > 0) {
+		$ranking_arr = array();
+		$score_arr = array();
+		while ( $row = $result->fetch_assoc () ) {
+			array_push($ranking_arr, $row['post_user_id']);
+			array_push($score_arr, $row['rank_avg']);
+			
+		}
+		
+		
+		$ranking_update_query = "UPDATE profiles SET user_ranking = CASE ";
+
+		$length = count($ranking_arr);
+		for ($i = 0; $i < $length; $i++) {
+			$ranking = $i+1;
+			$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$ranking' ";
+		}
+
+		$ranking_update_query .= "ELSE 'user_id' END , ";
+
+		$ranking_update_query .= "user_score = CASE ";
+
+		$length = count($score_arr);
+		for ($i = 0; $i < $length; $i++) {
+			
+			$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$score_arr[$i]' ";
+		}
+
+		$ranking_update_query .= "ELSE 'user_id' END ";
+
+		$ranking_update_query .= "WHERE user_id in (";
+		for ($i = 0; $i < $length; $i++) {
+			$ranking_update_query .= "'$ranking_arr[$i]'";
+			if ($i != ($length-1)) {
+				$ranking_update_query .= ", ";
+			}
+		}
+		$ranking_update_query .= ")";
+
+		// echo "my ranking query: ".$ranking_update_query;
+			
+		$mysqli->query($ranking_update_query);
+		if ($mysqli->error) {
+			echo "Failed to update user ranking to profiles TABLE : (" . $mysqli->error . ") ";
+		}
+	}
+
+	
+	
+	$mysqli->close();
 }
 
 // $value = "An error has occurred";

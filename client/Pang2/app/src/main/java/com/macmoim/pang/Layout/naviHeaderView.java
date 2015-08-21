@@ -32,6 +32,8 @@ public class naviHeaderView{
     private Activity mActivity = null;
     private ImageView mCircleImage = null;
     private TextView mNameView = null;
+    private TextView mRankingView = null;
+    private TextView mScoreView = null;
     private String user_id;
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
     private static final String _GET_URL = "http://localhost:8080/web_test/profile";
@@ -41,6 +43,8 @@ public class naviHeaderView{
         this.mActivity = activity;
         mCircleImage = (ImageView) mActivity.findViewById(R.id.cpimage);
         mNameView = (TextView) mActivity.findViewById(R.id.header_name);
+        mRankingView = (TextView) mActivity.findViewById(R.id.ranking_text);
+        mScoreView = (TextView) mActivity.findViewById(R.id.score_text);
     }
 
     public void onDraw(){
@@ -84,6 +88,8 @@ public class naviHeaderView{
     private void drawdata(JSONObject response){
         String imageURL = null;
         String name = null;
+        String ranking = null;
+        String score = null;
         try {
             imageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
         } catch (JSONException e) {
@@ -103,6 +109,22 @@ public class naviHeaderView{
         }
 
         mNameView.setText(name);
+
+        try {
+            ranking = response.getString("user_ranking");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mRankingView.setText(ranking+"µî");
+
+        try {
+            score = response.getString("user_score");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mScoreView.setText(score+"Á¡");
     }
 
 }
