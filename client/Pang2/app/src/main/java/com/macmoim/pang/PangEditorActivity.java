@@ -38,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -68,6 +69,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private static final String URL_POST_IMAGE = "http://localhost:8080/web_test/post/image";
     private static final String URL_POST_HTML_UPDATE = "http://localhost:8080/web_test/post/html/update";
 
+    private String mUserId;
     private RichEditor mEditor = null;
     private MaterialBetterSpinner mSpinner;
     private String mSelectedFood;
@@ -114,6 +116,8 @@ public class PangEditorActivity extends AppCompatActivity {
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
+
+        mUserId = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
 
         mImageUrlArr = new ArrayList<>();
         edit_manubar = (LinearLayout) findViewById(R.id.edit_menubar);
@@ -447,7 +451,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
 
         Map<String, String> obj_body = new HashMap<String, String>();
-        obj_body.put("user_id", "khwan07");
+        obj_body.put("user_id", mUserId);
         obj_body.put("title", mTitleEdit.getText().toString());
         obj_body.put("category", mSelectedFood);
         if (mImageUrlArr.size() > 0) {
@@ -552,7 +556,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
 
         Map<String, String> obj_body = new HashMap<String, String>();
-        obj_body.put("user_id", "khwan07");
+        obj_body.put("user_id", mUserId);
         obj_body.put("title", mTitleEdit.getText().toString());
         obj_body.put("category", mSelectedFood);
         obj_body.put("db_filename", mUpdatedHtmlFilename);
