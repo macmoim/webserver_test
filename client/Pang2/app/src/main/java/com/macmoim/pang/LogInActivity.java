@@ -30,6 +30,7 @@ import com.facebook.login.widget.LoginButton;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.CommonSharedPreperences;
+import com.macmoim.pang.util.GooglePlustLoginUtils;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONException;
@@ -59,6 +60,7 @@ public class LogInActivity extends AppCompatActivity {
     private ProfileTracker mFaceBookProfileTracker;
     private String mLoginCategory = null;
     private boolean fackbookRequestState = false;
+    private GooglePlustLoginUtils gLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +73,40 @@ public class LogInActivity extends AppCompatActivity {
         /* Load the view and display it */
         setContentView(R.layout.activity_login);
         _GetSHAKey();
+        initFaceBook();
+        initGooglePlus();
+
+    }
+
+    private void initGooglePlus() {
+        gLogin = new GooglePlustLoginUtils(this, R.id.gplus_login_button);
+        gLogin.setLoginStatus(new GooglePlustLoginUtils.GPlusLoginStatus() {
+            @Override
+            public void OnSuccessGPlusLogin(Bundle profile) {
+                Log.i(TAG, profile.getString(GooglePlustLoginUtils.NAME));
+                Log.i(TAG, profile.getString(GooglePlustLoginUtils.EMAIL));
+                Log.i(TAG, profile.getString(GooglePlustLoginUtils.PHOTO));
+                Log.i(TAG, profile.getString(GooglePlustLoginUtils.PROFILE));
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        gLogin.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        gLogin.disconnect();
+    }
+
+    public void initFaceBook() {
         Profile _Profile = Profile.getCurrentProfile();
         Log.e(TAG, "Profile = " + _Profile);
-        if(_Profile != null){
+        if (_Profile != null) {
             return;
         }
 
@@ -99,7 +132,7 @@ public class LogInActivity extends AppCompatActivity {
                             fackbookRequestState = true;
                             mLoginCategory = CommonSharedPreperences.CATEGORYY_FACEBOOK;
                             onRequestData(jsonObject);
-                        }else{
+                        } else {
                             fackbookRequestState = false;
                         }
                     }
@@ -173,7 +206,12 @@ public class LogInActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         /* Otherwise, it's probably the request by the Facebook login button, keep track of the session */
-        mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if(mFacebookCallbackManager != null) {
+            mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+        if(gLogin != null){
+            gLogin.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /* *************************************
@@ -237,7 +275,7 @@ public class LogInActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(AccessToken.getCurrentAccessToken() != null) {
+        if (AccessToken.getCurrentAccessToken() != null) {
             super.onBackPressed();
         }
     }
@@ -313,7 +351,7 @@ public class LogInActivity extends AppCompatActivity {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-                if(fackbookRequestState){
+                if (fackbookRequestState) {
                     finish();
                 }
             }
@@ -328,4 +366,8 @@ public class LogInActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+    }
 }
