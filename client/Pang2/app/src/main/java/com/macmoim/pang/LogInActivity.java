@@ -87,6 +87,15 @@ public class LogInActivity extends AppCompatActivity {
                 Log.i(TAG, profile.getString(GooglePlustLoginUtils.EMAIL));
                 Log.i(TAG, profile.getString(GooglePlustLoginUtils.PHOTO));
                 Log.i(TAG, profile.getString(GooglePlustLoginUtils.PROFILE));
+
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("user_name", profile.getString(GooglePlustLoginUtils.NAME));
+                    json.put("user_id", profile.getString(GooglePlustLoginUtils.NAME));
+                    onRequestData(json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
