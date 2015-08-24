@@ -61,11 +61,21 @@ function get_my_like($user_id) {
 			}
 			// array_push($user_list, 'user_info');
 			$image_list = array (
-					'like_info' => $like_info 
+					'like_info' => $like_info,
+					'ret_val' => "success"
 			);
 		} else {
-			echo 'fail to get user info';
+			// echo 'fail to get user info';
+			$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get user like info"
+			);
 		}
+	} else {
+		$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no like data in db"
+		);
 	}
 	
 	$mysqli->close ();

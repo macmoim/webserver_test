@@ -93,6 +93,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private SelectThumbImageDialog mSelThumbDialog;
 
     static final int REQ_CODE_PICK_PICTURE = 1;
+    static final int REQ_CODE_TAKE_PHOTO = 2;
 
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
@@ -313,7 +314,7 @@ public class PangEditorActivity extends AppCompatActivity {
 //                        "http://www.1honeywan.com/dachshund/image/7.21/7.21_3_thumb.JPG",
 //                        "dachshund");
 
-                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth()/2;
+                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
                 PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
                 Log.d(TAG, "cropintent x " + PROFILE_IMAGE_OUTPUT_X + " " + PROFILE_IMAGE_OUTPUT_Y);
 
@@ -343,6 +344,14 @@ public class PangEditorActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
             }
         });
+
+        findViewById(R.id.action_capture).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
+
 
         mTitleEdit = (EditText) findViewById(R.id.title);
         mTitleEdit.setOnTouchListener(new View.OnTouchListener() {
@@ -637,6 +646,28 @@ public class PangEditorActivity extends AppCompatActivity {
         return file;
     }
 
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File f = createNewFile("CROP_");
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Log.e("io", ex.getMessage());
+            }
+
+            mCropImagedUri = Uri.fromFile(f);
+            // Continue only if the File was successfully created
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                    mCropImagedUri);
+
+            startActivityForResult(takePictureIntent, REQ_CODE_TAKE_PHOTO);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -648,6 +679,26 @@ public class PangEditorActivity extends AppCompatActivity {
 
                 Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
                 new ResizeBitmapTask().execute(new File(mCropImagedUri.getPath()));
+            }
+        } else if (requestCode == REQ_CODE_TAKE_PHOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "take picture result " + mCropImagedUri + " string " + mCropImagedUri.toString());
+
+                Intent intent = new Intent("com.android.camera.action.CROP");
+                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
+                PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
+                intent.setDataAndType(mCropImagedUri, "image/*");
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
+                intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
+                intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
+                intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
+                intent.putExtra("scale", true);
+                //retrieve data on return
+                intent.putExtra("return-data", false);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+
+                startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
             }
         }
 

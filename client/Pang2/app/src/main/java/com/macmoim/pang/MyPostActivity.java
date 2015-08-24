@@ -116,35 +116,40 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
             return;
         }
         try {
-            if (feedItems != null && feedItems.size() > 0) {
-                feedItems.clear();
+            if ("success".equals(response.getString("ret_val"))) {
+                if (feedItems != null && feedItems.size() > 0) {
+                    feedItems.clear();
+                }
+                JSONArray feedArray = response.getJSONArray("my_post");
+
+                int length = feedArray.length();
+                for (int i = 0; i < length; i++) {
+                    JSONObject feedObj = (JSONObject) feedArray.get(i);
+
+                    FoodItem item = new FoodItem();
+                    item.setId(feedObj.getInt("id"));
+                    item.setName(feedObj.getString("title"));
+                    item.setUserId(feedObj.getString("user_id"));
+
+                    // Image might be null sometimes
+                    String image = feedObj.isNull("img_path") ? null : feedObj
+                            .getString("img_path");
+                    item.setImge(image);
+                    item.setTimeStamp(feedObj.getString("date"));
+
+
+                    Log.d(TAG, "parseJsonFeed dbname " + feedObj
+                            .getString("img_path"));
+                    feedItems.add(0, item);
+
+                }
+
+                // notify data changes to list adapater
+                rv.getAdapter().notifyDataSetChanged();
+            } else {
+                Log.e(TAG, "return fail : " + response.getString("ret_detail"));
             }
-            JSONArray feedArray = response.getJSONArray("my_post");
 
-            int length = feedArray.length();
-            for (int i = 0; i < length; i++) {
-                JSONObject feedObj = (JSONObject) feedArray.get(i);
-
-                FoodItem item = new FoodItem();
-                item.setId(feedObj.getInt("id"));
-                item.setName(feedObj.getString("title"));
-                item.setUserId(feedObj.getString("user_id"));
-
-                // Image might be null sometimes
-                String image = feedObj.isNull("img_path") ? null : feedObj
-                        .getString("img_path");
-                item.setImge(image);
-                item.setTimeStamp(feedObj.getString("date"));
-
-
-                Log.d(TAG, "parseJsonFeed dbname " + feedObj
-                        .getString("img_path"));
-                feedItems.add(0, item);
-
-            }
-
-            // notify data changes to list adapater
-            rv.getAdapter().notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }

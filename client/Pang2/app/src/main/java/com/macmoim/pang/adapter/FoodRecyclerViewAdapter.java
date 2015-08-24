@@ -130,7 +130,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 //                    .into(holder.mImageView);
 //        } else {
         // user profile pic
-        holder.mImageView.setImageUrl(Util.IMAGE_FOLDER_URL+item.getImge(), imageLoader);
+        holder.mImageView.setImageUrl(getImageFolderURL()+item.getImge(), imageLoader);
 //        }
 
         holder.mNameTv.setText(item.getName());
@@ -163,5 +163,9 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public String getImageFolderURL () {
+        return Util.IMAGE_THUMBNAIL_FOLDER_URL;
     }
 }

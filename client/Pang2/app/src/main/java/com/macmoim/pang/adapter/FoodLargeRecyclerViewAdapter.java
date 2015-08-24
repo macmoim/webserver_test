@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.util.Util;
 
 import java.util.List;
 
@@ -26,5 +26,10 @@ public class FoodLargeRecyclerViewAdapter extends FoodRecyclerViewAdapter {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_large, parent, false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public String getImageFolderURL() {
+        return Util.IMAGE_FOLDER_URL;
     }
 }

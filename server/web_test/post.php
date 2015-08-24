@@ -26,11 +26,21 @@ function rest_get($id) {
 					"filepath" => $row ['filepath'],
 					"upload_date" => $row ['upload_date'],
 					"category" => $row ['category'],
-					"thumb_img_path" => $row['thumb_img_path']
+					"thumb_img_path" => $row['thumb_img_path'],
+					"ret_val" => "success"
 			);
 		} else {
-			echo 'fail to get user info';
+			// echo 'fail to get user info';
+			$post_info = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get post info"
+			);
 		}
+	} else {
+		$post_info = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no post data in db"
+		);
 	}
 	
 	$mysqli->close ();
@@ -67,11 +77,21 @@ function get_post($user_id) {
 			}
 
 			$image_list = array (
-					'my_post' => $post_info 
+					'my_post' => $post_info,
+					'ret_val' => "success"
 			);
 		}else{
-			echo 'fail to get user info';
+			// echo 'fail to get user info';
+			$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get my post info"
+			);
 		}
+	} else {
+		$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no my post data in db"
+			);
 	}
 
 	$mysqli->close ();
@@ -205,7 +225,7 @@ function rest_post() {
 	
 	$query = sprintf ( "INSERT INTO posts
 		(user_id, title, upload_filename,db_filename,filepath,filesize,file_type,upload_date,thumb_img_path,category)
-		VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbPath.$thumbimagename, $_POST ["category"]);
+		VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_filename, $fileName, $filePath, $file_size, $file_type, $upload_date, $thumbimagename, $_POST ["category"]);
 	
 	$mysqli->query ( $query );
 	
@@ -237,6 +257,7 @@ function rest_post() {
 	}
 	
 
+	$html_saving_info['ret_val'] = "success";
 	return $html_saving_info;
 }
 

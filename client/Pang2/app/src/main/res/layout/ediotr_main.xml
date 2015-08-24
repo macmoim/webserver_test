@@ -68,6 +68,14 @@
                 android:src="@drawable/insert_image" />
 
             <ImageButton
+                android:id="@+id/action_capture"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_camera" />
+
+            <ImageButton
                 android:id="@+id/action_undo"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

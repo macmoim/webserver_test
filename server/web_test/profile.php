@@ -274,54 +274,60 @@ function update_user_ranking() {
 	GROUP BY posts.user_id 
 	ORDER BY count_sum DESC, rank_avg DESC";
 
-	$result = $mysqli->query($get_ranking_query);
-	$ranking_count = $result->num_rows;
-	if ($ranking_count > 0) {
-		$ranking_arr = array();
-		$score_arr = array();
-		while ( $row = $result->fetch_assoc () ) {
-			array_push($ranking_arr, $row['post_user_id']);
-			array_push($score_arr, $row['rank_avg']);
-			
-		}
-		
-		
-		$ranking_update_query = "UPDATE profiles SET user_ranking = CASE ";
-
-		$length = count($ranking_arr);
-		for ($i = 0; $i < $length; $i++) {
-			$ranking = $i+1;
-			$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$ranking' ";
-		}
-
-		$ranking_update_query .= "ELSE 'user_id' END , ";
-
-		$ranking_update_query .= "user_score = CASE ";
-
-		$length = count($score_arr);
-		for ($i = 0; $i < $length; $i++) {
-			
-			$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$score_arr[$i]' ";
-		}
-
-		$ranking_update_query .= "ELSE 'user_id' END ";
-
-		$ranking_update_query .= "WHERE user_id in (";
-		for ($i = 0; $i < $length; $i++) {
-			$ranking_update_query .= "'$ranking_arr[$i]'";
-			if ($i != ($length-1)) {
-				$ranking_update_query .= ", ";
+	if ($result = $mysqli->query($get_ranking_query)) {
+		$ranking_count = $result->num_rows;
+		if ($ranking_count > 0) {
+			$ranking_arr = array();
+			$score_arr = array();
+			while ( $row = $result->fetch_assoc () ) {
+				array_push($ranking_arr, $row['post_user_id']);
+				array_push($score_arr, $row['rank_avg']);
+				
 			}
-		}
-		$ranking_update_query .= ")";
-
-		// echo "my ranking query: ".$ranking_update_query;
 			
-		$mysqli->query($ranking_update_query);
-		if ($mysqli->error) {
-			echo "Failed to update user ranking to profiles TABLE : (" . $mysqli->error . ") ";
-		}
+			
+			$ranking_update_query = "UPDATE profiles SET user_ranking = CASE ";
+
+			$length = count($ranking_arr);
+			for ($i = 0; $i < $length; $i++) {
+				$ranking = $i+1;
+				$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$ranking' ";
+			}
+
+			$ranking_update_query .= "ELSE 'user_id' END , ";
+
+			$ranking_update_query .= "user_score = CASE ";
+
+			$length = count($score_arr);
+			for ($i = 0; $i < $length; $i++) {
+				
+				$ranking_update_query .= "WHEN user_id = '$ranking_arr[$i]' THEN '$score_arr[$i]' ";
+			}
+
+			$ranking_update_query .= "ELSE 'user_id' END ";
+
+			$ranking_update_query .= "WHERE user_id in (";
+			for ($i = 0; $i < $length; $i++) {
+				$ranking_update_query .= "'$ranking_arr[$i]'";
+				if ($i != ($length-1)) {
+					$ranking_update_query .= ", ";
+				}
+			}
+			$ranking_update_query .= ")";
+
+			// echo "my ranking query: ".$ranking_update_query;
+				
+			$mysqli->query($ranking_update_query);
+			if ($mysqli->error) {
+				echo "Failed to update user ranking to profiles TABLE : (" . $mysqli->error . ") ";
+			}
+		}	
+	} else {
+		// echo "no data ranking";
 	}
+
+	
+	
 
 	
 	

@@ -66,32 +66,37 @@ public class LikeActivity extends RequestFeedListActivity {
             return;
         }
         try {
-            JSONArray feedArray = response.getJSONArray("like_info");
+            if ("success".equals(response.getString("ret_val"))) {
+                JSONArray feedArray = response.getJSONArray("like_info");
 
-            int length = feedArray.length();
-            for (int i = 0; i < length; i++) {
-                JSONObject feedObj = (JSONObject) feedArray.get(i);
+                int length = feedArray.length();
+                for (int i = 0; i < length; i++) {
+                    JSONObject feedObj = (JSONObject) feedArray.get(i);
 
-                FoodItem item = new FoodItem();
-                item.setId(feedObj.getInt("id"));
-                item.setName(feedObj.getString("title"));
-                item.setUserId(feedObj.getString("user_id"));
+                    FoodItem item = new FoodItem();
+                    item.setId(feedObj.getInt("id"));
+                    item.setName(feedObj.getString("title"));
+                    item.setUserId(feedObj.getString("user_id"));
 
-                // Image might be null sometimes
-                String image = feedObj.isNull("img_path") ? null : feedObj
-                        .getString("img_path");
-                item.setImge(image);
-                item.setTimeStamp(feedObj.getString("date"));
+                    // Image might be null sometimes
+                    String image = feedObj.isNull("img_path") ? null : feedObj
+                            .getString("img_path");
+                    item.setImge(image);
+                    item.setTimeStamp(feedObj.getString("date"));
 
 
-                Log.d(TAG, "parseJsonFeed dbname " + feedObj
-                        .getString("img_path"));
-                feedItems.add(0, item);
+                    Log.d(TAG, "parseJsonFeed dbname " + feedObj
+                            .getString("img_path"));
+                    feedItems.add(0, item);
 
+                }
+
+                // notify data changes to list adapater
+                rv.getAdapter().notifyDataSetChanged();
+            } else {
+                Log.e(TAG, "return fail : " + response.getString("ret_detail"));
             }
 
-            // notify data changes to list adapater
-            rv.getAdapter().notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
