@@ -96,39 +96,36 @@ function saveRank($id, $post_id) {
 	}
 	
 	// add rank COLUMN if not exists COLUMN rank in TABLE posts
-	$table_name = "posts";
-	$column_name = "rank";
-	$check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
-				$table_name, $column_name);
-	$result = $mysqli->query($check_rank_query);
-	$exists = $result->num_rows ? TRUE : FALSE;
-	if ($exists) {
-	} else {
-		$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s float", 
-				$table_name, $column_name);
-		$mysqli->query($alter_add_query);
-	}
+	// $table_name = "posts";
+	// $column_name = "rank";
+	// $check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
+	// 			$table_name, $column_name);
+	// $result = $mysqli->query($check_rank_query);
+	// $exists = $result->num_rows ? TRUE : FALSE;
+	// if ($exists) {
+	// } else {
+	// 	$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s float", 
+	// 			$table_name, $column_name);
+	// 	$mysqli->query($alter_add_query);
+	// 	if ($mysqli->error) {
+	// 		echo "update post rank error ".$mysqli->error;
+	// 	}
+	// }
 	
 	// put rank to TABLE posts
-	$get_all_stars_query = sprintf( "SELECT star FROM stars WHERE  post_id = '%s' AND post_user_id = '%s'",
-			$_POST["post_id"],$_POST["post_user_id"]);
-	$result = $mysqli->query($get_all_stars_query);
-	$star_count = $result->num_rows;
-	if ($star_count > 0) {
-		$sum_star=0;
-		while ( $row = $result->fetch_assoc () ) {
-			$sum_star += $row['star'];
-		}
-		$rank_point = $sum_star / $star_count;
-		
+	
+	$get_avg_star_query = "SELECT AVG(star) as star_avg from stars where post_id = '$post_id'";
+	if ($result = $mysqli->query($get_avg_star_query)) {
+		$row = $result->fetch_assoc();
 		$rank_point_update_query = sprintf ( "UPDATE posts
 				SET rank = '%s' WHERE id = '%s'",
-			$rank_point, $_POST["post_id"]);
+			$row['star_avg'], $post_id);
 		$mysqli->query($rank_point_update_query);
 		if ($mysqli->error) {
 			echo "Failed to insert rank to posts TABLE: (" . $mysqli->error . ") ";
 		}
 	}
+	
 	
 	$mysqli->close();
 }

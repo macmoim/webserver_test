@@ -491,6 +491,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 if (response != null) {
                     VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJsonHtml(response);
+                    finishWithResult(Activity.RESULT_OK);
                 } else {
                     VolleyLog.d(TAG, "Error: response is null!!!!");
                 }
@@ -499,8 +500,14 @@ public class PangEditorActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Log.d(TAG, "requestError : " + error.getMessage());
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "PangEditor insert post onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+
+                removeDialog();
             }
         });
 
@@ -550,8 +557,12 @@ public class PangEditorActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Log.d(TAG, "requestError : " + error.getMessage());
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "PangEditor update post onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
             }
         });
 
@@ -596,6 +607,7 @@ public class PangEditorActivity extends AppCompatActivity {
                         if ("success".equals(response.getString("ret_val"))) {
                             Toast.makeText(getApplicationContext(), "post update 성공", Toast.LENGTH_SHORT).show();
                             mUpdatedHtmlFilename = response.getString("updated_filename");
+                            finishWithResult(Activity.RESULT_OK);
                         } else {
                             Toast.makeText(getApplicationContext(), "post update  실패", Toast.LENGTH_SHORT).show();
                         }
@@ -610,7 +622,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
-                    Log.d(TAG, "PangEditor onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                    Log.d(TAG, "PangEditor updatePostDb onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
                 removeDialog();
             }
@@ -1018,6 +1030,11 @@ public class PangEditorActivity extends AppCompatActivity {
     public void closeKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    private void finishWithResult(int resultCode) {
+        setResult(resultCode);
+        finish();
     }
 
 

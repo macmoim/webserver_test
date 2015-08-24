@@ -34,7 +34,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodLargeRecyclerViewAdapter;
-import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
@@ -93,12 +92,7 @@ public class FoodListFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
-                if ("Popular".equals(category)) {
-                    refreshListWithClearingArray();
-                } else {
-                    refreshListByTimeStamp();
-                }
+                doRefresh();
             }
 
 
@@ -148,6 +142,18 @@ public class FoodListFragment extends Fragment {
 //	}
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
+    }
+
+    public void doRefresh() {
+        if (isAdded()) {
+            String category = getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
+            if ("Popular".equals(category)) {
+                refreshListWithClearingArray();
+            } else {
+                refreshListByTimeStamp();
+            }
+        }
+
     }
 
     private void refreshListByTimeStamp() {

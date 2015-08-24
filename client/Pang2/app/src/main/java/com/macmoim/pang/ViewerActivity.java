@@ -79,6 +79,8 @@ public class ViewerActivity extends AppCompatActivity {
     private RecyclerView mCommentRv;
     private ArrayList<FoodCommentItem> foodCommentItems;
 
+    private static final String VOLLEY_REQ_TAG_STAR = "get-star";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -482,7 +484,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_STAR);
     }
 
     private void putStar(int star) {
@@ -579,6 +581,9 @@ public class ViewerActivity extends AppCompatActivity {
     private class StarClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            if (mRankingStartArr == null) {
+                return;
+            }
             int clickedIndex = mRankingStartArr.indexOf(v);
             setRankStar(clickedIndex);
 
@@ -621,6 +626,7 @@ public class ViewerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_STAR);
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
             mLikeBtn = null;

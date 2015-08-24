@@ -46,11 +46,20 @@ function rest_get_image_list($category) {
 			}
 			// array_push($user_list, 'user_info');
 			$image_list = array (
+					'ret_val' => "success",
 					'post_info' => $post_info 
 			);
 		} else {
-			echo 'fail to get user info';
+			$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get user info"
+			);
 		}
+	} else {
+		$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no post data in db"
+			);
 	}
 	
 	$mysqli->close ();

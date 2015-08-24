@@ -16,6 +16,7 @@
 
 package com.macmoim.pang;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
     private Button mLogIn;
+    private ViewPager mViewPager;
+    private static final int REQ_EDITOR = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        if(!CheckLogin()){
+        if (!CheckLogin()) {
             startActivity(new Intent(MainActivity.this, LogInActivity.class));
         }
 
@@ -73,17 +77,15 @@ public class MainActivity extends AppCompatActivity {
         naviHeaderView mNHview = new naviHeaderView(this);
         mNHview.onDraw();
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        if (viewPager != null) {
-            setupViewPager(viewPager);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        if (mViewPager != null) {
+            setupViewPager(mViewPager);
         }
 
         final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PangEditorActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(i);
+                startPangEditorActivity();
             }
         };
 
@@ -123,12 +125,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(mViewPager);
     }
 
     private boolean CheckLogin() {
         FacebookSdk.sdkInitialize(getApplicationContext());
-        if(AccessToken.getCurrentAccessToken() == null){
+        if (AccessToken.getCurrentAccessToken() == null) {
             return false;
         }
 //        String user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
@@ -179,5 +181,30 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+    }
+
+    private void startPangEditorActivity() {
+        Intent i = new Intent(getApplicationContext(), PangEditorActivity.class);
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        getApplicationContext().startActivity(i);
+        startActivityForResult(i, REQ_EDITOR);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_EDITOR) {
+            if (resultCode == Activity.RESULT_OK) {
+                int currentIndex = mViewPager.getCurrentItem();
+                ((FoodListFragment)((MyPagerAdapter) mViewPager.getAdapter()).getItem(currentIndex)).doRefresh();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mViewPager != null) {
+            mViewPager = null;
+        }
+        super.onDestroy();
     }
 }
