@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -68,6 +69,7 @@ class RequestFeedListActivity extends AppCompatActivity {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(new FoodRecyclerViewAdapter(this, feedItems));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
     }
 
 

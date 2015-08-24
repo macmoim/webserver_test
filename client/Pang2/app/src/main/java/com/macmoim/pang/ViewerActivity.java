@@ -35,6 +35,7 @@ import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.richeditor.RichViewer;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -188,6 +189,7 @@ public class ViewerActivity extends AppCompatActivity {
                         htmlPath = response.getString("filepath");
                         htmlPath += response.getString("db_filename");
                         thumbImgPath = response.getString("thumb_img_path");
+                        thumbImgPath = Util.splitFilename(thumbImgPath);
 
                         CollapsingToolbarLayout collapsingToolbar =
                                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -202,7 +204,7 @@ public class ViewerActivity extends AppCompatActivity {
                         new ReadHtmlTask().execute(htmlPath);
 
 
-                        loadBackdrop(thumbImgPath);
+                        loadBackdrop(Util.IMAGE_FOLDER_URL + thumbImgPath);
                         getComment();
                         getLike();
                         getStar();

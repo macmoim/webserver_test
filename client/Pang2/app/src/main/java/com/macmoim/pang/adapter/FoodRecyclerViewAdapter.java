@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.util.Util;
 
 import java.util.List;
 
@@ -130,7 +130,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 //                    .into(holder.mImageView);
 //        } else {
         // user profile pic
-        holder.mImageView.setImageUrl(item.getImge(), imageLoader);
+        holder.mImageView.setImageUrl(Util.IMAGE_FOLDER_URL+item.getImge(), imageLoader);
 //        }
 
         holder.mNameTv.setText(item.getName());

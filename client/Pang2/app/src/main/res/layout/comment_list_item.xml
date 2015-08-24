@@ -35,8 +35,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profilePic"
-                android:layout_width="@dimen/feed_item_profile_pic"
-                android:layout_height="@dimen/feed_item_profile_pic"
+                android:layout_width="@dimen/feed_item_comment_profile_pic"
+                android:layout_height="@dimen/feed_item_comment_profile_pic"
                 android:src="@drawable/person" >
             </de.hdodenhof.circleimageview.CircleImageView>
 
@@ -45,6 +45,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/feed_item_profile_info_padd" >
+
+                <TextView
+                    android:id="@+id/comment"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/feed_item_timestamp" />
 
                 <TextView
                     android:id="@+id/user_id"
@@ -59,11 +65,7 @@
                     android:textColor="@color/timestamp"
                     android:textSize="@dimen/feed_item_timestamp" />
 
-                <TextView
-                    android:id="@+id/comment"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/feed_item_timestamp" />
+
             </LinearLayout>
         </LinearLayout>
 

@@ -45,18 +45,24 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:paddingLeft="@dimen/feed_item_padding_left_right"
             android:paddingRight="@dimen/feed_item_padding_left_right">
 
+            <!--<com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/profilePic"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="fitCenter"></com.android.volley.toolbox.NetworkImageView>-->
+
             <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/profilePic"
-                android:layout_width="@dimen/feed_item_profile_pic"
-                android:layout_height="@dimen/feed_item_profile_pic"
-                android:scaleType="fitCenter"></com.android.volley.toolbox.NetworkImageView>
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"></com.android.volley.toolbox.NetworkImageView>
 
             <LinearLayout
-                android:layout_width="180dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical"
@@ -66,7 +72,7 @@
                     android:id="@+id/name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/feed_item_profile_name" />
+                    android:textSize="20dp" />
 
                 <TextView
                     android:id="@+id/user_id"
@@ -78,6 +84,7 @@
                     android:id="@+id/timestamp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:textColor="@color/timestamp"
                     android:textSize="@dimen/feed_item_timestamp" />
             </LinearLayout>

@@ -32,6 +32,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.adapter.FoodLargeRecyclerViewAdapter;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -232,7 +234,8 @@ public class FoodListFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new FoodRecyclerViewAdapter(getActivity(), feedItems));
+        recyclerView.setAdapter(new FoodLargeRecyclerViewAdapter(getActivity(), feedItems));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
     }
 
     private void onStartRefresh() {

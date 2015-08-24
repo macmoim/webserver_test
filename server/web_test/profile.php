@@ -230,6 +230,21 @@ function update_user_ranking() {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
 
+	// check if likes, posts table exists
+	$check_table_query = "SHOW TABLES LIKE 'likes'";
+	$result  = $mysqli->query($check_table_query);
+	if ($result->num_rows == 0) {
+		// echo "doesn't exists likes table";
+		return;
+	}
+	$check_table_query = "SHOW TABLES LIKE 'posts'";
+	$result  = $mysqli->query($check_table_query);
+	if ($result->num_rows == 0) {
+		// echo "doesn't exists posts table";
+		return;
+	}
+
+
 	// add user_ranking COLUMN if not exists COLUMN user_ranking in TABLE profiles
 	$table_name = "profiles";
 	$column_name = "user_ranking";

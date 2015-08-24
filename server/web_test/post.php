@@ -192,6 +192,8 @@ function rest_post() {
 	$upload_filename = $mysqli->real_escape_string ( $_FILES ['html_file'] ['name'] );
 	$file_size = $_FILES ['html_file'] ['size'];
 	$file_type = $_FILES ['html_file'] ['type'];
+	// set time to Seoul.
+	date_default_timezone_set("Asia/Seoul");
 	$upload_date = date ( "Y-m-d H:i:s" );
 	
 	// create and save thumbnail

@@ -67,6 +67,8 @@ function rest_post() {
 	
 	$mysqli->query ( $create_table );
 	
+	// set time to Seoul.
+	date_default_timezone_set("Asia/Seoul");
 	$upload_date = date ( "Y-m-d H:i:s" );
 	$query = sprintf ( "INSERT INTO post_comment
 		(post_id, post_user_id, comment_user_id, comment, upload_date)

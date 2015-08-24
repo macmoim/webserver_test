@@ -6,6 +6,8 @@ package com.macmoim.pang.util;
 public class Util {
     private static final String TAG = "Util";
 
+    public static final String IMAGE_FOLDER_URL = "http://localhost:8080/web_test/image_test/upload_image/";
+
     public static String MakeStringBuilder(final String... str) {
         String _Str = null;
         StringBuilder _StrBui = null;
@@ -30,5 +32,15 @@ public class Util {
         _StrBui = null;
 
         return _Str;
+    }
+
+    public static String splitFilename(String imageUrl) {
+        if (imageUrl.contains("http")) {
+            String[] filename_arr = imageUrl.split("/");
+            int last_index = filename_arr.length;
+            return filename_arr[last_index-1];
+        } else {
+            return imageUrl;
+        }
     }
 }

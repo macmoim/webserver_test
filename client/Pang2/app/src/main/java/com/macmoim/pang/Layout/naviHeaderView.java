@@ -112,6 +112,7 @@ public class naviHeaderView{
 
         try {
             ranking = response.getString("user_ranking");
+            ranking = "null".equals(ranking) ? "" : ranking;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -120,6 +121,7 @@ public class naviHeaderView{
 
         try {
             score = response.getString("user_score");
+            score = "null".equals(score) ? "" : score;
         } catch (JSONException e) {
             e.printStackTrace();
         }

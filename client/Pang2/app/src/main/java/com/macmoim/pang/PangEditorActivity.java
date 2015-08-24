@@ -313,8 +313,8 @@ public class PangEditorActivity extends AppCompatActivity {
 //                        "http://www.1honeywan.com/dachshund/image/7.21/7.21_3_thumb.JPG",
 //                        "dachshund");
 
-                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth();
-                PROFILE_IMAGE_OUTPUT_Y = mEditor.getWidth() * 3 / 4;
+                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth()/2;
+                PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
                 Log.d(TAG, "cropintent x " + PROFILE_IMAGE_OUTPUT_X + " " + PROFILE_IMAGE_OUTPUT_Y);
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
