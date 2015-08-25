@@ -16,7 +16,6 @@ import com.android.volley.VolleyLog;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodItem;
 
 import org.json.JSONArray;

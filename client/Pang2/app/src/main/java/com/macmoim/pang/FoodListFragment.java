@@ -152,6 +152,8 @@ public class FoodListFragment extends Fragment {
             } else {
                 refreshListByTimeStamp();
             }
+        } else {
+            Log.d(TAG, "doRefresh not fragment added");
         }
 
     }

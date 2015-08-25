@@ -33,6 +33,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.LoginPreferences;
@@ -50,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     Auth auth;
 
-   	private Button mLogIn;
+    private Button mLogIn;
     private ViewPager mViewPager;
     private static final int REQ_EDITOR = 1;
-	
+
+    private Runnable mFoodListRefreshRunnable;
 	private SimpleAuthListener authListener = new SimpleAuthListener() {
         @Override
         public void onRevoke() {
@@ -202,12 +205,30 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, REQ_EDITOR);
     }
 
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mFoodListRefreshRunnable != null) {
+
+            mFoodListRefreshRunnable.run();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQ_EDITOR) {
             if (resultCode == Activity.RESULT_OK) {
-                int currentIndex = mViewPager.getCurrentItem();
-                ((FoodListFragment)((MyPagerAdapter) mViewPager.getAdapter()).getItem(currentIndex)).doRefresh();
+
+                mFoodListRefreshRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        int currentIndex = mViewPager.getCurrentItem();
+                        ((FoodListFragment) ((MyPagerAdapter) mViewPager.getAdapter()).getItem(currentIndex)).doRefresh();
+                        mFoodListRefreshRunnable = null;
+                    }
+                };
+
             }
         }
     }

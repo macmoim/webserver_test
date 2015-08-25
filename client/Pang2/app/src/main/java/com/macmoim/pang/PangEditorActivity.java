@@ -671,12 +671,15 @@ public class PangEditorActivity extends AppCompatActivity {
                 Log.e("io", ex.getMessage());
             }
 
-            mCropImagedUri = Uri.fromFile(f);
-            // Continue only if the File was successfully created
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                    mCropImagedUri);
+            if (f != null) {
+                mCropImagedUri = Uri.fromFile(f);
+                // Continue only if the File was successfully created
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        mCropImagedUri);
 
-            startActivityForResult(takePictureIntent, REQ_CODE_TAKE_PHOTO);
+                startActivityForResult(takePictureIntent, REQ_CODE_TAKE_PHOTO);
+            }
+
         }
     }
 
@@ -694,6 +697,10 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQ_CODE_TAKE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
+                if (mCropImagedUri == null) {
+                    Toast.makeText(getApplicationContext(), "촬영에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Log.d(TAG, "take picture result " + mCropImagedUri + " string " + mCropImagedUri.toString());
 
                 Intent intent = new Intent("com.android.camera.action.CROP");
