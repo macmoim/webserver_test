@@ -1,5 +1,6 @@
 package com.macmoim.pang;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +9,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.macmoim.pang.app.AppController;
+import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
 
 public class LogInActivity extends AppCompatActivity
         implements View.OnClickListener, Auth.OnAuthListener{
     private final String TAG = "LogInActivity";
+    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
 
     Button facebookButton;
     Button googleButton;
@@ -26,12 +40,14 @@ public class LogInActivity extends AppCompatActivity
 
     GoogleAuth googleAuth;
     FacebookAuth facebookAuth;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mContext = getApplicationContext();
         facebookButton = (Button) findViewById(R.id.facebook_login_button);
         googleButton = (Button) findViewById(R.id.gplus_login_button);
         kakaoButton = (Button) findViewById(R.id.kakao_login_button);
@@ -54,6 +70,8 @@ public class LogInActivity extends AppCompatActivity
     public void onBackPressed() {
         if(isLogged()) {
             super.onBackPressed();
+        }else{
+            finish();
         }
     }
 
@@ -107,10 +125,12 @@ public class LogInActivity extends AppCompatActivity
     @Override
     public void onLoginSuccess(SocialProfile profile) {
         Log.d(TAG,"onLoginSuccess" );
-        Toast.makeText(this,"Log in 되었습니다.",Toast.LENGTH_SHORT).show();
         //save on shared preferences
         saveAuthenticatedUser(profile);
+        onRequestData(profile);
+    }
 
+    private void gotoMain(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -126,10 +146,56 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onRevoke() {
-        Log.d(TAG,"Logout Success" );
-        LoginPreferences.GetInstance().clear(this);
-        facebookButton.setText("Facebook");
-        Toast.makeText(this,"Log out 되었습니다.",Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Logout Success");
+        SocialLogout(SocialProfile.FACEBOOK);
+        Toast.makeText(this, "Log out 되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void SocialLogout(String tag){
+        if(tag.equals(SocialProfile.FACEBOOK)){
+            Log.d(TAG, "profile clear");
+            LoginPreferences.GetInstance().clear(this);
+            facebookButton.setText("Facebook");
+        }
+
+    }
+
+    private void onRequestData(SocialProfile profile) {
+
+        Map<String, String> obj = new HashMap<String, String>();
+        // temp
+
+        obj.put("user_id", profile.getId());
+        obj.put("user_name", profile.getName());
+        obj.put("user_email", profile.getEmail());
+        //obj.put("profile_img_url", mImagefileName);
+
+        CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
+                _URL_PROFILE, obj, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                if (response != null) {
+                    facebookButton.setText("Log Out");
+                    Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
+                    gotoMain();
+                }else {
+                    SocialLogout(SocialProfile.FACEBOOK);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                }
+                SocialLogout(SocialProfile.FACEBOOK);
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
     private void saveAuthenticatedUser(SocialProfile profile){
