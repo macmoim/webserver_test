@@ -28,7 +28,8 @@ import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
+import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.login.SocialProfile;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -76,8 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
-        user_name = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_NAME);
+        user_id = LoginPreferences.GetInstance().getString(this,LoginPreferences.PROFILE_ID);
+        user_name = LoginPreferences.GetInstance().getString(this,LoginPreferences.PROFILE_NAME);
 
         mFeedItem = new FeedItem();
         nViewHolder = new ViewHolder(this);
@@ -230,7 +231,7 @@ public class ProfileActivity extends AppCompatActivity {
         nViewHolder.setmScore(response.getString("user_score"));
         nViewHolder.setGender(response.getString("user_gender"));
         nViewHolder.setIntro(response.getString("user_intro"));
-        String category = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_CATEGORY);
+        String category = LoginPreferences.GetInstance().getString(this, LoginPreferences.USER_SOCIAL);
         if(category != null) {
             nViewHolder.setLoginView(category);
         }
@@ -608,7 +609,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void setLoginView(String category){
-            if(category.equals(CommonSharedPreperences.CATEGORYY_FACEBOOK)) {
+            if(category.equals(SocialProfile.FACEBOOK)) {
                 mloginView.setBackgroundResource(R.drawable.com_facebook_button_icon);
             }
         }

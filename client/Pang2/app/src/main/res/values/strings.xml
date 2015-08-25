@@ -50,8 +50,21 @@
     <string name="editor_hint">Insert</string>
 
     <!-- Log In-->
-    <string name="facebook_app_id">1072882002741607</string>
     <string name="login_with_facebook">Login with Facebook</string>
+
+    <style name="LoginButtonText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
 
     <string name="save">저장 되었습니다.</string>
     <string name="failsave">저장에 실패 하였습니다. </string>
@@ -61,4 +74,15 @@
 
     <string name="score">SCORE</string>
     <string name="ranking">RANKING</string>
+
+    <string name="login_with">Login with</string>
+    <string name="login_facebook">Facebook</string>
+    <string name="login_google">Google</string>
+    <string name="login_kakao">KaKao</string>
+    <string name="share">Share</string>
+    <string name="content_share">Content to share</string>
+    <string name="pick_file">Pick a file</string>
+
+    <string name="attachment_much_long">Attachment is much long, max size is 12mb</string>
+    <string name="need_facebook_app">You need native facebook app to perform this action</string>
 </resources>

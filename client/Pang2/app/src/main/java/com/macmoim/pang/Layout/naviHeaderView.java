@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.macmoim.pang.R;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
+import com.macmoim.pang.data.LoginPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +48,7 @@ public class naviHeaderView{
     }
 
     public void onDraw(){
-        user_id = CommonSharedPreperences.GetInstance(mActivity).getString(CommonSharedPreperences.KEY_ID);
+        user_id = LoginPreferences.GetInstance().getString(this.mActivity, LoginPreferences.PROFILE_ID);
         drawCPImage(user_id);
     }
 

@@ -18,9 +18,8 @@ import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodItem;
-
+import com.macmoim.pang.data.LoginPreferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,8 +56,8 @@ class RequestFeedListActivity extends AppCompatActivity {
 
         rv = (RecyclerView) findViewById(R.id.feed_recyclerview);
 
-        user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
-        user_name = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_NAME);
+        user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
+        user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
 
         setupRecyclerView(rv);
         ShowList();

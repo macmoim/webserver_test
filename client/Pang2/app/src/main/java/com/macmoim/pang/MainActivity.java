@@ -33,23 +33,34 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
-import com.macmoim.pang.data.CommonSharedPreperences;
+import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.login.Auth;
+import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.login.GoogleAuth;
+import com.macmoim.pang.login.SimpleAuthListener;
+import com.macmoim.pang.login.SocialProfile;
 
 /**
  * TODO
  */
 public class MainActivity extends AppCompatActivity {
+    private final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
+    Auth auth;
 
-    private Button mLogIn;
+   	private Button mLogIn;
     private ViewPager mViewPager;
     private static final int REQ_EDITOR = 1;
+	
+	private SimpleAuthListener authListener = new SimpleAuthListener() {
+        @Override
+        public void onRevoke() {
+            Log.d(TAG, "SimpleAuthListener()");
+            logoutUser();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +74,15 @@ public class MainActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        if (!CheckLogin()) {
-            startActivity(new Intent(MainActivity.this, LogInActivity.class));
+        String socialNetwork = getNetworkInfo();
+        //create correct auth manager according user account
+        if (socialNetwork.equals(SocialProfile.FACEBOOK)) {
+            auth = new FacebookAuth(this, authListener);
+        } else if (socialNetwork.equals(SocialProfile.GOOGLE)) {
+            auth = new GoogleAuth(this, authListener);
+            auth.login();
+        } else {
+            //TODO : KAKAO
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,26 +146,20 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    private boolean CheckLogin() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        if (AccessToken.getCurrentAccessToken() == null) {
-            return false;
-        }
-//        String user_id = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
-//        if(user_id == null){
-//            return false;
-//        }
-//        FacebookSdk.sdkInitialize(getApplicationContext());
-//        boolean nResult = true;
-//        Profile _Profile = Profile.getCurrentProfile();
-//
-//
-//        Log.d("TTT", "_Profile =" + _Profile);
-//        //facebook
-//        if(_Profile == null){
-//            nResult = false;
-//        }
-        return true;
+    private String getNetworkInfo() {
+        return LoginPreferences.GetInstance().getString(this, LoginPreferences.USER_SOCIAL);
+    }
+
+
+    private void logoutUser() {
+        //clear share preferences
+        LoginPreferences.GetInstance().clear(this);
+
+        //clear back stack activity and back to login activity
+        Intent intent = new Intent(this, LogInActivity.class);
+        startActivity(intent);
+
+        finish();
     }
 
     @Override

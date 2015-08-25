@@ -38,7 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
+import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -118,7 +118,7 @@ public class PangEditorActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mUserId = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+        mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
         mImageUrlArr = new ArrayList<>();
         edit_manubar = (LinearLayout) findViewById(R.id.edit_menubar);

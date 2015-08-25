@@ -11,55 +11,43 @@
 
     android:background="@color/md_orange_800">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/lonin_linearlayout"
-        android:padding="10dp"
-        >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/gplus_login_button"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="30dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/login_gplus_button_bg"
-            android:text="Sign in with Google+"
-            style="@style/LoginButtonText"
-            />
-        <com.facebook.login.widget.LoginButton
+            android:text="@string/login_with"/>
+
+        <Button
             android:id="@+id/facebook_login_button"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/login_button_width"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="30dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/login_fb_button_bg"
-            android:text="Sign in with Facebook"
-            style="@style/LoginButtonText"
-            />
+            android:layout_marginTop="@dimen/item_margin"
+            android:text="@string/login_facebook"
+            android:textColor="@android:color/white"
+            android:background="@drawable/login_fb_button_bg"/>
+
+        <Button
+            android:id="@+id/gplus_login_button"
+            android:layout_width="@dimen/login_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin"
+            android:text="@string/login_google"
+            android:textColor="@android:color/white"
+            android:background="@drawable/login_gplus_button_bg"/>
+
         <Button
             android:id="@+id/kakao_login_button"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/login_button_width"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="30dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/login_kakao_button_bg"
-            android:text="Sign in with kakao"
-            style="@style/LoginButtonText"
-            />
-    </LinearLayout>
+            android:layout_marginTop="@dimen/item_margin"
+            android:text="@string/login_kakao"
+            android:textColor="@android:color/white"
+            android:background="@drawable/login_kakao_button_bg"/>
 
+    </LinearLayout>
 </RelativeLayout>

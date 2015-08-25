@@ -31,8 +31,8 @@ import com.bumptech.glide.Glide;
 import com.macmoim.pang.adapter.FoodCommentRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.CommonSharedPreperences;
 import com.macmoim.pang.data.FoodCommentItem;
+import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
@@ -87,7 +87,7 @@ public class ViewerActivity extends AppCompatActivity {
 
         setContentView(R.layout.viewer_main);
 
-        mUserId = CommonSharedPreperences.GetInstance(this).getString(CommonSharedPreperences.KEY_ID);
+        mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
