@@ -81,7 +81,7 @@ function rest_post( $keys, $values){
 	$mysqli->query ( $sql_query );
 
 	if ($mysqli->error) {
-		echo "Failed to insert profiles db: (" . $mysqli->error . ") ";
+		$debug_msg = "Failed to insert profiles db: (" . $mysqli->error . ") ";
 	}
 	$insert_id = $mysqli->insert_id;
 
@@ -97,6 +97,7 @@ function rest_post( $keys, $values){
 		$value = $ret;
 	} else {
 		$ret['ret_val'] = "fail";
+		$ret['ret_detail'] = $debug_msg;
 		$value = $ret;
 	}
 
