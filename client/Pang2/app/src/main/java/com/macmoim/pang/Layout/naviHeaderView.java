@@ -121,7 +121,13 @@ public class naviHeaderView{
 
         try {
             score = response.getString("user_score");
-            score = "null".equals(score) ? "" : score;
+            if ("null".equals(score)) {
+                score = "";
+            } else {
+                double temp = Double.parseDouble(score);
+                score = String.valueOf(Math.round(temp*10d) / 10d);
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

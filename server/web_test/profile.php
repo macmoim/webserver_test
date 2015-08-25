@@ -74,32 +74,44 @@ function rest_post( $keys, $values){
 			$sql_query .= ", ";
 		}
 	}
-	$sql_query .= ")";
+	$sql_query .= ") ON DUPLICATE KEY UPDATE ";
+	$arr_size = count($keys);
+	for ($count=0; $count<$arr_size; $count++) {
+		$sql_query .=" $keys[$count] = VALUES($keys[$count])";
+		if ($count != $arr_size-1) {
+			$sql_query .= ", ";
+		}
+	}
 	
 	$mysqli->query ( $create_table );
 
 	$mysqli->query ( $sql_query );
 
-	if ($mysqli->error) {
-		$debug_msg = "Failed to insert profiles db: (" . $mysqli->error . ") ";
-	}
-	$insert_id = $mysqli->insert_id;
-
 	$ret = array();
-	if ($mysqli->insert_id) {
-		$ret['ret_val'] = "success";
-		$ret['id'] = $insert_id;
-		$arr_size = count($keys);
-		for ($count=0; $count<$arr_size; $count++) {
-			// array_push($ret, $keys[$count]=>$values[$count]);
-			$ret[$keys[$count]] = $values[$count];
-		}
-		$value = $ret;
-	} else {
+	if ($mysqli->error) {
+		$debug_msg = $sql_query."///";
+		$debug_msg .= "Failed to insert profiles db: (" . $mysqli->error . ") ";
 		$ret['ret_val'] = "fail";
 		$ret['ret_detail'] = $debug_msg;
-		$value = $ret;
+		
+	} else {
+		$insert_id = $mysqli->insert_id;
+		
+		if ($mysqli->insert_id) {
+			$ret['ret_val'] = "success";
+			$ret['id'] = $insert_id;
+			$arr_size = count($keys);
+			for ($count=0; $count<$arr_size; $count++) {
+				// array_push($ret, $keys[$count]=>$values[$count]);
+				$ret[$keys[$count]] = $values[$count];
+			}
+			
+		} else {
+			$ret['ret_val'] = "success";
+			$ret['ret_detail'] = 'duplicate';
+		} 
 	}
+	$value = $ret;
 
 	$mysqli->close ();
 	return $value;
@@ -233,32 +245,39 @@ function update_user_ranking() {
 
 	// check if likes, posts table exists
 	$check_table_query = "SHOW TABLES LIKE 'likes'";
-	$result  = $mysqli->query($check_table_query);
-	if ($result->num_rows == 0) {
-		// echo "doesn't exists likes table";
-		return;
-	}
-	$check_table_query = "SHOW TABLES LIKE 'posts'";
-	$result  = $mysqli->query($check_table_query);
-	if ($result->num_rows == 0) {
-		// echo "doesn't exists posts table";
-		return;
-	}
+	if ($result  = $mysqli->query($check_table_query)) {
 
+		if ($result->num_rows == 0) {
+			// echo "doesn't exists likes table";
+			return;
+		}
+	}
+	
+	$check_table_query = "SHOW TABLES LIKE 'posts'";
+	if ($result  = $mysqli->query($check_table_query)) {
+		if ($result->num_rows == 0) {
+			// echo "doesn't exists posts table";
+			return;
+		}
+	}
+	
 
 	// add user_ranking COLUMN if not exists COLUMN user_ranking in TABLE profiles
 	$table_name = "profiles";
 	$column_name = "user_ranking";
 	$check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
 				$table_name, $column_name);
-	$result = $mysqli->query($check_rank_query);
-	$exists = $result->num_rows ? TRUE : FALSE;
-	if ($exists) {
-	} else {
-		$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s int", 
-				$table_name, $column_name);
-		$mysqli->query($alter_add_query);
+	if ($result = $mysqli->query($check_rank_query)) {
+		$exists = $result->num_rows ? TRUE : FALSE;
+		if ($exists) {
+		} else {
+			$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s int", 
+					$table_name, $column_name);
+			$mysqli->query($alter_add_query);
+		}
 	}
+	
+	
 
 	// alter user_id column to UNIQUE
 	// $alter_unique_query = "ALTER TABLE profiles ADD UNIQUE (user_id)";

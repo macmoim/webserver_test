@@ -253,7 +253,7 @@ function rest_post() {
 	$mysqli->close ();
 
 	if (isset($_POST['images_name'])) {
-		insert_post_images($insert_id, $_POST['images_name']);	
+		$html_saving_info['ret_detail'] = insert_post_images($insert_id, $_POST['images_name']);	
 	}
 	
 
@@ -341,6 +341,7 @@ function insert_post_images($post_id, $images_name) {
 
 	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
 
+	$ret = NULL;
 	$arr_size = count($img_name_arr);
 	foreach ($img_name_arr as $imgname) {
 		$query = sprintf ( "INSERT INTO post_images
@@ -350,13 +351,13 @@ function insert_post_images($post_id, $images_name) {
 		$mysqli->query ( $query );
 		
 		if ($mysqli->error) {
-			echo "Failed to insert post_images db: (" . $mysqli->error . ") ";
+			$ret =  "Failed to insert post_images db: (" . $mysqli->error . ") ";
 		}
 		$insert_id = $mysqli->insert_id;
 	}
 	
 	
-
+	return $ret;
 }
 
 function delete_post_images($post_id) {

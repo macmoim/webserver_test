@@ -411,7 +411,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
                 closeKeyBoard();
 
-                if (mImageUrlArr.size() > 0) {
+                if (mImageUrlArr.size() > 1) {
                     if (mSelThumbDialog != null) {
                         mSelThumbDialog.setListener(null);
                         mSelThumbDialog = null;
