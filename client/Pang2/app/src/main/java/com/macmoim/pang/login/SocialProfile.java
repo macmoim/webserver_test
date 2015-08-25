@@ -6,14 +6,19 @@ package com.macmoim.pang.login;
 public class SocialProfile {
 
     public static final String FACEBOOK = "facebook";
-    public static final String TWITTER = "twitter";
+    public static final String KAKAO = "kakao";
     public static final String GOOGLE = "google";
 
+    String id;
     String name;
     String email;
     String image;
     String cover;
     String network;
+
+    public String getId(){
+        return id;
+    }
 
     public String getName() {
         return name;

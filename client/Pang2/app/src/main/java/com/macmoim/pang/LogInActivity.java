@@ -1,31 +1,24 @@
 package com.macmoim.pang;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import com.macmoim.pang.MainActivity;
-import com.macmoim.pang.R;
+import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
 
+import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
+
 public class LogInActivity extends AppCompatActivity
         implements View.OnClickListener, Auth.OnAuthListener{
-
-    public static final String USER_AUTHENTICATED = "user_authenticated"; //value is a Boolean
-    public static final String USER_SOCIAL = "user_social"; //value is a String and means user is logged with Social.FACEBOOK or Social.GOOGLE
-    public static final String PROFILE_NAME = "profile_name";  //value is a String
-    public static final String PROFILE_EMAIL = "profile_email";
-    public static final String PROFILE_IMAGE = "profile_image";  //value is a String
-    public static final String PROFILE_COVER = "profile_cover"; //value is a String
-    
+    private final String TAG = "LogInActivity";
 
     Button facebookButton;
     Button googleButton;
@@ -49,6 +42,23 @@ public class LogInActivity extends AppCompatActivity
 
         googleAuth = new GoogleAuth(this, this);
         facebookAuth = new FacebookAuth(this, this);
+
+        if((facebookAuth.isCurrentState())){
+            facebookButton.setText("Log Out");
+        }else{
+            facebookButton.setText("Facebook");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isLogged()) {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean isLogged(){
+        return LoginPreferences.GetInstance().getBoolean(this, USER_AUTHENTICATED);
     }
 
     @Override
@@ -81,7 +91,11 @@ public class LogInActivity extends AppCompatActivity
         int viewId = view.getId();
 
         if (viewId == R.id.facebook_login_button){
-            facebookAuth.login();
+            if((facebookAuth.isCurrentState())){
+                facebookAuth.revoke();
+            }else{
+                facebookAuth.login();
+            }
         }else if(viewId == R.id.gplus_login_button){
             googleAuth.login();
         }else{
@@ -92,6 +106,8 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onLoginSuccess(SocialProfile profile) {
+        Log.d(TAG,"onLoginSuccess" );
+        Toast.makeText(this,"Log in 되었습니다.",Toast.LENGTH_SHORT).show();
         //save on shared preferences
         saveAuthenticatedUser(profile);
 
@@ -102,27 +118,22 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onLoginError(String message) {
-        Log.e("teste", message);
+        Log.e(TAG, message);
     }
 
     @Override
     public void onLoginCancel() {}
 
     @Override
-    public void onRevoke() {}
+    public void onRevoke() {
+        Log.d(TAG,"Logout Success" );
+        LoginPreferences.GetInstance().clear(this);
+        facebookButton.setText("Facebook");
+        Toast.makeText(this,"Log out 되었습니다.",Toast.LENGTH_SHORT).show();
+    }
 
     private void saveAuthenticatedUser(SocialProfile profile){
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putBoolean(USER_AUTHENTICATED, true);
-        editor.putString(USER_SOCIAL,   profile.getNetwork());
-        editor.putString(PROFILE_NAME,  profile.getName());
-        editor.putString(PROFILE_EMAIL, profile.getEmail());
-        editor.putString(PROFILE_IMAGE, profile.getImage());
-        editor.putString(PROFILE_COVER, profile.getCover());
-        editor.apply();
+        LoginPreferences.GetInstance().putProfile(this, profile);
     }
 
 }

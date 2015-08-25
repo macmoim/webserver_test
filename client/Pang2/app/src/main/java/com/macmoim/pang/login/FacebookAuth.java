@@ -67,6 +67,10 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                 Arrays.asList("public_profile", "email"));
     }
 
+    public boolean isCurrentState(){
+        return (AccessToken.getCurrentAccessToken() != null) ? true : false;
+    }
+
     @Override
     public void logout() {
         facebookLoginManager.logOut();
@@ -127,9 +131,10 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
         GraphRequest meRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                String cover= "", name = "", email = "";
+                String cover= "", name = "", email = "", id = "";
 
                 try {
+                    id = jsonObject.getString("id");
                     name = jsonObject.getString("name");
                     email = jsonObject.getString("email");
                     cover = jsonObject.getJSONObject("cover").getString("source");
@@ -137,7 +142,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                     Log.e(LOG_TAG, e.getMessage());
                 }
 
-                requestProfilePhoto(name, email, cover);
+                requestProfilePhoto(id,name, email, cover);
             }
         });
 
@@ -163,9 +168,10 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
         return facebookCallbackManager;
     }
 
-    private void requestProfilePhoto(final String name, final String email, final String cover){
+    private void requestProfilePhoto(final String id, String name, final String email, final String cover){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         final SocialProfile profile = new SocialProfile();
+        profile.id = id;
         profile.name = name;
         profile.email = email;
         profile.cover = cover;

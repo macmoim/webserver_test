@@ -27,6 +27,7 @@ public class startActivity extends AppCompatActivity {
         }
 
         startActivity(intent);
+        finish();
     }
 
     private boolean isLogged(){

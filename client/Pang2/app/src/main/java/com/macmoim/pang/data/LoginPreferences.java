@@ -44,7 +44,8 @@ public class LoginPreferences {
 
         editor.putBoolean(USER_AUTHENTICATED, true);
         editor.putString(USER_SOCIAL, profile.getNetwork());
-        editor.putString(PROFILE_NAME, profile.getName());
+        editor.putString(PROFILE_ID, profile.getId());
+        editor.putString(PROFILE_NAME,  profile.getName());
         editor.putString(PROFILE_EMAIL, profile.getEmail());
         editor.putString(PROFILE_IMAGE, profile.getImage());
         editor.putString(PROFILE_COVER, profile.getCover());
@@ -74,7 +75,6 @@ public class LoginPreferences {
     }
     public void clear(Context context){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         sharedPreferences.edit()
                 .clear()
                 .apply();
