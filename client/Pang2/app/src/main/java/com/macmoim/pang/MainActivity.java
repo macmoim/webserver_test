@@ -16,7 +16,6 @@
 
 package com.macmoim.pang;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -54,10 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mLogIn;
     private ViewPager mViewPager;
-    private static final int REQ_EDITOR = 1;
 
-    private Runnable mFoodListRefreshRunnable;
-	private SimpleAuthListener authListener = new SimpleAuthListener() {
+    private SimpleAuthListener authListener = new SimpleAuthListener() {
         @Override
         public void onRevoke() {
             Log.d(TAG, "SimpleAuthListener()");
@@ -202,35 +199,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), PangEditorActivity.class);
 //        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        getApplicationContext().startActivity(i);
-        startActivityForResult(i, REQ_EDITOR);
-    }
-
-
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mFoodListRefreshRunnable != null) {
-
-            mFoodListRefreshRunnable.run();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQ_EDITOR) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                mFoodListRefreshRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        int currentIndex = mViewPager.getCurrentItem();
-                        ((FoodListFragment) ((MyPagerAdapter) mViewPager.getAdapter()).getItem(currentIndex)).doRefresh();
-                        mFoodListRefreshRunnable = null;
-                    }
-                };
-
-            }
-        }
+        startActivity(i);
     }
 
     @Override
@@ -240,4 +209,5 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
 }

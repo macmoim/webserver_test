@@ -98,9 +98,13 @@ public class FoodListFragment extends Fragment {
 
         });
 
-        showList();
-
         return mSwipeRefreshLayout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showList();
     }
 
     private void showList() {
@@ -144,7 +148,7 @@ public class FoodListFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
 
-    public void doRefresh() {
+    private void doRefresh() {
         if (isAdded()) {
             String category = getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
             if ("Popular".equals(category)) {
