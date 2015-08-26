@@ -178,7 +178,13 @@ public class FoodListFragment extends Fragment {
         }
 
 
-        Objects.requireNonNull(mLatestTimestamp, "mLatestTimestamp is null");
+        try {
+            Objects.requireNonNull(mLatestTimestamp, "mLatestTimestamp is null");
+        } catch (Exception e) {
+            e.printStackTrace();
+            onFinishRefresh();
+            return;
+        }
 
         String url = URL + "/" + ctg + "/" + mLatestTimestamp.replaceAll(" ", "%20");
 
@@ -218,6 +224,7 @@ public class FoodListFragment extends Fragment {
             ctg = URLEncoder.encode(category, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            onFinishRefresh();
         }
 
         String url = URL + "/" + ctg;

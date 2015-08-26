@@ -55,7 +55,7 @@ function rest_post( $keys, $values){
 						user_gender varchar(10),
 						user_score varchar(10),
 						user_intro varchar(500),
-						profile_img_url varchar(100),
+						profile_img_url varchar(500),
 						user_ranking int
 						);";
 
