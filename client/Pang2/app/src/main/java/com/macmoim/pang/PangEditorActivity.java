@@ -503,7 +503,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "requestError : " + error.getMessage());
+                Log.d(TAG, "insertPost requestError : " + error.getMessage());
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -560,7 +560,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "requestError : " + error.getMessage());
+                Log.d(TAG, "updatePostHTML requestError : " + error.getMessage());
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -1004,7 +1004,7 @@ public class PangEditorActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                Log.d(TAG, "requestError : " + error.getMessage());
+                Log.d(TAG, "requestThumbImage requestError : " + error.getMessage());
             }
         });
 

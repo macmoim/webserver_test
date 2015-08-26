@@ -231,6 +231,7 @@ function rest_post() {
 					upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 					thumb_img_path varchar(100),
 					category varchar(20),
+					rank float,
 					PRIMARY KEY (id)
 					);";
 	

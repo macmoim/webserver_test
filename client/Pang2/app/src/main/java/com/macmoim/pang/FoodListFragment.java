@@ -130,7 +130,7 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response, false);
+                    parseJsonFeed(response, true);
                     if (feedItems != null && feedItems.size() > 0) {
                         setLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
