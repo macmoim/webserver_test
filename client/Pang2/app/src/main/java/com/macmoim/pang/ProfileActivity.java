@@ -63,7 +63,6 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean editsate = false;
     private Uri mCropImagedUri;
     static final int REQ_CODE_PICK_PICTURE = 1;
-    private String mImagefileName;
     private String mImageURL;
     ImageView backdropimageView;
 
@@ -146,17 +145,17 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (editsate) {
 
-                    if (mFeedItem.get_mName() == null) {
+                    if (nViewHolder.getName() == null) {
                         Toast.makeText(getApplicationContext(), "input name text", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if ((mFeedItem.get_mEmail() == null)) {
+                    if ((nViewHolder.getEmail() == null)) {
                         Toast.makeText(getApplicationContext(), "input email text", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (mFeedItem.get_mIntro() == null) {
+                    if (nViewHolder.getIntro() == null) {
                         Toast.makeText(getApplicationContext(), "input intro text", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -190,8 +189,8 @@ public class ProfileActivity extends AppCompatActivity {
         mFeedItem.set_mGender(response.getString("user_score"));
         mFeedItem.set_mScore(response.getString("user_gender"));
         mFeedItem.set_mIntro(response.getString("user_intro"));
-        mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
-        mImagefileName = response.getString("profile_img_url");
+        //mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
+        mImageURL = response.getString("profile_img_url");
         if (response.has("id")) {
             mProfileDbId = response.getInt("id");
         }
@@ -262,7 +261,7 @@ public class ProfileActivity extends AppCompatActivity {
         obj.put("user_score", nViewHolder.getScore());
         obj.put("user_gender", nViewHolder.getGender());
         obj.put("user_intro", nViewHolder.getIntro());
-        obj.put("profile_img_url", mImagefileName);
+        obj.put("profile_img_url", mImageURL);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 _URL_PROFILE, obj, new Response.Listener<JSONObject>() {
@@ -298,7 +297,7 @@ public class ProfileActivity extends AppCompatActivity {
         obj.put("user_score", nViewHolder.getScore());
         obj.put("user_gender", nViewHolder.getGender());
         obj.put("user_intro", nViewHolder.getIntro());
-        obj.put("profile_img_url", mImagefileName);
+        obj.put("profile_img_url", mImageURL);
 
         String url = _URL_PROFILE + "/" + mProfileDbId;
 
@@ -353,6 +352,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         try {
             Objects.requireNonNull(backdropimageView, " backdropimageView is null");
+            Objects.requireNonNull(mImageURL,"mImageURL is null ");
 
             if ((mImageURL == null)) {
                 backdropimageView.setImageResource(R.drawable.person);
@@ -459,7 +459,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void requestUpdateThumbImage(File thumbFile) {
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", "profile_image.jpg");
-        obj_body.put("filename_old", mImagefileName);
+        obj_body.put("filename_old", mImageURL);
 
         Map<String, File> obj_file = new HashMap<String, File>();
         obj_file.put("image", thumbFile);
@@ -497,7 +497,6 @@ public class ProfileActivity extends AppCompatActivity {
         int height = 0;
         try {
             mImageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("file_url");
-            mImagefileName = response.getString("file_url");
             width = response.getInt("width");
             height = response.getInt("height");
             Log.d(TAG, "parseJsonFeed upload url " + mImageURL + " width " + width + " height " + height);
@@ -598,40 +597,69 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void setID(String value) {
-            if(value != null)
-                mIDView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mIDView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setName(String value) {
-            if(value != null)
-                mNameView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mNameView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setEmail(String value)
         {
-            if(value != null)
-                mEmailView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mEmailView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setGender(String value)
         {
-            if(value != null)
-                mGenderView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mGenderView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setmScore(String value) {
-            if(value != null)
-                mScoreView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mScoreView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setIntro(String value) {
-            if(value != null)
-                mIntroView.setText(value);
+            try {
+                Objects.requireNonNull(value);
+                mIntroView.setText(value.equals("null") ? "" : value);
+            } catch (Exception e) {
+
+            }
         }
 
         public void setLoginView(String category){
-            if(category.equals(SocialProfile.FACEBOOK)) {
-                mloginView.setBackgroundResource(R.drawable.com_facebook_button_icon);
+            try {
+                Objects.requireNonNull(category);
+                if(category.equals(SocialProfile.FACEBOOK)) {
+                    mloginView.setBackgroundResource(R.drawable.com_facebook_button_icon);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
