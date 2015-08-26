@@ -32,6 +32,12 @@ $app->get('/post/image/:id', function ($id) {
 	exit ( json_encode ( $value ) );
 });
 
+$app->get('/post/search/:text', function ($text) {
+	include 'post.php';
+	$value = rest_search($text);
+	exit ( json_encode ( $value ) );
+});
+
 $app->post('/post', function () use ($app) {
 	include 'post.php';
 	$value = rest_post();

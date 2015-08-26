@@ -1,5 +1,8 @@
 package com.macmoim.pang.util;
 
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
+
 /**
  * Created by P10452 on 2015-07-29.
  */
@@ -43,5 +46,16 @@ public class Util {
         } else {
             return imageUrl;
         }
+    }
+
+    public static void openKeyBoard(Context c) {
+        InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    //For close keyboard
+    public static void closeKeyBoard(Context c) {
+        InputMethodManager imm = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 }

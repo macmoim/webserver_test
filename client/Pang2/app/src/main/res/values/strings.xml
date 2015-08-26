@@ -48,6 +48,7 @@
     <string name="new_edit">new post</string>
     <string name="submit">submit</string>
     <string name="editor_hint">Insert</string>
+    <string name="search">search</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">Login with Facebook</string>
@@ -71,4 +72,8 @@
 
     <string name="attachment_much_long">Attachment is much long, max size is 12mb</string>
     <string name="need_facebook_app">You need native facebook app to perform this action</string>
+
+    <string name="search_hint">검색할 제목을 입력하세요.</string>
+
+
 </resources>

@@ -99,6 +99,57 @@ function get_post($user_id) {
 	return $image_list;
 }
 
+function rest_search($text) {
+	$image_list = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	$sql_query = "SELECT id, user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path
+	                   FROM posts WHERE title LIKE '%$text%'";
+	if ($result = $mysqli->query ( $sql_query )) {
+		
+		if (count ( $result ) > 0) {
+			$post_info = array();
+			while ( $row = $result->fetch_assoc () ) {
+				
+				array_push ( $post_info, array (
+					"id" => $row ['id'],
+					"title" => $row ['title'],
+					"user_id" => $row ['user_id'],
+					"filename" => $row ['upload_filename'],
+					"date" => $row ['upload_date'],
+					"img_path" => $row ['thumb_img_path']
+				) );
+			}
+
+			$image_list = array (
+					'post_info' => $post_info,
+					'ret_val' => "success"
+			);
+		}else{
+			// echo 'fail to get user info';
+			$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get my post info"
+			);
+		}
+	} else {
+		$image_list = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no post data in db"
+		);
+	}
+	
+	$mysqli->close ();
+	
+	return $image_list;
+}
+
 function resize_image($file, $w, $h, $crop = FALSE) {
 	list ( $width, $height ) = getimagesize ( $file );
 	$r = $width / $height;

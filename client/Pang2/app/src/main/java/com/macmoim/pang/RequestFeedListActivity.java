@@ -33,6 +33,24 @@ class RequestFeedListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.requestfeed);
+
+        initViews();
+
+        setupRecyclerView(rv);
+        ShowList();
+    }
+
+    public void onCreate(Bundle savedInstanceState, int LayoutId) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(LayoutId);
+
+        initViews();
+
+        setupRecyclerView(rv);
+    }
+
+    private void initViews() {
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.feed_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,9 +62,6 @@ class RequestFeedListActivity extends AppCompatActivity {
 
         user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
         user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
-
-        setupRecyclerView(rv);
-        ShowList();
     }
 
 
@@ -58,31 +73,32 @@ class RequestFeedListActivity extends AppCompatActivity {
     }
 
 
-
     protected void setLatestTimestamp(String time) {
         mLatestTimestamp = time;
     }
 
-    protected void ShowList(){}
+    protected void ShowList() {
+    }
 
-    protected void DeleteItem(int dbId){}
+    protected void DeleteItem(int dbId) {
+    }
 
     @Override
     protected void onDestroy() {
-        if(feedItems != null){
+        if (feedItems != null) {
             feedItems.clear();
             feedItems = null;
         }
 
-        if(mLatestTimestamp != null){
+        if (mLatestTimestamp != null) {
             mLatestTimestamp = null;
         }
 
-        if(user_id != null){
+        if (user_id != null) {
             user_id = null;
         }
 
-        if(rv != null){
+        if (rv != null) {
             rv = null;
         }
         super.onDestroy();

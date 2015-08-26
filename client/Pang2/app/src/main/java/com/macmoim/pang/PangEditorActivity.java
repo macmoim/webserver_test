@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +40,7 @@ import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
+import com.macmoim.pang.util.Util;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONArray;
@@ -409,7 +409,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "titleedit " + mTitleEdit.getText().toString());
 
-                closeKeyBoard();
+                Util.closeKeyBoard(getApplicationContext());
 
                 if (mImageUrlArr.size() > 1) {
                     if (mSelThumbDialog != null) {
@@ -767,7 +767,7 @@ public class PangEditorActivity extends AppCompatActivity {
             mEditor.scrollTo(0, (int) (mEditor.getContentHeight() * mEditor.getScaleY()) + 5000);
         }
 
-        openKeyBoard();
+        Util.openKeyBoard(getApplicationContext());
 
     }
 
@@ -1031,17 +1031,6 @@ public class PangEditorActivity extends AppCompatActivity {
         mDialog = null;
     }
 
-    public void openKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-
-    //For close keyboard
-    public void closeKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-    }
-
     private void finishWithResult(int resultCode) {
         setResult(resultCode);
         finish();
@@ -1060,7 +1049,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        closeKeyBoard();
+        Util.closeKeyBoard(getApplicationContext());
         super.onPause();
     }
 

@@ -5,7 +5,7 @@ function rest_get($id) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 
-	update_user_ranking();
+	$ret_detail = update_user_ranking();
 	
 	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
 	if ($mysqli->connect_errno) {
@@ -33,6 +33,8 @@ function rest_get($id) {
 	}
 	
 	$mysqli->close ();
+
+	$post_info['ret_detail'] = $ret_detail;
 	
 	return $post_info;
 }
@@ -235,22 +237,13 @@ function rest_put($id, $keys, $values){
 }
 
 function update_user_ranking() {
+
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-	}
-
-	// check if likes, posts table exists
-	$check_table_query = "SHOW TABLES LIKE 'likes'";
-	if ($result  = $mysqli->query($check_table_query)) {
-
-		if ($result->num_rows == 0) {
-			// echo "doesn't exists likes table";
-			return;
-		}
 	}
 	
 	$check_table_query = "SHOW TABLES LIKE 'posts'";
@@ -262,39 +255,39 @@ function update_user_ranking() {
 	}
 	
 
-	// add user_ranking COLUMN if not exists COLUMN user_ranking in TABLE profiles
-	$table_name = "profiles";
-	$column_name = "user_ranking";
-	$check_rank_query = sprintf ( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='%s' AND COLUMN_NAME = '%s'", 
-				$table_name, $column_name);
-	if ($result = $mysqli->query($check_rank_query)) {
-		$exists = $result->num_rows ? TRUE : FALSE;
-		if ($exists) {
-		} else {
-			$alter_add_query = sprintf ( "ALTER TABLE %s ADD %s int", 
-					$table_name, $column_name);
-			$mysqli->query($alter_add_query);
-		}
-	}
-	
-	
+	$get_ranking_query = '';
 
-	// alter user_id column to UNIQUE
-	// $alter_unique_query = "ALTER TABLE profiles ADD UNIQUE (user_id)";
-	// $mysqli->query($alter_unique_query);
-	// if ($mysqli->error) {
-	// 	echo "alter user_id column to unique error ".$mysqli->error;
-	// }
 
-	// sql query get user ranking from db order by like count and rank average.
 	$get_ranking_query = 
 	"SELECT count(like_bool) as count_sum, likes.user_id, posts.rank, likes.post_user_id, AVG(posts.rank) as rank_avg FROM likes 
-	JOIN posts ON likes.post_user_id = posts.user_id 
-	WHERE posts.rank > 0 AND likes.like_bool = 1 
-	GROUP BY posts.user_id 
-	ORDER BY count_sum DESC, rank_avg DESC";
+		JOIN posts ON likes.post_user_id = posts.user_id 
+		WHERE posts.rank > 0 AND likes.like_bool = 1 
+		GROUP BY posts.user_id 
+		ORDER BY count_sum DESC, rank_avg DESC";
 
-	if ($result = $mysqli->query($get_ranking_query)) {
+	
+	$ret = 'sum likes and rank avg';
+
+	$result = $mysqli->query($get_ranking_query);
+	$requery_only_rank_avg = FALSE;
+	if ($mysqli->error | !$result) {
+
+		$requery_only_rank_avg = TRUE;
+	} else if ($result->num_rows == 0) {
+		$requery_only_rank_avg = TRUE;
+	}
+
+	if ($requery_only_rank_avg) {
+		$get_ranking_query = 
+		"SELECT user_id as post_user_id, AVG(posts.rank) as rank_avg FROM posts
+			WHERE posts.rank > 0 
+			GROUP BY posts.user_id 
+			ORDER BY rank_avg DESC";
+		$result = $mysqli->query($get_ranking_query);
+		$ret = 'only rank avg';
+	}
+
+	if ($result) {
 		$ranking_count = $result->num_rows;
 		if ($ranking_count > 0) {
 			$ranking_arr = array();
@@ -352,6 +345,7 @@ function update_user_ranking() {
 	
 	
 	$mysqli->close();
+	return $ret;
 }
 
 // $value = "An error has occurred";
