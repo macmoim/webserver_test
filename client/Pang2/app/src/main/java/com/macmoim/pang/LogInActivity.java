@@ -22,6 +22,7 @@ import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -177,9 +178,24 @@ public class LogInActivity extends AppCompatActivity
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    facebookButton.setText("Log Out");
-                    Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
-                    gotoMain();
+                    String ret = "";
+                    try {
+                        ret = response.getString("ret_val");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if ("success".equals(ret)) {
+                        facebookButton.setText("Log Out");
+                        Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
+                        gotoMain();
+                    } else if("duplicate".equals(ret)){
+                        gotoMain();
+                    } else {
+                        if(LoginPreferences.GetInstance().getString(getApplicationContext(),LoginPreferences.USER_SOCIAL) == SocialProfile.FACEBOOK){
+                            SocialLogout(SocialProfile.FACEBOOK);
+                        }
+                    }
+
                 }else {
                     SocialLogout(SocialProfile.FACEBOOK);
                 }
