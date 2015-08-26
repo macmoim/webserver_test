@@ -16,7 +16,9 @@
 
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -43,6 +45,8 @@ import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SimpleAuthListener;
 import com.macmoim.pang.login.SocialProfile;
 
+import java.util.Objects;
+
 /**
  * TODO
  */
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mLogIn;
     private ViewPager mViewPager;
+    naviHeaderView mNHview;
 
     private SimpleAuthListener authListener = new SimpleAuthListener() {
         @Override
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             setupDrawerContent(navigationView);
         }
 
-        naviHeaderView mNHview = new naviHeaderView(this);
+        mNHview = new naviHeaderView(this);
         mNHview.onDraw();
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -172,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mNHview = new naviHeaderView(this);
+                mNHview.onDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
@@ -197,8 +205,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPangEditorActivity() {
         Intent i = new Intent(getApplicationContext(), PangEditorActivity.class);
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        getApplicationContext().startActivity(i);
         startActivity(i);
     }
 
@@ -206,6 +212,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (mViewPager != null) {
             mViewPager = null;
+        }
+        if (mNHview != null) {
+            mNHview.onDestroy();
+            mNHview = null;
         }
         super.onDestroy();
     }

@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by P11872 on 2015-08-17.
@@ -133,6 +134,15 @@ public class naviHeaderView{
         }
 
         mScoreView.setText(score);
+    }
+
+    public void onDestroy(){
+        mActivity = null;
+        mCircleImage = null;
+        mNameView = null;
+        mRankingView = null;
+        mScoreView = null;
+        user_id = null;
     }
 
 }

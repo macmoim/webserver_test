@@ -16,6 +16,8 @@
 
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +48,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FoodListFragment extends Fragment {
     private static final String TAG = "FoodListFragment";
@@ -162,6 +165,7 @@ public class FoodListFragment extends Fragment {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void refreshListByTimeStamp() {
         onStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
@@ -172,6 +176,9 @@ public class FoodListFragment extends Fragment {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+
+        Objects.requireNonNull(mLatestTimestamp, "mLatestTimestamp is null");
 
         String url = URL + "/" + ctg + "/" + mLatestTimestamp.replaceAll(" ", "%20");
 

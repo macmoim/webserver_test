@@ -1,7 +1,9 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,11 +29,14 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
 
+
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class LogInActivity extends AppCompatActivity
-        implements View.OnClickListener, Auth.OnAuthListener{
+        implements View.OnClickListener, Auth.OnAuthListener {
     private final String TAG = "LogInActivity";
     private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
 
@@ -60,23 +65,23 @@ public class LogInActivity extends AppCompatActivity
         googleAuth = new GoogleAuth(this, this);
         facebookAuth = new FacebookAuth(this, this);
 
-        if((facebookAuth.isCurrentState())){
+        if ((facebookAuth.isCurrentState())) {
             facebookButton.setText("Log Out");
-        }else{
+        } else {
             facebookButton.setText("Facebook");
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(isLogged()) {
+        if (isLogged()) {
             super.onBackPressed();
-        }else{
+        } else {
             finish();
         }
     }
 
-    private boolean isLogged(){
+    private boolean isLogged() {
         return LoginPreferences.GetInstance().getBoolean(this, USER_AUTHENTICATED);
     }
 
@@ -92,11 +97,11 @@ public class LogInActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == GoogleAuth.GOOGLE_SIGN_IN){
-            if(resultCode == RESULT_OK) {
+        if (requestCode == GoogleAuth.GOOGLE_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
                 //call connect again because google just authorized app
                 googleAuth.login();
-            }else{
+            } else {
                 onLoginCancel();
             }
         }
@@ -109,15 +114,15 @@ public class LogInActivity extends AppCompatActivity
 
         int viewId = view.getId();
 
-        if (viewId == R.id.facebook_login_button){
-            if((facebookAuth.isCurrentState())){
+        if (viewId == R.id.facebook_login_button) {
+            if ((facebookAuth.isCurrentState())) {
                 facebookAuth.revoke();
-            }else{
+            } else {
                 facebookAuth.login();
             }
-        }else if(viewId == R.id.gplus_login_button){
+        } else if (viewId == R.id.gplus_login_button) {
             googleAuth.login();
-        }else{
+        } else {
             //TODO : KAKAO
         }
 
@@ -125,13 +130,13 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onLoginSuccess(SocialProfile profile) {
-        Log.d(TAG,"onLoginSuccess" );
+        Log.d(TAG, "onLoginSuccess");
         //save on shared preferences
         saveAuthenticatedUser(profile);
         onRequestData(profile);
     }
 
-    private void gotoMain(){
+    private void gotoMain() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -143,17 +148,18 @@ public class LogInActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoginCancel() {}
+    public void onLoginCancel() {
+    }
 
     @Override
     public void onRevoke() {
         Log.d(TAG, "Logout Success");
         SocialLogout(SocialProfile.FACEBOOK);
-        Toast.makeText(this, "Log out µ«æ˙Ω¿¥œ¥Ÿ.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Log out ÎêòÏóàÏäµÎãàÎã§.", Toast.LENGTH_SHORT).show();
     }
 
-    private void SocialLogout(String tag){
-        if(tag.equals(SocialProfile.FACEBOOK)){
+    private void SocialLogout(String tag) {
+        if (tag.equals(SocialProfile.FACEBOOK)) {
             Log.d(TAG, "profile clear");
             LoginPreferences.GetInstance().clear(this);
             facebookButton.setText("Facebook");
@@ -163,9 +169,7 @@ public class LogInActivity extends AppCompatActivity
 
     private void onRequestData(SocialProfile profile) {
 
-        Map<String, String> obj = new HashMap<String, String>();
-        // temp
-
+        Map<String, String> obj = new HashMap<>();
         obj.put("user_id", profile.getId());
         obj.put("user_name", profile.getName());
         obj.put("user_email", profile.getEmail());
@@ -176,8 +180,9 @@ public class LogInActivity extends AppCompatActivity
 
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+                try {
+                    Objects.requireNonNull(response);
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     String ret = "";
                     try {
                         ret = response.getString("ret_val");
@@ -186,18 +191,18 @@ public class LogInActivity extends AppCompatActivity
                     }
                     if ("success".equals(ret)) {
                         facebookButton.setText("Log Out");
-                        Toast.makeText(getApplicationContext(), "Log in µ«æ˙Ω¿¥œ¥Ÿ.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Log in ÎêòÏóàÏäµÎãàÎã§.", Toast.LENGTH_SHORT).show();
                         gotoMain();
-                    } else if("duplicate".equals(ret)){
+                    } else if ("duplicate".equals(ret)) {
                         gotoMain();
                     } else {
-                        if(LoginPreferences.GetInstance().getString(getApplicationContext(),LoginPreferences.USER_SOCIAL) == SocialProfile.FACEBOOK){
+                        if (LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.USER_SOCIAL) == SocialProfile.FACEBOOK) {
                             SocialLogout(SocialProfile.FACEBOOK);
                         }
                     }
-
-                }else {
+                } catch (Exception e) {
                     SocialLogout(SocialProfile.FACEBOOK);
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -214,7 +219,7 @@ public class LogInActivity extends AppCompatActivity
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
-    private void saveAuthenticatedUser(SocialProfile profile){
+    private void saveAuthenticatedUser(SocialProfile profile) {
         LoginPreferences.GetInstance().putProfile(this, profile);
     }
 

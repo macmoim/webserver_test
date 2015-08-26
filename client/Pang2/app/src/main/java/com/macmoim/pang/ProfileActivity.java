@@ -42,10 +42,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by P11872 on 2015-08-06.
  */
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
@@ -199,16 +201,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         String url = _URL_PROFILE + "/" + user_id;
 
-        Log.d("TTT", "url =  " + url);
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
-                    JSONObject val = response;
+                JSONObject val = response;
+                try {
+                    Objects.requireNonNull(val);
                     showJSONResponseData(val);
+                } catch (Exception e) {
+                    //e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -303,8 +307,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+
+                try {
+                    Objects.requireNonNull(response, " response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+
                     String ret = "";
                     try {
                         ret = response.getString("ret_val");
@@ -317,6 +324,9 @@ public class ProfileActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), getText(R.string.failsave), Toast.LENGTH_SHORT).show();
                     }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -341,14 +351,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadBackdrop() {
 
-        if ((mImageURL == null)) {
-            backdropimageView.setImageResource(R.drawable.person);
-        } else {
-            backdropimageView.setImageURI(Uri.parse(mImageURL));
-        }
         try {
+            Objects.requireNonNull(backdropimageView, " backdropimageView is null");
+
+            if ((mImageURL == null)) {
+                backdropimageView.setImageResource(R.drawable.person);
+            } else {
+                backdropimageView.setImageURI(Uri.parse(mImageURL));
+            }
+
             Glide.with(this).load(new URL(mImageURL)).centerCrop().into(backdropimageView);
+
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -418,9 +434,12 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+                try {
+                    Objects.requireNonNull(response, "response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJson(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -451,9 +470,12 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+                try {
+                    Objects.requireNonNull(response, "response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJson(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -470,7 +492,6 @@ public class ProfileActivity extends AppCompatActivity {
         AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void parseJson(JSONObject response) {
         int width = 0;
         int height = 0;
@@ -613,10 +634,8 @@ public class ProfileActivity extends AppCompatActivity {
                 mloginView.setBackgroundResource(R.drawable.com_facebook_button_icon);
             }
         }
-
-
     }
-
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private class FeedItem {
         private String _mId;
         private String _mName;
@@ -633,10 +652,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void set_mName(String _mName) {
-            if (_mName == null) {
-                this._mName = "";
-            } else {
-                this._mName = _mName;
+            try {
+                Objects.requireNonNull(_mName);
+                this._mName = String_Nulltonull(_mName);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -645,10 +665,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void set_mEmail(String _mEmail) {
-            if (_mEmail == null) {
-                this._mEmail = "";
-            } else {
-                this._mEmail = _mEmail;
+            try {
+                Objects.requireNonNull(_mEmail);
+                this._mEmail= String_Nulltonull(_mEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -657,10 +678,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void set_mGender(String _mGender) {
-            if (_mGender == null) {
-                this._mGender = "";
-            } else {
-                this._mGender = _mGender;
+            try {
+                Objects.requireNonNull(_mGender);
+                this._mGender= String_Nulltonull(_mGender);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -669,20 +691,21 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void set_mScore(String _mScore) {
-            if (_mScore == null) {
-                this._mScore = "";
-            } else {
-                this._mScore = _mScore;
+            try {
+                Objects.requireNonNull(_mScore);
+                this._mScore= String_Nulltonull(_mScore);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
         public void set_mIntro(String _mIntro) {
-            if (_mIntro == null) {
-                this._mIntro = "";
-            } else {
-                this._mIntro = _mIntro;
+            try {
+                Objects.requireNonNull(_mIntro);
+                this._mIntro= String_Nulltonull(_mIntro);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }
 
         public String get_mIntro() {
@@ -694,12 +717,26 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         public void set_mId(String _mId) {
-            if(_mId == null){
-                this._mId = "";
-            }else{
-                this._mId = _mId;
+            try {
+                Objects.requireNonNull(_mId);
+                this._mId= String_Nulltonull(_mId);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-    }
 
+
+        private String String_Nulltonull(String t){
+            String tt = null;
+            try {
+                Objects.requireNonNull(t);
+                if(t.equals("null")){
+                    tt = null;
+
+                }
+            } catch (Exception e) {
+            }
+            return tt;
+        }
+    }
 }

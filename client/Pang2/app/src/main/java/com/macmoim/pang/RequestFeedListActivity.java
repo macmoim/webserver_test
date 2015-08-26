@@ -1,33 +1,19 @@
 package com.macmoim.pang;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
-import com.macmoim.pang.app.AppController;
-import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.data.LoginPreferences;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by P11872 on 2015-08-13.

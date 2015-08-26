@@ -1,5 +1,7 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -16,9 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 /**
  * Created by P11872 on 2015-08-16.
  */
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class LikeActivity extends RequestFeedListActivity {
 
     private String URL = "http://localhost:8080/web_test/like";
@@ -36,14 +41,19 @@ public class LikeActivity extends RequestFeedListActivity {
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
+
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+
+                try {
+                    Objects.requireNonNull(response, "response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJsonFeed(response);
                     if (feedItems != null && feedItems.size() > 0) {
                         setLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {

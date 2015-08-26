@@ -1,9 +1,11 @@
 package com.macmoim.pang;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,9 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 /**
  * Created by P11872 on 2015-08-16.
  */
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class MyPostActivity extends RequestFeedListActivity implements FoodRecyclerViewAdapter.Listener {
 
     private String URL = "http://localhost:8080/web_test/post/user";
@@ -45,14 +50,19 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
+
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+
+                try {
+                    Objects.requireNonNull(response, "response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJsonFeed(response);
                     if (feedItems != null && feedItems.size() > 0) {
                         setLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -80,19 +90,23 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
 
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
-                    try {
-                        String result = response.getString("ret_val");
-                        if ("success".equals(result)) {
-                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
-                            ShowList();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_fail), Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
 
+                try {
+                    Objects.requireNonNull(response, "response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+
+                    String result = response.getString("ret_val");
+                    if ("success".equals(result)) {
+                        Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
+                        ShowList();
+                    } else {
+                        Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.delete_fail), Toast.LENGTH_SHORT).show();
                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
