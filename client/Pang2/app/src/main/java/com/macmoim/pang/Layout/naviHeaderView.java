@@ -92,7 +92,7 @@ public class naviHeaderView{
         String ranking = null;
         String score = null;
         try {
-            imageURL = UPLOAD_PROFILE_IMAGE_FOLDER + response.getString("profile_img_url");
+            imageURL = response.getString("profile_img_url");
         } catch (JSONException e) {
             e.printStackTrace();
         }
