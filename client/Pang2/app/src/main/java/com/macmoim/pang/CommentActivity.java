@@ -68,6 +68,12 @@ public class CommentActivity extends AppCompatActivity {
                 putComment();
                 return true;
             }
+            case android.R.id.home: {
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+                return true;
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

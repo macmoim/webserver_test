@@ -428,6 +428,9 @@ public class PangEditorActivity extends AppCompatActivity {
                     });
                     mSelThumbDialog.show();
                 } else {
+                    if (mImageUrlArr.size() == 1) {
+                        mThumbnailImageURL = mImageUrlArr.get(0);
+                    }
                     sendRequest();
                 }
 

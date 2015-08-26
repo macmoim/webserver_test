@@ -173,7 +173,7 @@ public class FoodListFragment extends Fragment {
             e.printStackTrace();
         }
 
-        String url = URL + "/" + ctg + "/" + mLatestTimestamp;
+        String url = URL + "/" + ctg + "/" + mLatestTimestamp.replaceAll(" ", "%20");
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {

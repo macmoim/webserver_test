@@ -92,12 +92,12 @@ function rest_get_image_list_by_timestamp($category, $timestamp) {
 		
 	}
 	$sql_query .= $sql_order_by;
-	
+	$post_info = array ();
 	if ($result = $mysqli->query ( $sql_query )) {
 		
 		if (count($result) > 0) {
 			
-			$post_info = array ();
+			
 			while ( $row = $result->fetch_assoc () ) {
 				
 				
@@ -114,11 +114,17 @@ function rest_get_image_list_by_timestamp($category, $timestamp) {
 			}
 			// array_push($user_list, 'user_info');
 			$image_list = array (
-					'post_info' => $post_info 
+					'post_info' => $post_info,
+					'ret_val' => 'success',
+					 
 			);
 		} else {
-			echo 'fail to get user info';
+			$post_info['ret_success'] = 'fail';
+			$post_info['ret_detail'] = 'fail to get user info: no rows';
 		}
+	} else {
+		$post_info['ret_success'] = 'fail';
+		$post_info['ret_detail'] = 'fail to get user info: no sql results';
 	}
 	
 	$mysqli->close ();

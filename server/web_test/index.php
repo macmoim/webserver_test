@@ -172,7 +172,7 @@ $app->post('/profile/image/update', function () use ($app) {
 
 $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $timeStamp=NULL) {
 	include __DIR__.'\image_test\thumbnailImage.php';
-	if (isset($byTimeStamp)) {
+	if (isset($timeStamp)) {
 		$value = rest_get_image_list_by_timestamp($category, $timeStamp);
 	} else {
 		$value = rest_get_image_list($category);
