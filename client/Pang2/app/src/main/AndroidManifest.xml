@@ -75,6 +75,7 @@
 
         <activity
             android:name="com.macmoim.pang.ViewerActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -82,6 +83,7 @@
         </activity>
         <activity
             android:name="com.macmoim.pang.PangEditorActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -89,6 +91,7 @@
         </activity>
         <activity
             android:name="com.macmoim.pang.ProfileActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -96,6 +99,7 @@
         </activity>
         <activity
             android:name="com.macmoim.pang.CommentActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.ViewerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -103,6 +107,7 @@
         </activity>
         <activity
             android:name="com.macmoim.pang.LikeActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -111,6 +116,7 @@
 
         <activity
             android:name="com.macmoim.pang.MyPostActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -119,6 +125,7 @@
 
         <activity
             android:name="com.macmoim.pang.SearchActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
