@@ -45,8 +45,6 @@ import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SimpleAuthListener;
 import com.macmoim.pang.login.SocialProfile;
 
-import java.util.Objects;
-
 /**
  * TODO
  */
@@ -101,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
         mNHview = new naviHeaderView(this);
         mNHview.onDraw();
 
+
+
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
+
         if (mViewPager != null) {
             setupViewPager(mViewPager);
         }
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
     }
 
     private String getNetworkInfo() {

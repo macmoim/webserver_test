@@ -187,5 +187,17 @@ $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $tim
 	exit ( json_encode ( $value ) );
 });
 
+$app->get('/post/share/:htmlUrl', function ($htmlUrl) {
+	include __DIR__.'\front\frontpage.php';
+	if (isset($htmlUrl)) {
+		shareHtml($htmlUrl);	
+		
+	} else {
+		echo 'html url invalid';
+	}
+	
+	exit();
+});
+
 $app->run();
 ?>

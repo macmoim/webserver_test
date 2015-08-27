@@ -179,29 +179,39 @@ function resize_image($file, $w, $h, $crop = FALSE) {
 function rest_post() {
 	include "serverconfig.php";
 	include "./image_test/dbconfig.php";
+	$debug_msg = '';
 // 	echo "saveHTMLFile filename: ".$_FILES ['html_file'] ['name'];
 	if (! isset ( $_FILES ['html_file'] )) {
-		exit ( "업로드 파일 존재하지 않음" );
+		$debug_msg =  "업로드 파일 존재하지 않음";
+		return $debug_msg;
 	}
 	
 	if ($_FILES ['html_file'] ['error'] > 0) {
 		switch ($_FILES ['html_file'] ['error']) {
 			case 1 :
-				exit ( "php.ini 파일의 upload_max_filesize 설정값을 초과함(업로드 최대용량 초과)" );
+				$debug_msg = "php.ini 파일의 upload_max_filesize 설정값을 초과함(업로드 최대용량 초과)";
+				return $debug_msg;
 			case 2 :
-				exit ( "Form에서 설정된 MAX_FILE_SIZE 설정값을 초과함(업로드 최대용량 초과)" );
+				$debug_msg = "Form에서 설정된 MAX_FILE_SIZE 설정값을 초과함(업로드 최대용량 초과)";
+				return $debug_msg;
 			case 3 :
-				exit ( "파일 일부만 업로드 됨" );
+				$debug_msg = "파일 일부만 업로드 됨";
+				return $debug_msg;
 			case 4 :
-				exit ( "업로드된 파일이 없음" );
+				$debug_msg = "업로드된 파일이 없음";
+				return $debug_msg;
 			case 6 :
-				exit ( "사용가능한 임시폴더가 없음" );
+				$debug_msg = "사용가능한 임시폴더가 없음";
+				return $debug_msg;
 			case 7 :
-				exit ( "디스크에 저장할수 없음" );
+				$debug_msg = "디스크에 저장할수 없음";
+				return $debug_msg;
 			case 8 :
-				exit ( "파일 업로드가 중지됨" );
+				$debug_msg = "파일 업로드가 중지됨";
+				return $debug_msg;
 			default :
-				exit ( "시스템 오류가 발생" );
+				$debug_msg = "시스템 오류가 발생";
+				return $debug_msg;
 		} // switch
 	}
 	$ableExt = array (
@@ -211,7 +221,8 @@ function rest_post() {
 	$ext = strtolower ( $path ['extension'] );
 	
 	if (! in_array ( $ext, $ableExt )) {
-		exit ( "허용되지 않는 확장자입니다." );
+		$debug_msg = "허용되지 않는 확장자입니다.";
+		return $debug_msg;
 	}
 	
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -296,7 +307,8 @@ function rest_post() {
 			$mysqli->commit ();
 		} else {
 			$mysqli->rollback ();
-			exit ( "업로드 실패" );
+			$debug_msg = "업로드 실패";
+			return $debug_msg;
 		} // if
 	}
 	$html_saving_info = array (
@@ -366,7 +378,8 @@ function save_thumbnail($thumb_img_url) {
 	if (imagejpeg($thumb,$thumbServerPath.$imageName,100)) {
 	} else {
 		// 실패시 db에 저장했던 내용 취소를 위한 롤백
-		exit ( "thumbnail 실패" );
+		echo  "thumbnail 실패";
+		exit ();
 	} // if
 	return $imageName;
 	
@@ -777,7 +790,8 @@ function rest_post_html_update() {
 	$ext = strtolower ( $path ['extension'] );
 	
 	if (! in_array ( $ext, $ableExt )) {
-		exit ( "허용되지 않는 확장자입니다." );
+		echo  "허용되지 않는 확장자입니다.";
+		exit ();
 	}
 
 	$time = explode ( ' ', microtime () );

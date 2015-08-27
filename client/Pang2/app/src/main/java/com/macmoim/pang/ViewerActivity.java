@@ -3,10 +3,14 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,11 +45,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +68,7 @@ public class ViewerActivity extends AppCompatActivity {
     private static final String URL_STAR = "http://localhost:8080/web_test/star";
     private static final String URL_POST = "http://localhost:8080/web_test/post";
     private static final String URL_COMMENT = "http://localhost:8080/web_test/comment";
+    private static final String URL_SHARE = "http://localhost:8080/web_test/post/share";
 
     private RichViewer mViewer;
     private Toolbar mToolbar;
@@ -71,6 +80,9 @@ public class ViewerActivity extends AppCompatActivity {
     private int mStar;
     private int mLikeDbId = -1;
     private int mStarDbId = -1;
+    private String mHtmlFileName;
+    private String mThumbFileName;
+    private String mTitle;
 
     private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
@@ -142,6 +154,13 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
+        ((Button) findViewById(R.id.share_btn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prepareShareContent();
+            }
+        });
+
 
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
         setupRecyclerView(mCommentRv);
@@ -192,10 +211,13 @@ public class ViewerActivity extends AppCompatActivity {
                         htmlPath += response.getString("db_filename");
                         thumbImgPath = response.getString("thumb_img_path");
                         thumbImgPath = Util.splitFilename(thumbImgPath);
+                        mThumbFileName = thumbImgPath;
+                        mHtmlFileName = Util.splitFilename(htmlPath);
 
+                        mTitle = response.getString("title");
                         CollapsingToolbarLayout collapsingToolbar =
                                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-                        collapsingToolbar.setTitle(response.getString("title"));
+                        collapsingToolbar.setTitle(mTitle);
 
                         postUserId = response.getString("user_id");
 
@@ -578,6 +600,28 @@ public class ViewerActivity extends AppCompatActivity {
         mRankingLayoutRect = new Rect();
     }
 
+    private void prepareShareContent() {
+        if (mHtmlFileName == null) {
+            return;
+        }
+
+        new GetBitmapFromUrlTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
+
+    }
+
+    private void shareContent(Uri shareImageUri) {
+        String url = URL_SHARE + "/" + mHtmlFileName.toLowerCase();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "[" + getString(R.string.app_name) + "] " + mTitle);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
+//        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(Intent.createChooser(shareIntent, "Share Food"));
+
+    }
+
     private class StarClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -600,6 +644,73 @@ public class ViewerActivity extends AppCompatActivity {
                 mRankingStartArr.get(i).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor));
             }
         }
+    }
+
+    private class GetBitmapFromUrlTask extends AsyncTask<String, Void, Uri> {
+        @Override
+        protected Uri doInBackground(String... params) {
+
+            return getLocalBitmapUri(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Uri uri) {
+            super.onPostExecute(uri);
+
+            shareContent(uri);
+        }
+    }
+
+    public Uri getLocalBitmapUri(String imageUrl) {
+        // Extract Bitmap from ImageView drawable
+        Bitmap bmp;
+        bmp = GetImageFromURL(imageUrl);
+        // Store image to default external storage directory
+        Uri bmpUri = null;
+
+
+        try {
+            File newDirectory = new File(Environment.getExternalStorageDirectory() + "/smtc/");
+            if (!newDirectory.exists()) {
+                if (newDirectory.mkdir()) {
+                    Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath() + " directory created");
+                }
+            }
+            File file = new File(newDirectory, "share_image.jpg");
+            if (file.exists()) {
+                //this wont be executed
+                file.delete();
+                file.createNewFile();
+            }
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            Log.d(TAG, "getLocalBitmapUri file making io exception");
+            e.printStackTrace();
+        }
+        return bmpUri;
+    }
+
+    private Bitmap GetImageFromURL(String strImageURL) {
+        Bitmap imgBitmap = null;
+
+        try {
+            URL url = new URL(strImageURL);
+            Log.d(TAG, "GetImageFromURL " + strImageURL);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+
+            int nSize = conn.getContentLength();
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+            imgBitmap = BitmapFactory.decodeStream(bis);
+
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imgBitmap;
     }
 
     @Override

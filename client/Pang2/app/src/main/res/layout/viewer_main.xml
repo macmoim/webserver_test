@@ -170,6 +170,19 @@
             android:layout_weight="1">
 
             <Button
+                android:id="@+id/share_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_share" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <Button
                 android:id="@+id/ranking_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
