@@ -18,8 +18,10 @@
 
 <resources>
     <string name="app_name">Show me the Cook</string>
-
     <string name="menu_settings">Settings</string>
+
+    <!-- content description -->
+    <string name="content_description_empty" translatable="false">" "</string>
 
     <string-array name="tabs">
         <item>Latest</item>

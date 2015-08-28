@@ -3,12 +3,18 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -16,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.adapter.LogInPageAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
@@ -48,9 +55,22 @@ public class LogInActivity extends AppCompatActivity
     FacebookAuth facebookAuth;
     Context mContext;
 
+    int[] pictures = new int[]{
+            R.drawable.bg_login_1,
+            R.drawable.bg_login_2,
+            R.drawable.bg_login_3,
+            R.drawable.bg_login_4
+    };
+
+    private int width;
+    ViewPager viewPager;
+    private LogInPageAdapter adapter;
+    private LinearLayout IndicaterLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         mContext = getApplicationContext();
@@ -70,6 +90,10 @@ public class LogInActivity extends AppCompatActivity
         } else {
             facebookButton.setText("Facebook");
         }
+
+        initViewPagerAndSetAdapter();
+        buildIndicaterLayout();
+        calculateWidth();
     }
 
     @Override
@@ -164,11 +188,9 @@ public class LogInActivity extends AppCompatActivity
             LoginPreferences.GetInstance().clear(this);
             facebookButton.setText("Facebook");
         }
-
     }
 
     private void onRequestData(SocialProfile profile) {
-
         Map<String, String> obj = new HashMap<>();
         obj.put("user_id", profile.getId());
         obj.put("user_name", profile.getName());
@@ -223,4 +245,87 @@ public class LogInActivity extends AppCompatActivity
         LoginPreferences.GetInstance().putProfile(this, profile);
     }
 
+    private void initViewPagerAndSetAdapter() {
+        viewPager = (ViewPager) findViewById(R.id.login_view_pager);
+        adapter = new LogInPageAdapter(this, pictures);
+        viewPager.setAdapter(adapter);
+
+        addPageChangeListenerIfSDKAbove11();
+    }
+
+    private void addPageChangeListenerIfSDKAbove11() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                parallaxImages(position, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setIndicator(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void calculateWidth() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        viewPager.getWidth();
+
+        if (Build.VERSION.SDK_INT < 13) {
+            width = display.getWidth();
+        } else {
+            display.getSize(size);
+            width = size.x;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void parallaxImages(int position, int positionOffsetPixels) {
+        Map<Integer, View> imageViews = adapter.getImageViews();
+        for (Map.Entry<Integer, View> entry : imageViews.entrySet()) {
+            int imagePosition = entry.getKey();
+            int correctedPosition = imagePosition - position;
+            int displace = -(correctedPosition * width / 2) + (positionOffsetPixels / 2);
+
+            View view = entry.getValue();
+            view.setX(displace);
+        }
+    }
+
+    private void buildIndicaterLayout() {
+        IndicaterLayout = LinearLayout.class.cast(findViewById(R.id.view_pager_indicator));
+
+        int padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_margin);
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            ImageView circle = new ImageView(this);
+            circle.setImageResource(R.drawable.circle_white_normal);
+            circle.setLayoutParams(new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal),
+                    (int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal)));
+            circle.setAdjustViewBounds(true);
+            circle.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            circle.setPadding(padding, padding, padding, padding);
+            IndicaterLayout.addView(circle);
+        }
+        setIndicator(0);
+    }
+
+    private void setIndicator(int index) {
+        if (index < adapter.getCount()) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                ImageView circle = (ImageView) IndicaterLayout.getChildAt(i);
+                if (i == index) {
+                    circle.setImageResource(R.drawable.circle_white_selected);
+                } else {
+                    circle.setImageResource(R.drawable.circle_white_normal);
+                }
+            }
+        }
+    }
 }
