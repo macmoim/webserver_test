@@ -247,4 +247,43 @@
             android:background="@drawable/ic_menu_check" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/share_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:background="@color/basePrimaryBackgroundColour"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/facebook_share_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_facebook" />
+
+            <Button
+                android:id="@+id/kakao_story_share_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:text="ks" />
+
+            <Button
+                android:id="@+id/etc_share_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:text="etc" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

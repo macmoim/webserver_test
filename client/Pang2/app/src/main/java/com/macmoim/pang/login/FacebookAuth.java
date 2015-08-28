@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,8 +20,6 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
@@ -50,7 +47,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
     CallbackManager facebookCallbackManager;
     Activity hostActivity;
 
-    public FacebookAuth(Activity activity, OnAuthListener onAuthListener){
+    public FacebookAuth(Activity activity, OnAuthListener onAuthListener) {
         FacebookSdk.sdkInitialize(activity.getApplicationContext());
 
         hostActivity = activity;
@@ -67,7 +64,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                 Arrays.asList("public_profile", "email"));
     }
 
-    public boolean isCurrentState(){
+    public boolean isCurrentState() {
         return (AccessToken.getCurrentAccessToken() != null) ? true : false;
     }
 
@@ -97,7 +94,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
             });
 
             requestLogout.executeAsync();
-        }else{
+        } else {
             onAuthListener.onLoginError("Token is null");
         }
     }
@@ -105,21 +102,22 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
     @Override
     public void share(String content, Uri imageOrVideo) {
 
-        if(imageOrVideo != null) {
+        if (imageOrVideo != null) {
             ContentResolver contentResolver = hostActivity.getContentResolver();
             String mimeType = contentResolver.getType(imageOrVideo);
 
             File file = uriToFile(imageOrVideo);
-            if(file.getUsableSpace() > MAX_SIZE_ATTACHMENT){
+
+            if (/*file.getUsableSpace()*/ file.length() > MAX_SIZE_ATTACHMENT) {
                 Toast.makeText(hostActivity,
                         R.string.attachment_much_long,
                         Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if(mimeType.contains(IMAGE_SCHEME)){
+            if (mimeType.contains(IMAGE_SCHEME)) {
                 shareImage(imageOrVideo);
-            }else{
+            } else {
                 shareVideo(content, imageOrVideo);
             }
         }
@@ -131,7 +129,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
         GraphRequest meRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                String cover= "", name = "", email = "", id = "";
+                String cover = "", name = "", email = "", id = "";
 
                 try {
                     id = jsonObject.getString("id");
@@ -142,7 +140,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                     Log.e(LOG_TAG, e.getMessage());
                 }
 
-                requestProfilePhoto(id,name, email, cover);
+                requestProfilePhoto(id, name, email, cover);
             }
         });
 
@@ -168,7 +166,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
         return facebookCallbackManager;
     }
 
-    private void requestProfilePhoto(final String id, String name, final String email, final String cover){
+    private void requestProfilePhoto(final String id, String name, final String email, final String cover) {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         final SocialProfile profile = new SocialProfile();
         profile.id = id;
@@ -186,7 +184,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
 
                 try {
                     profile.image = graphResponse.getJSONObject().getJSONObject("data").getString("url");
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     Log.e(LOG_TAG, e.getMessage());
                 }
 
@@ -202,7 +200,7 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
         photoRequest.executeAsync();
     }
 
-    private void shareImage(Uri imageOrVideo){
+    private void shareImage(Uri imageOrVideo) {
         try {
             //convert to image
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(hostActivity.getContentResolver(),
@@ -216,19 +214,20 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                     .addPhoto(sharePhoto)
                     .build();
 
-            if(ShareDialog.canShow(SharePhotoContent.class)){
+
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
                 ShareDialog.show(hostActivity, photoContent);
-            }else{
+            } else {
                 Toast.makeText(hostActivity,
                         R.string.need_facebook_app,
                         Toast.LENGTH_LONG).show();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
     }
 
-    private void shareVideo(String content, Uri imageOrVideo){
+    private void shareVideo(String content, Uri imageOrVideo) {
         ShareVideo shareVideo = new ShareVideo.Builder()
                 .setLocalUrl(imageOrVideo)
                 .build();
@@ -238,9 +237,9 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
                 .setContentDescription(content)
                 .build();
 
-        if(ShareDialog.canShow(ShareVideoContent.class)){
+        if (ShareDialog.canShow(ShareVideoContent.class)) {
             ShareDialog.show(hostActivity, videoContent);
-        }else{
+        } else {
             Toast.makeText(hostActivity,
                     R.string.need_facebook_app,
                     Toast.LENGTH_LONG).show();
@@ -250,10 +249,11 @@ public class FacebookAuth extends Auth implements FacebookCallback<LoginResult> 
     /**
      * query for uri passed as param to get real path and
      * create a new file and return it
+     *
      * @param uri {@link Uri} uri from file
      * @return new {@link File} real file path
      */
-    private File uriToFile(Uri uri){
+    private File uriToFile(Uri uri) {
         String filePath;
         ContentResolver contentResolver = hostActivity.getContentResolver();
 

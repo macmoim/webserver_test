@@ -1,10 +1,14 @@
 package com.macmoim.pang.util;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.inputmethod.InputMethodManager;
+
+import java.io.File;
 
 /**
  * Created by P10452 on 2015-07-29.
@@ -45,7 +49,7 @@ public class Util {
         if (imageUrl.contains("http")) {
             String[] filename_arr = imageUrl.split("/");
             int last_index = filename_arr.length;
-            return filename_arr[last_index-1];
+            return filename_arr[last_index - 1];
         } else {
             return imageUrl;
         }
@@ -73,5 +77,43 @@ public class Util {
         cursor.close();
 
         return result;
+    }
+
+    public static Uri getUriFromPath(Context context, String path) {
+        String fileName = path;//"file:///sdcard/DCIM/Camera/2013_07_07_12345.jpg";
+        Uri fileUri = Uri.parse(fileName);
+        String filePath = fileUri.getPath();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, "_data = '" + filePath + "'", null, null);
+        cursor.moveToNext();
+        int id = cursor.getInt(cursor.getColumnIndex("_id"));
+        Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+
+        return uri;
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
     }
 }
