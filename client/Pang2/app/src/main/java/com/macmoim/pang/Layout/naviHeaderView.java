@@ -1,6 +1,8 @@
 package com.macmoim.pang.Layout;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ import java.util.Objects;
 /**
  * Created by P11872 on 2015-08-17.
  */
-public class naviHeaderView{
+public class naviHeaderView {
     private final String TAG = "naviHeaderView";
     private Activity mActivity = null;
     private ImageView mCircleImage = null;
@@ -48,7 +50,7 @@ public class naviHeaderView{
         mScoreView = (TextView) mActivity.findViewById(R.id.score_text);
     }
 
-    public void onDraw(){
+    public void onDraw() {
         user_id = LoginPreferences.GetInstance().getString(this.mActivity, LoginPreferences.PROFILE_ID);
         drawCPImage(user_id);
     }
@@ -65,12 +67,16 @@ public class naviHeaderView{
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
                 url, null, new Response.Listener<JSONObject>() {
 
+            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null) {
+                try {
+                    Objects.requireNonNull(response,"response is null");
+                    VolleyLog.d(TAG, "Response: " + response.toString());
                     JSONObject val = response;
                     drawdata(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -86,7 +92,8 @@ public class naviHeaderView{
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
-    private void drawdata(JSONObject response){
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void drawdata(JSONObject response) {
         String imageURL = null;
         String name = null;
         String ranking = null;
@@ -121,22 +128,27 @@ public class naviHeaderView{
         mRankingView.setText(ranking);
 
         try {
+            Objects.requireNonNull(score, "score is null");
+
             score = response.getString("user_score");
             if ("null".equals(score)) {
                 score = "";
             } else {
                 double temp = Double.parseDouble(score);
-                score = String.valueOf(Math.round(temp*10d) / 10d);
+                score = String.valueOf(Math.round(temp * 10d) / 10d);
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            mScoreView.setText(score);
         }
 
-        mScoreView.setText(score);
+
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         mActivity = null;
         mCircleImage = null;
         mNameView = null;

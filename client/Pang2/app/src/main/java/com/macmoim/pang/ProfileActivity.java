@@ -173,6 +173,7 @@ public class ProfileActivity extends AppCompatActivity {
                     editsate = false;
                     nViewHolder.setviewAllFocus(false);
                     Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     editsate = true;
                     nViewHolder.setviewAllFocus(true);
