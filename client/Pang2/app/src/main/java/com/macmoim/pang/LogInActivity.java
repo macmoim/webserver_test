@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -16,6 +20,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.adapter.PagerViewAdapter;
+import com.macmoim.pang.adapter.PagerViewTransform;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
@@ -27,7 +33,9 @@ import com.macmoim.pang.login.SocialProfile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -48,9 +56,23 @@ public class LogInActivity extends AppCompatActivity
     FacebookAuth facebookAuth;
     Context mContext;
 
+    private ViewPager LogInPagerView;
+    private PagerViewAdapter LogInPagerViewAdapter;
+    private LinearLayout PagerViewIndicatorLayout;
+    private int LogInPagerViewLayoutId;
+
+    private final List<Integer> LogInBg = Arrays.asList(
+            R.drawable.bg_login_1,
+            R.drawable.bg_login_2,
+            R.drawable.bg_login_3,
+            R.drawable.bg_login_4,
+            R.drawable.bg_login_5
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         mContext = getApplicationContext();
@@ -70,6 +92,8 @@ public class LogInActivity extends AppCompatActivity
         } else {
             facebookButton.setText("Facebook");
         }
+
+        InitLogInPagerViewSetAdapter();
     }
 
     @Override
@@ -164,11 +188,9 @@ public class LogInActivity extends AppCompatActivity
             LoginPreferences.GetInstance().clear(this);
             facebookButton.setText("Facebook");
         }
-
     }
 
     private void onRequestData(SocialProfile profile) {
-
         Map<String, String> obj = new HashMap<>();
         obj.put("user_id", profile.getId());
         obj.put("user_name", profile.getName());
@@ -223,4 +245,65 @@ public class LogInActivity extends AppCompatActivity
         LoginPreferences.GetInstance().putProfile(this, profile);
     }
 
+    private void InitLogInPagerViewSetAdapter() {
+        LogInPagerViewLayoutId = R.layout.login_pager_view_element;
+
+        LogInPagerView = (ViewPager) findViewById(R.id.login_view_pager);
+
+        LogInPagerView.setPageTransformer(false, new PagerViewTransform());
+        LogInPagerViewAdapter = new PagerViewAdapter(this, LogInBg, LogInPagerViewLayoutId);
+        LogInPagerView.setAdapter(LogInPagerViewAdapter);
+        LogInPagerView.setOffscreenPageLimit(LogInBg.size());
+
+        LogInPagerView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                SetPagerViewIndicatorLayout(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        BuildPagerViewIndicatorLayout();
+    }
+
+    private void BuildPagerViewIndicatorLayout() {
+        PagerViewIndicatorLayout = LinearLayout.class.cast(findViewById(R.id.view_pager_indicator));
+
+        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_margin);
+
+        for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
+            ImageView circle = new ImageView(this);
+            circle.setImageResource(R.drawable.circle_white_normal);
+            circle.setLayoutParams(new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal),
+                    (int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal)));
+            circle.setAdjustViewBounds(true);
+            circle.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            circle.setPadding(_Padding, _Padding, _Padding, _Padding);
+            PagerViewIndicatorLayout.addView(circle);
+        }
+        
+        SetPagerViewIndicatorLayout(0);
+    }
+
+    private void SetPagerViewIndicatorLayout(int index) {
+        if (index < LogInPagerViewAdapter.getCount()) {
+            for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
+                ImageView circle = (ImageView) PagerViewIndicatorLayout.getChildAt(i);
+                if (i == index) {
+                    circle.setImageResource(R.drawable.circle_white_selected);
+                } else {
+                    circle.setImageResource(R.drawable.circle_white_normal);
+                }
+            }
+        }
+    }
 }

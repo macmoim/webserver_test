@@ -38,6 +38,8 @@ import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
+import com.macmoim.pang.login.Auth;
+import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
 
@@ -75,7 +77,9 @@ public class ViewerActivity extends AppCompatActivity {
     private Button mLikeBtn;
     private boolean isLikeCheck;
     private ViewGroup mRankingLayout;
+    private ViewGroup mShareLayout;
     private Rect mRankingLayoutRect;
+    private Rect mShareLayoutRect;
     private ArrayList<ImageView> mRankingStartArr;
     private int mStar;
     private int mLikeDbId = -1;
@@ -143,16 +147,19 @@ public class ViewerActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.ranking_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRankingView();
+                showBottomView(mRankingLayout);
             }
         });
 
         ((Button) findViewById(R.id.ranking_send_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeRankingView();
+                closeBottomView(mRankingLayout);
             }
         });
+
+        mShareLayout = (ViewGroup) findViewById(R.id.share_layout);
+        setupShareView();
 
         ((Button) findViewById(R.id.share_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +167,6 @@ public class ViewerActivity extends AppCompatActivity {
                 prepareShareContent();
             }
         });
-
 
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
         setupRecyclerView(mCommentRv);
@@ -564,23 +570,29 @@ public class ViewerActivity extends AppCompatActivity {
         return true;
     }
 
-    private void showRankingView() {
-        if (mRankingLayout == null) {
+    private void showBottomView(View v) {
+        if (v == null) {
             return;
         }
-        if (mRankingLayout.getVisibility() == View.GONE) {
-            mRankingLayout.setVisibility(View.VISIBLE);
-            mRankingLayout.getHitRect(mRankingLayoutRect);
+        if (v.getVisibility() == View.GONE) {
+            v.setVisibility(View.VISIBLE);
+            if (v == mRankingLayout) {
+                mRankingLayout.getHitRect(mRankingLayoutRect);
+            } else if (v == mShareLayout) {
+                mShareLayout.getHitRect(mShareLayoutRect);
+            }
         }
     }
 
-    private void closeRankingView() {
-        if (mRankingLayout == null) {
+    private void closeBottomView(View v) {
+        if (v == null) {
             return;
         }
-        if (mRankingLayout.getVisibility() == View.VISIBLE) {
-            mRankingLayout.setVisibility(View.GONE);
-            putStar(mStar);
+        if (v.getVisibility() == View.VISIBLE) {
+            v.setVisibility(View.GONE);
+            if (v == mRankingLayout) {
+                putStar(mStar);
+            }
         }
     }
 
@@ -600,13 +612,20 @@ public class ViewerActivity extends AppCompatActivity {
         mRankingLayoutRect = new Rect();
     }
 
+    private void setupShareView() {
+        ShareClickListener shareListener = new ShareClickListener();
+        ((Button) findViewById(R.id.facebook_share_btn)).setOnClickListener(shareListener);
+        ((Button) findViewById(R.id.kakao_story_share_btn)).setOnClickListener(shareListener);
+        ((Button) findViewById(R.id.etc_share_btn)).setOnClickListener(shareListener);
+
+        mShareLayoutRect = new Rect();
+    }
+
     private void prepareShareContent() {
         if (mHtmlFileName == null) {
             return;
         }
-
-        new GetBitmapFromUrlTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
-
+        showBottomView(mShareLayout);
     }
 
     private void shareContent(Uri shareImageUri) {
@@ -622,6 +641,14 @@ public class ViewerActivity extends AppCompatActivity {
 
     }
 
+    private void shareContentFacebook(Uri contentUri) {
+        String url = URL_SHARE + "/" + mHtmlFileName.toLowerCase();
+
+        Auth auth = new FacebookAuth(this, null);
+        auth.share(url, contentUri);
+
+    }
+
     private class StarClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -631,6 +658,24 @@ public class ViewerActivity extends AppCompatActivity {
             int clickedIndex = mRankingStartArr.indexOf(v);
             setRankStar(clickedIndex);
 
+        }
+    }
+
+    private class ShareClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.facebook_share_btn:
+                    new ShareFacebookTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                    break;
+                case R.id.kakao_story_share_btn:
+                    new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
+                    break;
+                case R.id.etc_share_btn:
+                    new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
+                    break;
+            }
+            closeBottomView(mShareLayout);
         }
     }
 
@@ -646,7 +691,7 @@ public class ViewerActivity extends AppCompatActivity {
         }
     }
 
-    private class GetBitmapFromUrlTask extends AsyncTask<String, Void, Uri> {
+    private class ShareEtcTask extends AsyncTask<String, Void, Uri> {
         @Override
         protected Uri doInBackground(String... params) {
 
@@ -661,14 +706,34 @@ public class ViewerActivity extends AppCompatActivity {
         }
     }
 
+    private class ShareFacebookTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+
+            return getLocalBitmapFile(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
+            Uri contentUri = Util.getImageContentUri(getApplicationContext(), file);
+            shareContentFacebook(contentUri);
+
+        }
+    }
+
     public Uri getLocalBitmapUri(String imageUrl) {
+        Uri bmpUri = Uri.fromFile(getLocalBitmapFile(imageUrl));
+        return bmpUri;
+    }
+
+    public File getLocalBitmapFile(String imageUrl) {
         // Extract Bitmap from ImageView drawable
         Bitmap bmp;
         bmp = GetImageFromURL(imageUrl);
         // Store image to default external storage directory
-        Uri bmpUri = null;
 
-
+        File file = null;
         try {
             File newDirectory = new File(Environment.getExternalStorageDirectory() + "/smtc/");
             if (!newDirectory.exists()) {
@@ -676,7 +741,7 @@ public class ViewerActivity extends AppCompatActivity {
                     Log.d(getApplicationContext().getClass().getName(), newDirectory.getAbsolutePath() + " directory created");
                 }
             }
-            File file = new File(newDirectory, "share_image.jpg");
+            file = new File(newDirectory, "share_image.jpg");
             if (file.exists()) {
                 //this wont be executed
                 file.delete();
@@ -685,12 +750,11 @@ public class ViewerActivity extends AppCompatActivity {
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
-            bmpUri = Uri.fromFile(file);
         } catch (IOException e) {
             Log.d(TAG, "getLocalBitmapUri file making io exception");
             e.printStackTrace();
         }
-        return bmpUri;
+        return file;
     }
 
     private Bitmap GetImageFromURL(String strImageURL) {
@@ -716,15 +780,23 @@ public class ViewerActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!mRankingLayoutRect.contains((int) event.getX(), (int) event.getY())) {
-            closeRankingView();
+            closeBottomView(mRankingLayout);
         }
+        if (!mShareLayoutRect.contains((int) event.getX(), (int) event.getY())) {
+            closeBottomView(mShareLayout);
+        }
+
         return super.onTouchEvent(event);
     }
 
     @Override
     public void onBackPressed() {
         if (mRankingLayout != null && mRankingLayout.getVisibility() == View.VISIBLE) {
-            closeRankingView();
+            closeBottomView(mRankingLayout);
+            return;
+        }
+        if (mShareLayout != null && mShareLayout.getVisibility() == View.VISIBLE) {
+            closeBottomView(mShareLayout);
             return;
         }
         super.onBackPressed();
@@ -753,6 +825,9 @@ public class ViewerActivity extends AppCompatActivity {
         if (mRankingLayout != null) {
             mRankingLayout = null;
         }
+        if (mShareLayout != null) {
+            mShareLayout = null;
+        }
         if (mCommentRv != null) {
             mCommentRv.removeAllViews();
             mCommentRv.setLayoutManager(null);
@@ -761,6 +836,7 @@ public class ViewerActivity extends AppCompatActivity {
         }
         mViewer = null;
         mRankingLayoutRect = null;
+        mShareLayoutRect = null;
         super.onDestroy();
 
     }
