@@ -172,11 +172,13 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     editsate = false;
                     nViewHolder.setviewAllFocus(false);
+                    ((FloatingActionButton) findViewById(R.id.profile_fab)).setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
                     Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     editsate = true;
                     nViewHolder.setviewAllFocus(true);
+                    ((FloatingActionButton) findViewById(R.id.profile_fab)).setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
                     Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -566,8 +568,6 @@ public class ProfileActivity extends AppCompatActivity {
             mEmailView.setFocusableInTouchMode(state);
             mEmailView.setFocusable(state);
             mGenderView.setFocusableInTouchMode(state);
-            mScoreView.setFocusableInTouchMode(state);
-            mScoreView.setFocusable(state);
             mIntroView.setFocusableInTouchMode(state);
             mIntroView.setFocusable(state);
             mloginView.setFocusable(state);
@@ -600,7 +600,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void setID(String value) {
             try {
                 Objects.requireNonNull(value);
-                mIDView.setText(value.equals("null") ? "" : value);
+                mIDView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }
@@ -609,7 +609,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void setName(String value) {
             try {
                 Objects.requireNonNull(value);
-                mNameView.setText(value.equals("null") ? "" : value);
+                mNameView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }
@@ -619,7 +619,7 @@ public class ProfileActivity extends AppCompatActivity {
         {
             try {
                 Objects.requireNonNull(value);
-                mEmailView.setText(value.equals("null") ? "" : value);
+                mEmailView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }
@@ -629,7 +629,7 @@ public class ProfileActivity extends AppCompatActivity {
         {
             try {
                 Objects.requireNonNull(value);
-                mGenderView.setText(value.equals("null") ? "" : value);
+                mGenderView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }
@@ -638,7 +638,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void setmScore(String value) {
             try {
                 Objects.requireNonNull(value);
-                mScoreView.setText(value.equals("null") ? "" : value);
+                mScoreView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }
@@ -647,7 +647,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void setIntro(String value) {
             try {
                 Objects.requireNonNull(value);
-                mIntroView.setText(value.equals("null") ? "" : value);
+                mIntroView.setText(value.equals("null") ? null : value);
             } catch (Exception e) {
 
             }

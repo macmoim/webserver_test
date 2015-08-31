@@ -193,7 +193,7 @@
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:hint="Gendder"
+                            android:hint="Gender"
                             app:met_floatingLabel="normal" />
                     </LinearLayout>
 
@@ -221,9 +221,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:inputType="none"
                             android:singleLine="true"
-                            android:text="35점"
+                            android:text="0점"
                             android:textSize="18sp" />
                     </LinearLayout>
 
@@ -255,7 +256,7 @@
                         android:cursorVisible="true"
                         android:fadeScrollbars="true"
                         android:gravity="top"
-                        android:hint="inset text"
+                        android:hint="insert text"
                         android:singleLine="false"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -271,6 +272,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_done" />
+        android:src="@drawable/ic_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
