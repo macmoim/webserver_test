@@ -65,7 +65,8 @@ public class LogInActivity extends AppCompatActivity
             R.drawable.bg_login_1,
             R.drawable.bg_login_2,
             R.drawable.bg_login_3,
-            R.drawable.bg_login_4
+            R.drawable.bg_login_4,
+            R.drawable.bg_login_5
     );
 
     @Override
