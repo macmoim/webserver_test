@@ -131,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+                mDrawerLayout.closeDrawers();
+                mCf.menuClose(true);
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         Intent intent = new Intent(MainActivity.this, MyPostActivity.class);
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mDrawerLayout.closeDrawers();
                     if((int)v.getTag() == id[0]){
                         mCf.menuClose(false);
                         startPangEditorActivity();
@@ -217,11 +219,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mCf.menuClose(true);
                 mNHview = new naviHeaderView(this);
                 mNHview.onDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
+                mCf.menuClose(false);
+                mDrawerLayout.closeDrawers();
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
                 return true;
