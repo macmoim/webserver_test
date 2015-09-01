@@ -41,4 +41,6 @@
     <!--Login Activity -->
     <dimen name="view_pager_indicator_size_normal">20dp</dimen>
     <dimen name="view_pager_indicator_margin">5dp</dimen>
+    <dimen name="blue_sub_action_button_content_margin">16dp</dimen>
+    <dimen name="blue_sub_action_button_size">48dp</dimen>
 </resources>

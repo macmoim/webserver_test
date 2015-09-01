@@ -33,9 +33,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.LoginPreferences;
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             setupViewPager(mViewPager);
         }
 
+        setFloationAction();
+
 //        final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -152,6 +156,34 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+    }
+
+    protected void setFloationAction() {
+        final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard,R.drawable.ic_search};
+
+        CircleFlatingMenu mCf = new CircleFlatingMenu(this);
+        mCf.setListener(new CircleFlatingMenu.Listener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if((int)v.getTag() == id[0]){
+                        startPangEditorActivity();
+                    }else if((int)v.getTag() == id[1]){
+                        startActivity(new Intent(MainActivity.this, LikeActivity.class));
+                    }else if((int)v.getTag() == id[2]){
+                        startActivity(new Intent(MainActivity.this, MyPostActivity.class));
+                    }else if((int)v.getTag() == id[3]){
+                        startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                    }else{
+
+                    }
+
+                }
+                return true;
+            }
+        });
+        mCf.addResId(id);
+        mCf.setFloationAction();
     }
 
     private String getNetworkInfo() {

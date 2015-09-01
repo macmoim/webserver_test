@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
+import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
@@ -109,131 +110,26 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     protected void setFloationAction() {
-        int blueSubActionButtonSize = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_size);
-        int blueSubActionButtonContentMargin = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_content_margin);
+        final int[] id = {R.drawable.ic_edit, R.drawable.com_facebook_button_icon};
 
-        final ImageView fabIconNew = new ImageView(this);
-        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_light));
-        final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(this)
-                .setContentView(fabIconNew)
-                .build();
-        SubActionButton.Builder lCSubBuilder = new SubActionButton.Builder(this);
-        lCSubBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_action_blue_selector));
-
-        FrameLayout.LayoutParams blueContentParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        blueContentParams.setMargins(blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin);
-        lCSubBuilder.setLayoutParams(blueContentParams);
-        FrameLayout.LayoutParams blueParams = new FrameLayout.LayoutParams(blueSubActionButtonSize, blueSubActionButtonSize);
-        lCSubBuilder.setLayoutParams(blueParams);
-
-        ImageView rlIcon1 = new ImageView(this);
-        ImageView rlIcon2 = new ImageView(this);
-
-
-        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-        String category = LoginPreferences.GetInstance().getString(this, LoginPreferences.USER_SOCIAL);
-        //if(category == SocialProfile.FACEBOOK) {
-            rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.com_facebook_button_icon));
-        //}
-        rlIcon1.setOnTouchListener(new View.OnTouchListener() {
+        CircleFlatingMenu mCf = new CircleFlatingMenu(this);
+        mCf.setListener(new CircleFlatingMenu.Listener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "onClick" + event.getAction());
-                startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class));
-                finish();
-                return false;
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if ((int) v.getTag() == R.drawable.ic_edit) {
+                        startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class));
+                        finish();
+                    } else if ((int) v.getTag() == R.drawable.com_facebook_button_icon) {
+                        startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
+
+                    }
+                }
+                return true;
             }
         });
-
-        rlIcon2.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "onTouch" + event.getAction());
-                startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
-                return false;
-            }
-        });
-
-        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
-        // Set 4 default SubActionButtons
-        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(lCSubBuilder.setContentView(rlIcon1).build())
-                .addSubActionView(lCSubBuilder.setContentView(rlIcon2).build())
-                .attachTo(rightLowerButton)
-                .build();
-
-        // Listen menu open and close events to animate the button content view
-        rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
-            @Override
-            public void onMenuOpened(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees clockwise
-                fabIconNew.setRotation(0);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
-            }
-
-            @Override
-            public void onMenuClosed(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
-                fabIconNew.setRotation(45);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
-            }
-
-
-        });
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.profile_fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (editsate) {
-//
-//                    if (nViewHolder.getName() == null) {
-//                        Toast.makeText(getApplicationContext(), "input name text", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    if ((nViewHolder.getEmail() == null)) {
-//                        Toast.makeText(getApplicationContext(), "input email text", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    if (nViewHolder.getIntro() == null) {
-//                        Toast.makeText(getApplicationContext(), "input intro text", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    if (mImageURL == null) {
-//                        Toast.makeText(getApplicationContext(), "input image", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    if (mProfileDbId != -1) {
-//                        onRequestUpdateData();
-//                    } else {
-//                        onRequestData();
-//                    }
-//                    editsate = false;
-//                    nViewHolder.setviewAllFocus(false);
-//                    ((FloatingActionButton) findViewById(R.id.profile_fab)).setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-//                    Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
-//                    finish();
-//                } else {
-//                    editsate = true;
-//                    nViewHolder.setviewAllFocus(true);
-//                    ((FloatingActionButton) findViewById(R.id.profile_fab)).setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
-//                    Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        mCf.addResId(id);
+        mCf.setFloationAction();
     }
 
     private void setData(JSONObject response) throws JSONException {
