@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mLogIn;
     private ViewPager mViewPager;
     naviHeaderView mNHview;
+    CircleFlatingMenu mCf;
 
     private SimpleAuthListener authListener = new SimpleAuthListener() {
         @Override
@@ -161,18 +162,22 @@ public class MainActivity extends AppCompatActivity {
     protected void setFloationAction() {
         final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard,R.drawable.ic_search};
 
-        CircleFlatingMenu mCf = new CircleFlatingMenu(this);
+        mCf = new CircleFlatingMenu(this);
         mCf.setListener(new CircleFlatingMenu.Listener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if((int)v.getTag() == id[0]){
+                        mCf.menuClose(false);
                         startPangEditorActivity();
                     }else if((int)v.getTag() == id[1]){
+                        mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, LikeActivity.class));
                     }else if((int)v.getTag() == id[2]){
+                        mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, MyPostActivity.class));
                     }else if((int)v.getTag() == id[3]){
+                        mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, SearchActivity.class));
                     }else{
 

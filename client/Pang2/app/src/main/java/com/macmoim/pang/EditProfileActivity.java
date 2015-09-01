@@ -1,6 +1,8 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -103,9 +105,41 @@ public class EditProfileActivity extends ProfileActivity {
                 }
                 return true;
             }
+            case android.R.id.home: {
+                showDeleteDialog();
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+
+        showDeleteDialog();
+    }
+
+    private void showDeleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.editor_exit_title))
+                .setMessage(getString(R.string.editor_exit))
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     protected void onRequestData() {
 

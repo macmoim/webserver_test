@@ -25,6 +25,7 @@ public class CircleFlatingMenu implements View.OnTouchListener {
     int[] Resid = null;
 
     private Listener mListener;
+    FloatingActionMenu rightLowerMenu;
 
     public interface Listener {
         public boolean onTouch(View v, MotionEvent event);
@@ -86,7 +87,7 @@ public class CircleFlatingMenu implements View.OnTouchListener {
             iv[i].setTag(Resid[i]);
             builder.addSubActionView(lCSubBuilder.setContentView(iv[i]).build());
         }
-        final FloatingActionMenu rightLowerMenu = builder.attachTo(rightLowerButton).build();
+        rightLowerMenu = builder.attachTo(rightLowerButton).build();
 
         // Listen menu open and close events to animate the button content view
         rightLowerMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
@@ -110,6 +111,14 @@ public class CircleFlatingMenu implements View.OnTouchListener {
 
 
         });
+    }
+
+    public void menuOpen(boolean animated){
+        rightLowerMenu.open(animated);
+    }
+
+    public void menuClose(boolean animated){
+        rightLowerMenu.close(animated);
     }
 
     @Override

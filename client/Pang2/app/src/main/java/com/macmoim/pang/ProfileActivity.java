@@ -4,12 +4,15 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -72,6 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
     static final int REQ_CODE_PICK_PICTURE = 1;
     protected String mImageURL;
     ImageView backdropimageView;
+    CircleFlatingMenu mCf;
 
     protected int mProfileDbId = -1;
 
@@ -83,10 +87,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
 
-        user_id = LoginPreferences.GetInstance().getString(this,LoginPreferences.PROFILE_ID);
-        user_name = LoginPreferences.GetInstance().getString(this,LoginPreferences.PROFILE_NAME);
+        user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
+        user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
         setBackDropInit();
         mFeedItem = new FeedItem();
         setAllFocus();
@@ -95,35 +101,60 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void setBackDropInit(){
+    protected void setBackDropInit() {
         backdropimageView = (ImageView) findViewById(R.id.profile_backdrop);
     }
 
-    protected void setAllFocus(){
+    protected void setAllFocus() {
         nViewHolder = new ViewHolder(this);
         nViewHolder.setviewAllFocus(false);
     }
 
     @Override
     public void onBackPressed() {
-            super.onBackPressed();
+        showEditCancelDialog();
+    }
+
+    private void showEditCancelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.editor_exit_title))
+                .setMessage(getString(R.string.editor_exit))
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     protected void setFloationAction() {
         final int[] id = {R.drawable.ic_edit, R.drawable.com_facebook_button_icon};
 
-        CircleFlatingMenu mCf = new CircleFlatingMenu(this);
+        mCf = new CircleFlatingMenu(this);
         mCf.setListener(new CircleFlatingMenu.Listener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if ((int) v.getTag() == R.drawable.ic_edit) {
+                        mCf.menuClose(false);
                         startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class));
                         finish();
                     } else if ((int) v.getTag() == R.drawable.com_facebook_button_icon) {
+                        mCf.menuClose(false);
                         startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
 
                     }
+
                 }
                 return true;
             }
@@ -206,7 +237,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         try {
             Objects.requireNonNull(backdropimageView, " backdropimageView is null");
-            Objects.requireNonNull(mImageURL,"mImageURL is null ");
+            Objects.requireNonNull(mImageURL, "mImageURL is null ");
 
             if ((mImageURL == null)) {
                 backdropimageView.setImageResource(R.drawable.person);
@@ -385,6 +416,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        mCf = null;
         super.onDestroy();
 
     }
@@ -434,7 +466,7 @@ public class ProfileActivity extends AppCompatActivity {
             mIntroView.setFocusable(state);
         }
 
-        public String getID(){
+        public String getID() {
             return String.valueOf((mIDView.getText() == null) ? ("") : mIDView.getText());
         }
 
@@ -476,8 +508,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        public void setEmail(String value)
-        {
+        public void setEmail(String value) {
             try {
                 Objects.requireNonNull(value);
                 mEmailView.setText(value.equals("null") ? null : value);
@@ -486,8 +517,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        public void setGender(String value)
-        {
+        public void setGender(String value) {
             try {
                 Objects.requireNonNull(value);
                 mGenderView.setText(value.equals("null") ? null : value);
@@ -514,6 +544,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private class FeedItem {
         private String _mId;
@@ -546,7 +577,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void set_mEmail(String _mEmail) {
             try {
                 Objects.requireNonNull(_mEmail);
-                this._mEmail= String_Nulltonull(_mEmail);
+                this._mEmail = String_Nulltonull(_mEmail);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -559,7 +590,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void set_mGender(String _mGender) {
             try {
                 Objects.requireNonNull(_mGender);
-                this._mGender= String_Nulltonull(_mGender);
+                this._mGender = String_Nulltonull(_mGender);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -572,7 +603,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void set_mScore(String _mScore) {
             try {
                 Objects.requireNonNull(_mScore);
-                this._mScore= String_Nulltonull(_mScore);
+                this._mScore = String_Nulltonull(_mScore);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -581,7 +612,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void set_mIntro(String _mIntro) {
             try {
                 Objects.requireNonNull(_mIntro);
-                this._mIntro= String_Nulltonull(_mIntro);
+                this._mIntro = String_Nulltonull(_mIntro);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -598,18 +629,18 @@ public class ProfileActivity extends AppCompatActivity {
         public void set_mId(String _mId) {
             try {
                 Objects.requireNonNull(_mId);
-                this._mId= String_Nulltonull(_mId);
+                this._mId = String_Nulltonull(_mId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
 
-        private String String_Nulltonull(String t){
+        private String String_Nulltonull(String t) {
             String tt = null;
             try {
                 Objects.requireNonNull(t);
-                if(t.equals("null")){
+                if (t.equals("null")) {
                     tt = null;
 
                 }
