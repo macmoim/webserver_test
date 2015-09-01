@@ -107,21 +107,21 @@ public class MainActivity extends AppCompatActivity {
             setupViewPager(mViewPager);
         }
 
-        final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startPangEditorActivity();
-            }
-        };
+//        final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startPangEditorActivity();
+//            }
+//        };
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("New Post", mSnackBarClickListener).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+//                        .setAction("New Post", mSnackBarClickListener).show();
+//            }
+//        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.macmoim.pang"
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -50,4 +50,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services:7.5.+'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
 }
