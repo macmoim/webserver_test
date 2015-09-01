@@ -10,9 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -48,9 +48,10 @@ public class LogInActivity extends AppCompatActivity
     private final String TAG = "LogInActivity";
     private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
 
-    Button facebookButton;
-    Button googleButton;
-    Button kakaoButton;
+    LinearLayout facebookButton;
+    TextView tvFaceBook;
+    LinearLayout googleButton;
+    LinearLayout kakaoButton;
 
     GoogleAuth googleAuth;
     FacebookAuth facebookAuth;
@@ -76,9 +77,11 @@ public class LogInActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
         mContext = getApplicationContext();
-        facebookButton = (Button) findViewById(R.id.facebook_login_button);
-        googleButton = (Button) findViewById(R.id.gplus_login_button);
-        kakaoButton = (Button) findViewById(R.id.kakao_login_button);
+
+        facebookButton = (LinearLayout) findViewById(R.id.facebook_area);
+        tvFaceBook = (TextView) findViewById(R.id.facebook_tv);
+        googleButton = (LinearLayout) findViewById(R.id.google_plus_area);
+        kakaoButton = (LinearLayout) findViewById(R.id.kakao_area);
 
         facebookButton.setOnClickListener(this);
         googleButton.setOnClickListener(this);
@@ -88,9 +91,9 @@ public class LogInActivity extends AppCompatActivity
         facebookAuth = new FacebookAuth(this, this);
 
         if ((facebookAuth.isCurrentState())) {
-            facebookButton.setText("Log Out");
+            tvFaceBook.setText("Log Out");
         } else {
-            facebookButton.setText("Facebook");
+            tvFaceBook.setText(getResources().getString(R.string.login_with_facebook));
         }
 
         InitLogInPagerViewSetAdapter();
@@ -135,16 +138,15 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-
         int viewId = view.getId();
 
-        if (viewId == R.id.facebook_login_button) {
+        if (viewId == R.id.facebook_area) {
             if ((facebookAuth.isCurrentState())) {
                 facebookAuth.revoke();
             } else {
                 facebookAuth.login();
             }
-        } else if (viewId == R.id.gplus_login_button) {
+        } else if (viewId == R.id.google_plus_area) {
             googleAuth.login();
         } else {
             //TODO : KAKAO
@@ -186,7 +188,7 @@ public class LogInActivity extends AppCompatActivity
         if (tag.equals(SocialProfile.FACEBOOK)) {
             Log.d(TAG, "profile clear");
             LoginPreferences.GetInstance().clear(this);
-            facebookButton.setText("Facebook");
+            tvFaceBook.setText(getResources().getString(R.string.login_with_facebook));
         }
     }
 
@@ -212,7 +214,7 @@ public class LogInActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                     if ("success".equals(ret)) {
-                        facebookButton.setText("Log Out");
+                        tvFaceBook.setText("Log Out");
                         Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
                         gotoMain();
                     } else if ("duplicate".equals(ret)) {
@@ -290,7 +292,7 @@ public class LogInActivity extends AppCompatActivity
             circle.setPadding(_Padding, _Padding, _Padding, _Padding);
             PagerViewIndicatorLayout.addView(circle);
         }
-        
+
         SetPagerViewIndicatorLayout(0);
     }
 

@@ -34,35 +34,102 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/facebook_login_button"
-                android:layout_width="@dimen/login_button_width"
+            <LinearLayout
+                android:id="@+id/facebook_area"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/item_margin"
-                android:background="@drawable/login_fb_button_bg"
-                android:text="@string/login_facebook"
-                android:textColor="@android:color/white" />
+                android:layout_marginBottom="@dimen/login_area_margin_bottom"
+                android:background="@drawable/login_facebook_bg"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/gplus_login_button"
-                android:layout_width="@dimen/login_button_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/item_margin"
-                android:background="@drawable/login_gplus_button_bg"
-                android:text="@string/login_google"
-                android:textColor="@android:color/white" />
+                <ImageView
+                    android:layout_width="@dimen/login_icon_size"
+                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/facebook_icon"
+                    android:contentDescription="@string/content_description_empty"
+                    android:scaleType="fitCenter" />
 
-            <Button
-                android:id="@+id/kakao_login_button"
-                android:layout_width="@dimen/login_button_width"
+                <TextView
+                    android:id="@+id/facebook_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:shadowColor="@android:color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/login_with_facebook"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/login_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/google_plus_area"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/item_margin"
-                android:background="@drawable/login_kakao_button_bg"
-                android:text="@string/login_kakao"
-                android:textColor="@android:color/white" />
+                android:layout_marginBottom="@dimen/login_area_margin_bottom"
+                android:background="@drawable/login_google_plus_bg"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/login_icon_size"
+                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/google_plus_icon"
+                    android:contentDescription="@string/content_description_empty"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:shadowColor="@android:color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/login_with_google_plus"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/login_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kakao_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_kakao_bg"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/login_icon_size"
+                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/kakao_icon"
+                    android:contentDescription="@string/content_description_empty"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:shadowColor="@android:color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/login_with_kakao"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/login_text_size" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

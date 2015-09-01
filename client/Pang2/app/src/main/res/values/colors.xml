@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +17,24 @@
 <resources>
     <color name="window_background">#FFF5F5F5</color>
 
-  <color name="white">#ffffff</color>
-  <color name="feed_bg">#d3d6db</color>
-  <color name="feed_item_bg">#ffffff</color>
-  <color name="feed_item_border">#c2c3c8</color>
-  <color name="link">#0a80d1</color>
-  <color name="timestamp">#a0a3a7</color>
-  <color name="myPrimaryColor">#3F51B5</color>
-  <color name="myPrimaryDarkColor">#3F51B5</color>
-  <color name="myAccentColor">#3F51B5</color>
-  <color name="myDrawerBackground">#F2F2F2</color>
-  <color name="myWindowBackground">#DEDEDE</color>
-  <color name="myTextPrimaryColor">#FFFFFF</color>
-  <color name="myNavigationColor">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="feed_bg">#d3d6db</color>
+    <color name="feed_item_bg">#ffffff</color>
+    <color name="feed_item_border">#c2c3c8</color>
+    <color name="link">#0a80d1</color>
+    <color name="timestamp">#a0a3a7</color>
+    <color name="myPrimaryColor">#3F51B5</color>
+    <color name="myPrimaryDarkColor">#3F51B5</color>
+    <color name="myAccentColor">#3F51B5</color>
+    <color name="myDrawerBackground">#F2F2F2</color>
+    <color name="myWindowBackground">#DEDEDE</color>
+    <color name="myTextPrimaryColor">#FFFFFF</color>
+    <color name="myNavigationColor">#000000</color>
 
-  <color name="selected_gray">#ffdbdbdb</color>
+    <color name="selected_gray">#ffdbdbdb</color>
+
+    <color name="kakao_bg">#ffea00</color>
+    <color name="facebook_bg">#3b5996</color>
+    <color name="google_plus_bg">#c94438</color>
+    <color name="bg_stroke">#e6a800</color>
 </resources>
