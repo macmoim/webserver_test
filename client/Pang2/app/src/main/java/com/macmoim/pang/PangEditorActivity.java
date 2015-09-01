@@ -97,6 +97,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
     static final int REQ_CODE_PICK_PICTURE = 1;
     static final int REQ_CODE_TAKE_PHOTO = 2;
+    static final int REQ_CODE_CROP = 3;
 
     private static final int PROFILE_IMAGE_ASPECT_X = 4;
     private static final int PROFILE_IMAGE_ASPECT_Y = 3;
@@ -317,31 +318,11 @@ public class PangEditorActivity extends AppCompatActivity {
 //                        "http://www.1honeywan.com/dachshund/image/7.21/7.21_3_thumb.JPG",
 //                        "dachshund");
 
-                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
-                PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
-                Log.d(TAG, "cropintent x " + PROFILE_IMAGE_OUTPUT_X + " " + PROFILE_IMAGE_OUTPUT_Y);
-
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
-                intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
-                intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
-                intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
-                intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
-                intent.putExtra("scale", true);
                 //retrieve data on return
-                intent.putExtra("return-data", false);
-
-                File f = createNewFile("CROP_");
-                try {
-                    f.createNewFile();
-                } catch (IOException ex) {
-                    Log.e("io", ex.getMessage());
-                }
-
-                mCropImagedUri = Uri.fromFile(f);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+                intent.putExtra("return-data", true);
 
 
                 startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
@@ -622,7 +603,6 @@ public class PangEditorActivity extends AppCompatActivity {
                     try {
                         if ("success".equals(response.getString("ret_val"))) {
                             Toast.makeText(getApplicationContext(), "post update 성공", Toast.LENGTH_SHORT).show();
-                            mUpdatedHtmlFilename = response.getString("updated_filename");
                             finishWithResult(Activity.RESULT_OK);
                         } else {
                             Toast.makeText(getApplicationContext(), "post update  실패", Toast.LENGTH_SHORT).show();
@@ -699,17 +679,42 @@ public class PangEditorActivity extends AppCompatActivity {
         }
     }
 
+    private void dispatchCropIntent(Uri imageCaptureUri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
+        PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
+        intent.setDataAndType(imageCaptureUri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
+        intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
+        intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
+        intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
+        intent.putExtra("scale", true);
+        //retrieve data on return
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+
+        startActivityForResult(intent, REQ_CODE_CROP);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_CODE_PICK_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
+                Uri selectedImageUri = data.getData();
 
-//                File filePath = new File(getRealPathFromURI(getApplicationContext(), data.getData()));
+                File f = createNewFile("CROP_");
+                try {
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Log.e("io", ex.getMessage());
+                }
 
-                Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
-                new ResizeBitmapTask().execute(new File(mCropImagedUri.getPath()));
+                mCropImagedUri = Uri.fromFile(f);
+
+                dispatchCropIntent(selectedImageUri);
             }
         } else if (requestCode == REQ_CODE_TAKE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
@@ -717,23 +722,20 @@ public class PangEditorActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "촬영에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.d(TAG, "take picture result " + mCropImagedUri + " string " + mCropImagedUri.toString());
 
-                Intent intent = new Intent("com.android.camera.action.CROP");
-                PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
-                PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
-                intent.setDataAndType(mCropImagedUri, "image/*");
-                intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
-                intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
-                intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
-                intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
-                intent.putExtra("scale", true);
-                //retrieve data on return
-                intent.putExtra("return-data", false);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+                dispatchCropIntent(mCropImagedUri);
+            } else {
+                Toast.makeText(getApplicationContext(), "촬영에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if (requestCode == REQ_CODE_CROP) {
+            if (resultCode == Activity.RESULT_OK) {
+                mCropImagedUri = data.getData();
 
-                startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
+                new ResizeBitmapTask().execute(new File(mCropImagedUri.getPath()));
+            } else {
+                Toast.makeText(getApplicationContext(), "크롭에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
 
