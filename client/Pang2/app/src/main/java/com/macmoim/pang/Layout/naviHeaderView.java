@@ -128,9 +128,9 @@ public class naviHeaderView {
         mRankingView.setText(ranking);
 
         try {
+            score = response.getString("user_score");
             Objects.requireNonNull(score, "score is null");
 
-            score = response.getString("user_score");
             if ("null".equals(score)) {
                 score = "";
             } else {
