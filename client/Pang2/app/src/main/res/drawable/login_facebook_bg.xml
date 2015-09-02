@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/facebook_bg" />
-            <stroke android:width="0.5dp" android:color="@color/bg_stroke" />
+            <stroke android:width="0.5dp" android:color="@color/facebook_bg_stroke" />
             <size android:width="@dimen/login_bg_area_width" android:height="@dimen/login_bg_area_height" />
             <padding android:left="15dp" />
             <corners android:bottomLeftRadius="10dp" android:bottomRightRadius="10dp" android:topLeftRadius="10dp" android:topRightRadius="10dp" />

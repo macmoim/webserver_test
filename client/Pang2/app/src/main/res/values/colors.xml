@@ -37,8 +37,11 @@
 
     <color name="selected_gray">#ffdbdbdb</color>
 
-    <color name="kakao_bg">#ffea00</color>
-    <color name="facebook_bg">#3b5996</color>
-    <color name="google_plus_bg">#c94438</color>
-    <color name="bg_stroke">#e6a800</color>
+    <!--Login Activity -->
+    <color name="facebook_bg">#4c4b6cad</color>
+    <color name="facebook_bg_stroke">#4b6cad</color>
+    <color name="google_plus_bg">#4cc94438</color>
+    <color name="google_plus_bg_stroke">#c94438</color>
+    <color name="kakao_bg">#4cffea00</color>
+    <color name="kakao_bg_stroke">#ffea00</color>
 </resources>
