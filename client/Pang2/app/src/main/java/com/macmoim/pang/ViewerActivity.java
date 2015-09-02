@@ -151,13 +151,6 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
-        ((Button) findViewById(R.id.ranking_send_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeBottomView(mRankingLayout);
-            }
-        });
-
         mShareLayout = (ViewGroup) findViewById(R.id.share_layout);
         setupShareView();
 
