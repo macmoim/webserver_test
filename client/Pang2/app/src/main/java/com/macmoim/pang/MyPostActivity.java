@@ -35,6 +35,9 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
     private String URL = "http://localhost:8080/web_test/post/user";
     private String URL_DELETE = "http://localhost:8080/web_test/post";
 
+    private static final String VOLLEY_REQ_TAG_MYPOST = "get-mypost";
+    private static final String VOLLEY_REQ_TAG_DEL_MYPOST = "del-mypost";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +80,7 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
         });
 //	}
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_MYPOST);
     }
 
     @Override
@@ -121,7 +124,7 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
         });
 //	}
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_DEL_MYPOST);
     }
 
     protected void parseJsonFeed(JSONObject response) {
@@ -207,6 +210,8 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
 
     @Override
     protected void onDestroy() {
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_DEL_MYPOST);
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_MYPOST);
         ((FoodRecyclerViewAdapter) rv.getAdapter()).setListener(null);
         super.onDestroy();
     }

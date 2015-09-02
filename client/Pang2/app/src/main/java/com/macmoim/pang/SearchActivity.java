@@ -35,6 +35,8 @@ public class SearchActivity extends RequestFeedListActivity {
     private EditText mSearchEdit;
     private ProgressDialog mDialog;
 
+    private static final String VOLLEY_REQ_TAG_SEARCH = "search";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.search_activity);
@@ -96,7 +98,7 @@ public class SearchActivity extends RequestFeedListActivity {
         });
 //	}
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_SEARCH);
     }
 
     @Override
@@ -175,6 +177,7 @@ public class SearchActivity extends RequestFeedListActivity {
 
     @Override
     protected void onDestroy() {
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_SEARCH);
         mSearchEdit = null;
         removeDialog();
         super.onDestroy();

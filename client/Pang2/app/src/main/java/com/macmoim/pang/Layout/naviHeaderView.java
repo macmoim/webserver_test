@@ -41,6 +41,8 @@ public class naviHeaderView {
     private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
     private static final String _GET_URL = "http://localhost:8080/web_test/profile";
 
+    private static final String VOLLEY_REQ_TAG_PROFILE = "get-profile";
+
 
     public naviHeaderView(Activity activity) {
         this.mActivity = activity;
@@ -89,7 +91,7 @@ public class naviHeaderView {
                 }
             }
         });
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_PROFILE);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -149,6 +151,7 @@ public class naviHeaderView {
     }
 
     public void onDestroy() {
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_PROFILE);
         mActivity = null;
         mCircleImage = null;
         mNameView = null;

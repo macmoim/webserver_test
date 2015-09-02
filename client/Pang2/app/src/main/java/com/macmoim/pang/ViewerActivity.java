@@ -97,6 +97,9 @@ public class ViewerActivity extends AppCompatActivity {
     private ArrayList<FoodCommentItem> foodCommentItems;
 
     private static final String VOLLEY_REQ_TAG_STAR = "get-star";
+    private static final String VOLLEY_REQ_TAG_HTML = "get-html";
+    private static final String VOLLEY_REQ_TAG_LIKE = "get-like";
+    private static final String VOLLEY_REQ_TAG_COMMENT = "get-comment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,7 +253,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_HTML);
     }
 
     class ReadHtmlTask extends AsyncTask<String, Void, String> {
@@ -394,7 +397,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_COMMENT);
     }
 
 
@@ -431,7 +434,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
     }
 
     private void putLike(boolean like) {
@@ -486,7 +489,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
     }
 
     private void getStar() {
@@ -571,7 +574,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_STAR);
     }
 
     @Override
@@ -821,6 +824,9 @@ public class ViewerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_STAR);
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_HTML);
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_COMMENT);
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
             mLikeBtn = null;

@@ -28,6 +28,8 @@ public class LikeActivity extends RequestFeedListActivity {
 
     private String URL = "http://localhost:8080/web_test/like";
 
+    private static final String VOLLEY_REQ_TAG_LIKE = "get-mylike";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +70,7 @@ public class LikeActivity extends RequestFeedListActivity {
         });
 //	}
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
     }
 
     protected void parseJsonFeed(JSONObject response) {
@@ -114,6 +116,7 @@ public class LikeActivity extends RequestFeedListActivity {
 
     @Override
     protected void onDestroy() {
+        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
         super.onDestroy();
     }
 }
