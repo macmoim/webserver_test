@@ -154,7 +154,7 @@
         android:layout_width="@dimen/logo_title_width"
         android:layout_height="@dimen/logo_title_height"
         android:layout_gravity="center|top"
-        android:layout_marginTop="@dimen/logo_title_margin_port"
+        android:layout_marginTop="@dimen/logo_title_margin_land"
         android:adjustViewBounds="true"
         android:background="@drawable/logo_title_icon"
         android:contentDescription="@string/content_description_empty"
