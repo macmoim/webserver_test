@@ -59,6 +59,7 @@ public class CircleFlatingMenu implements View.OnTouchListener {
         fabIconNew.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_action_new_light));
         final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(mActivity)
                 .setContentView(fabIconNew)
+                .setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.button_action_blue_selector))
                 .build();
         SubActionButton.Builder lCSubBuilder = new SubActionButton.Builder(mActivity);
         lCSubBuilder.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.button_action_blue_selector));
