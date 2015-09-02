@@ -20,7 +20,7 @@
         android:id="@+id/action_search"
         android:title="@string/search"
         app:showAsAction="always"
-        android:icon="@drawable/ic_search"/>
+        android:icon="@drawable/ic_search_white"/>
     <item
         android:id="@+id/action_settings"
         android:title="@string/menu_settings"

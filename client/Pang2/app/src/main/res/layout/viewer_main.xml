@@ -148,7 +148,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/like_nor" />
+                android:background="@drawable/like_nor_white" />
         </RelativeLayout>
 
 
@@ -162,7 +162,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/ic_comment" />
+                android:background="@drawable/ic_discuss" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -175,7 +175,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/ic_share" />
+                android:background="@drawable/ic_share_white" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -188,7 +188,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/star_nor" />
+                android:background="@drawable/star_nor_white" />
         </RelativeLayout>
     </LinearLayout>
 

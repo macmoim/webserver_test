@@ -81,6 +81,7 @@ public class ViewerActivity extends AppCompatActivity {
     private Rect mRankingLayoutRect;
     private Rect mShareLayoutRect;
     private ArrayList<ImageView> mRankingStartArr;
+    private Button mRankingBtn;
     private int mStar;
     private int mLikeDbId = -1;
     private int mStarDbId = -1;
@@ -144,7 +145,8 @@ public class ViewerActivity extends AppCompatActivity {
         mRankingLayout = (ViewGroup) findViewById(R.id.ranking_layout);
         setupRankingStarView();
 
-        ((Button) findViewById(R.id.ranking_btn)).setOnClickListener(new View.OnClickListener() {
+        mRankingBtn = (Button) findViewById(R.id.ranking_btn);
+        mRankingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showBottomView(mRankingLayout);
@@ -319,10 +321,25 @@ public class ViewerActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setLikeBtnBg(boolean isLike) {
+        if (mLikeBtn == null) {
+            return;
+        }
         if (isLike) {
             mLikeBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.like_sel));
         } else {
-            mLikeBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.like_nor));
+            mLikeBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.like_nor_white));
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void setRankingBtnBg(boolean isStarSelected) {
+        if (mRankingBtn == null) {
+            return;
+        }
+        if (isStarSelected) {
+            mRankingBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_sel));
+        } else {
+            mRankingBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor_white));
         }
     }
 
@@ -682,6 +699,7 @@ public class ViewerActivity extends AppCompatActivity {
                 mRankingStartArr.get(i).setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor));
             }
         }
+        setRankingBtnBg(true);
     }
 
     private class ShareEtcTask extends AsyncTask<String, Void, Uri> {
@@ -806,6 +824,10 @@ public class ViewerActivity extends AppCompatActivity {
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
             mLikeBtn = null;
+        }
+        if (mRankingBtn != null) {
+            mRankingBtn.setOnClickListener(null);
+            mRankingBtn = null;
         }
         if (mRankingStartArr != null) {
             for (ImageView v : mRankingStartArr) {

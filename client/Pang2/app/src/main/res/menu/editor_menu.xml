@@ -20,5 +20,5 @@
         android:id="@+id/action_submit"
         android:title="@string/submit"
         app:showAsAction="always"
-        android:icon="@drawable/ic_upload"/>
+        android:icon="@drawable/ic_upload_white"/>
 </menu>

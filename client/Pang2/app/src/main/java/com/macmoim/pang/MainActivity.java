@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setFloationAction() {
-        final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard,R.drawable.ic_search};
+        final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard_white,R.drawable.ic_search_white};
 
         mCf = new CircleFlatingMenu(this);
         mCf.setListener(new CircleFlatingMenu.Listener() {
