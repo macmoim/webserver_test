@@ -284,7 +284,7 @@ public class LogInActivity extends AppCompatActivity
 
         for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
             ImageView circle = new ImageView(this);
-            circle.setImageResource(R.drawable.circle_white_normal);
+            circle.setImageResource(R.drawable.circle_mustard_normal);
             circle.setLayoutParams(new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal),
                     (int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal)));
             circle.setAdjustViewBounds(true);
@@ -301,9 +301,9 @@ public class LogInActivity extends AppCompatActivity
             for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
                 ImageView circle = (ImageView) PagerViewIndicatorLayout.getChildAt(i);
                 if (i == index) {
-                    circle.setImageResource(R.drawable.circle_white_selected);
+                    circle.setImageResource(R.drawable.circle_mustard_selected);
                 } else {
-                    circle.setImageResource(R.drawable.circle_white_normal);
+                    circle.setImageResource(R.drawable.circle_mustard_normal);
                 }
             }
         }
