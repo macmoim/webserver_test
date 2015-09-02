@@ -48,13 +48,13 @@ public class LogInActivity extends AppCompatActivity
     private final String TAG = "LogInActivity";
     private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
 
-    LinearLayout facebookButton;
+    LinearLayout lFaceBook;
     TextView tvFaceBook;
-    LinearLayout googleButton;
-    LinearLayout kakaoButton;
+    LinearLayout lGoogle;
+    LinearLayout lKakao;
 
-    GoogleAuth googleAuth;
-    FacebookAuth facebookAuth;
+    GoogleAuth GoogleAuth;
+    FacebookAuth FacebookAuth;
     Context mContext;
 
     private ViewPager LogInPagerView;
@@ -78,19 +78,19 @@ public class LogInActivity extends AppCompatActivity
 
         mContext = getApplicationContext();
 
-        facebookButton = (LinearLayout) findViewById(R.id.facebook_area);
+        lFaceBook = (LinearLayout) findViewById(R.id.facebook_area);
         tvFaceBook = (TextView) findViewById(R.id.facebook_tv);
-        googleButton = (LinearLayout) findViewById(R.id.google_plus_area);
-        kakaoButton = (LinearLayout) findViewById(R.id.kakao_area);
+        lGoogle = (LinearLayout) findViewById(R.id.google_plus_area);
+        lKakao = (LinearLayout) findViewById(R.id.kakao_area);
 
-        facebookButton.setOnClickListener(this);
-        googleButton.setOnClickListener(this);
-        kakaoButton.setOnClickListener(this);
+        lFaceBook.setOnClickListener(this);
+        lGoogle.setOnClickListener(this);
+        lKakao.setOnClickListener(this);
 
-        googleAuth = new GoogleAuth(this, this);
-        facebookAuth = new FacebookAuth(this, this);
+        GoogleAuth = new GoogleAuth(this, this);
+        FacebookAuth = new FacebookAuth(this, this);
 
-        if ((facebookAuth.isCurrentState())) {
+        if ((FacebookAuth.isCurrentState())) {
             tvFaceBook.setText("Log Out");
         } else {
             tvFaceBook.setText(getResources().getString(R.string.login_with_facebook));
@@ -117,7 +117,7 @@ public class LogInActivity extends AppCompatActivity
         super.onDestroy();
 
         //disconnect google client api
-        googleAuth.logout();
+        GoogleAuth.logout();
     }
 
     @Override
@@ -127,13 +127,13 @@ public class LogInActivity extends AppCompatActivity
         if (requestCode == GoogleAuth.GOOGLE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 //call connect again because google just authorized app
-                googleAuth.login();
+                GoogleAuth.login();
             } else {
                 onLoginCancel();
             }
         }
 
-        facebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
+        FacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -141,13 +141,13 @@ public class LogInActivity extends AppCompatActivity
         int viewId = view.getId();
 
         if (viewId == R.id.facebook_area) {
-            if ((facebookAuth.isCurrentState())) {
-                facebookAuth.revoke();
+            if ((FacebookAuth.isCurrentState())) {
+                FacebookAuth.revoke();
             } else {
-                facebookAuth.login();
+                FacebookAuth.login();
             }
         } else if (viewId == R.id.google_plus_area) {
-            googleAuth.login();
+            GoogleAuth.login();
         } else {
             //TODO : KAKAO
         }
@@ -280,31 +280,40 @@ public class LogInActivity extends AppCompatActivity
     private void BuildPagerViewIndicatorLayout() {
         PagerViewIndicatorLayout = LinearLayout.class.cast(findViewById(R.id.view_pager_indicator));
 
-        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_margin);
+        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
 
         for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
-            ImageView circle = new ImageView(this);
-            circle.setImageResource(R.drawable.circle_mustard_normal);
-            circle.setLayoutParams(new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal),
-                    (int) getResources().getDimension(R.dimen.view_pager_indicator_size_normal)));
-            circle.setAdjustViewBounds(true);
-            circle.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            circle.setPadding(_Padding, _Padding, _Padding, _Padding);
-            PagerViewIndicatorLayout.addView(circle);
+            ImageView _Indicator = new ImageView(this);
+
+            _Indicator.setImageResource(R.drawable.circle_mustard_normal);
+            _Indicator.setLayoutParams(new ViewGroup.LayoutParams((int) getResources().getDimension(R.dimen.view_pager_indicator_area_size),
+                    (int) getResources().getDimension(R.dimen.view_pager_indicator_area_size)));
+            _Indicator.setAdjustViewBounds(true);
+            _Indicator.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            _Indicator.setPadding(_Padding, _Padding, _Padding, _Padding);
+
+            PagerViewIndicatorLayout.addView(_Indicator);
         }
 
         SetPagerViewIndicatorLayout(0);
     }
 
     private void SetPagerViewIndicatorLayout(int index) {
+        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
+
         if (index < LogInPagerViewAdapter.getCount()) {
             for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
-                ImageView circle = (ImageView) PagerViewIndicatorLayout.getChildAt(i);
+                ImageView _Indicator = (ImageView) PagerViewIndicatorLayout.getChildAt(i);
+                _Padding = (i == index) ? (int) getResources().getDimension(R.dimen.view_pager_indicator_select_margin)
+                        : (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
+
                 if (i == index) {
-                    circle.setImageResource(R.drawable.circle_mustard_selected);
+                    _Indicator.setImageResource(R.drawable.circle_mustard_selected);
                 } else {
-                    circle.setImageResource(R.drawable.circle_mustard_normal);
+                    _Indicator.setImageResource(R.drawable.circle_mustard_normal);
                 }
+
+                _Indicator.setPadding(_Padding, _Padding, _Padding, _Padding);
             }
         }
     }

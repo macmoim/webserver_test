@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/md_orange_800">
+    android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/login_view_pager"
@@ -21,16 +20,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="5.0dp"
+            android:layout_margin="@dimen/view_pager_indicator_area_margin"
             android:orientation="horizontal">
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/login_button_layout"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30.0dip"
+            android:layout_marginBottom="@dimen/login_layout_margin_bottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -38,13 +37,13 @@
                 android:id="@+id/facebook_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/login_area_margin_bottom"
+                android:layout_marginBottom="@dimen/login_button_margin_bottom"
                 android:background="@drawable/login_facebook_bg"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/login_icon_size"
-                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_width="@dimen/login_button_icon_size"
+                    android:layout_height="@dimen/login_button_icon_size"
                     android:layout_gravity="center_vertical"
                     android:adjustViewBounds="true"
                     android:background="@drawable/facebook_icon"
@@ -56,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:layout_marginLeft="@dimen/login_button_text_margin"
                     android:shadowColor="@android:color/black"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -64,20 +63,20 @@
                     android:text="@string/login_with_facebook"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/login_text_size" />
+                    android:textSize="@dimen/login_button_text_size" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/google_plus_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/login_area_margin_bottom"
+                android:layout_marginBottom="@dimen/login_button_margin_bottom"
                 android:background="@drawable/login_google_plus_bg"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/login_icon_size"
-                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_width="@dimen/login_button_icon_size"
+                    android:layout_height="@dimen/login_button_icon_size"
                     android:layout_gravity="center_vertical"
                     android:adjustViewBounds="true"
                     android:background="@drawable/google_plus_icon"
@@ -88,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:layout_marginLeft="@dimen/login_button_text_margin"
                     android:shadowColor="@android:color/black"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -96,7 +95,7 @@
                     android:text="@string/login_with_google_plus"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/login_text_size" />
+                    android:textSize="@dimen/login_button_text_size" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,8 +106,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/login_icon_size"
-                    android:layout_height="@dimen/login_icon_size"
+                    android:layout_width="@dimen/login_button_icon_size"
+                    android:layout_height="@dimen/login_button_icon_size"
                     android:layout_gravity="center_vertical"
                     android:adjustViewBounds="true"
                     android:background="@drawable/kakao_icon"
@@ -119,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/login_text_margin"
+                    android:layout_marginLeft="@dimen/login_button_text_margin"
                     android:shadowColor="@android:color/black"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -127,37 +126,37 @@
                     android:text="@string/login_with_kakao"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/login_text_size" />
+                    android:textSize="@dimen/login_button_text_size" />
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
-<!--
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/radius_corner_rectangle_mustard"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        android:text="@string/app_name"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="30.0dp"
-        android:textStyle="bold|italic" />
--->
+    <!--
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/radius_corner_rectangle_mustard"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="@string/app_name"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="30.0dp"
+            android:textStyle="bold|italic" />
+    -->
 
     <ImageView
-        android:layout_width="@dimen/logo_width"
-        android:layout_height="@dimen/logo_height"
+        android:layout_width="@dimen/logo_title_width"
+        android:layout_height="@dimen/logo_title_height"
         android:layout_gravity="center|top"
         android:layout_marginTop="70dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/logo_icon"
+        android:background="@drawable/logo_title_icon"
         android:contentDescription="@string/content_description_empty"
         android:scaleType="fitCenter" />
 

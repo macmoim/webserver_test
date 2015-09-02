@@ -37,17 +37,19 @@
     <dimen name="feed_item_comment_profile_pic">50dp</dimen>
 
     <!--Login Activity -->
-    <dimen name="logo_width">300dp</dimen>
-    <dimen name="logo_height">52dp</dimen>
-    <dimen name="login_bg_area_width">270dp</dimen>
-    <dimen name="login_bg_area_height">40dp</dimen>
-    <dimen name="login_area_margin_bottom">10dp</dimen>
-    <dimen name="login_icon_size">28dp</dimen>
-    <dimen name="login_text_size">16dp</dimen>
-    <dimen name="login_text_margin">20dp</dimen>
-    <dimen name="view_pager_indicator_size_normal">20dp</dimen>
-    <dimen name="view_pager_indicator_margin">5dp</dimen>
-
+    <dimen name="logo_title_width">300dp</dimen>
+    <dimen name="logo_title_height">52dp</dimen>
+    <dimen name="login_layout_margin_bottom">30dp</dimen>
+    <dimen name="login_button_width">270dp</dimen>
+    <dimen name="login_button_height">40dp</dimen>
+    <dimen name="login_button_margin_bottom">10dp</dimen>
+    <dimen name="login_button_icon_size">28dp</dimen>
+    <dimen name="login_button_text_size">16dp</dimen>
+    <dimen name="login_button_text_margin">20dp</dimen>
+    <dimen name="view_pager_indicator_area_margin">10dp</dimen>
+    <dimen name="view_pager_indicator_area_size">24dp</dimen>
+    <dimen name="view_pager_indicator_normal_margin">8dp</dimen>
+    <dimen name="view_pager_indicator_select_margin">4dp</dimen>
 
     <dimen name="blue_sub_action_button_content_margin">16dp</dimen>
     <dimen name="blue_sub_action_button_size">48dp</dimen>
