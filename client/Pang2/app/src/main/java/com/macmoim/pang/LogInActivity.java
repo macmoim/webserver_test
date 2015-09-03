@@ -29,6 +29,7 @@ import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +47,7 @@ import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
 public class LogInActivity extends AppCompatActivity
         implements View.OnClickListener, Auth.OnAuthListener {
     private final String TAG = "LogInActivity";
-    private static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
+    private static final String _URL_PROFILE = Util.SERVER_ROOT + "/profile";
 
     LinearLayout lFaceBook;
     TextView tvFaceBook;

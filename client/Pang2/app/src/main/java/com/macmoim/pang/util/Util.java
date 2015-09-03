@@ -16,8 +16,9 @@ import java.io.File;
 public class Util {
     private static final String TAG = "Util";
 
-    public static final String IMAGE_FOLDER_URL = "http://localhost:8080/web_test/image_test/upload_image/";
-    public static final String IMAGE_THUMBNAIL_FOLDER_URL = "http://localhost:8080/web_test/image_test/thumbnails/";
+    public static final String SERVER_ROOT = "http://54.65.198.72/web_test";
+    public static final String IMAGE_FOLDER_URL = SERVER_ROOT+"/image_test/upload_image/";
+    public static final String IMAGE_THUMBNAIL_FOLDER_URL = SERVER_ROOT+"/image_test/thumbnails/";
 
     public static String MakeStringBuilder(final String... str) {
         String _Str = null;

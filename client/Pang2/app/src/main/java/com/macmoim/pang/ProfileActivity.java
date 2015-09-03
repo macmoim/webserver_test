@@ -34,6 +34,7 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
+import com.macmoim.pang.util.Util;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONException;
@@ -53,10 +54,10 @@ import java.util.Objects;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class ProfileActivity extends AppCompatActivity {
     protected static final String TAG = "ProfileActivity";
-    protected static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
-    protected static final String _URL_PROFILE = "http://localhost:8080/web_test/profile";
-    protected static final String _URL_PROFILE_IMAGE = "http://localhost:8080/web_test/profile/image";
-    protected static final String _URL_PROFILE_IMAGE_UPDATE = "http://localhost:8080/web_test/profile/image/update";
+    protected static final String UPLOAD_PROFILE_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_profile_image/";
+    protected static final String _URL_PROFILE = Util.SERVER_ROOT + "/profile";
+    protected static final String _URL_PROFILE_IMAGE = Util.SERVER_ROOT + "/profile/image";
+    protected static final String _URL_PROFILE_IMAGE_UPDATE = Util.SERVER_ROOT + "/profile/image/update";
     protected static final int PROFILE_IMAGE_ASPECT_X = 4;
     protected static final int PROFILE_IMAGE_ASPECT_Y = 3;
     protected FeedItem mFeedItem;

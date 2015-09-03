@@ -13,6 +13,7 @@ import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +27,7 @@ import java.util.Objects;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class LikeActivity extends RequestFeedListActivity {
 
-    private String URL = "http://localhost:8080/web_test/like";
+    private String URL = Util.SERVER_ROOT + "/like";
 
     private static final String VOLLEY_REQ_TAG_LIKE = "get-mylike";
 

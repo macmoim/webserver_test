@@ -30,7 +30,7 @@ import java.net.URLEncoder;
 public class SearchActivity extends RequestFeedListActivity {
     private static final String TAG = "SearchActivity";
 
-    private String URL = "http://localhost:8080/web_test/post/search";
+    private String URL = Util.SERVER_ROOT + "/post/search";
 
     private EditText mSearchEdit;
     private ProgressDialog mDialog;

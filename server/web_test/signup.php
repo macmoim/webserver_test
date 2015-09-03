@@ -6,7 +6,9 @@ $email = $_POST ['member_email'];
 $dbname = 'db_chat_member_test';
 $sql_query = "insert into member (user_id, password, user_alias, email) values('$id', '$pw', '$alias', '$email')";
 
-$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+include "./image_test/dbconfig.php";
+	
+$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 if ($mysqli->connect_errno) {
 	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }

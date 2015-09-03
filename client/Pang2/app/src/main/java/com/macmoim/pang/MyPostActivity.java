@@ -19,6 +19,7 @@ import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,8 +33,8 @@ import java.util.Objects;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class MyPostActivity extends RequestFeedListActivity implements FoodRecyclerViewAdapter.Listener {
 
-    private String URL = "http://localhost:8080/web_test/post/user";
-    private String URL_DELETE = "http://localhost:8080/web_test/post";
+    private String URL = Util.SERVER_ROOT + "/post/user";
+    private String URL_DELETE = Util.SERVER_ROOT + "/post";
 
     private static final String VOLLEY_REQ_TAG_MYPOST = "get-mypost";
     private static final String VOLLEY_REQ_TAG_DEL_MYPOST = "del-mypost";

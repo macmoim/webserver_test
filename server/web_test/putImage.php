@@ -2,6 +2,7 @@
 
 
 function saveImageFile() {
+	include "serverconfig.php";
 	if (isset ( $_POST ["title"] ) && $_FILES ['image'] ['size'] > 0) {
 	} else {
 		$value = "Missing argument";
@@ -12,8 +13,8 @@ function saveImageFile() {
 	// echo 'temp filesize : '.$_FILES['image']['size'].'<br>';
 		$time = explode ( ' ', microtime () );
 		$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' ."jpg";
-		$filePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
-		$thumbPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+		$filePath = $uploadImageFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+		$thumbPath = $thumbnailFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 		list ( $width, $height ) = getimagesize ( $_FILES ['image'] ['tmp_name'] );
 
 		// 9. 업로드 파일을 새로 만든 파일명으로 변경 및 이동

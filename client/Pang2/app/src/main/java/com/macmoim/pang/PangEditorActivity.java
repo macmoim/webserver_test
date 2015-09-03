@@ -68,9 +68,9 @@ import java.util.Map;
 public class PangEditorActivity extends AppCompatActivity {
     private static final String TAG = "PangEditorActivity";
 
-    private static final String URL_POST = "http://localhost:8080/web_test/post";
-    private static final String URL_POST_IMAGE = "http://localhost:8080/web_test/post/image";
-    private static final String URL_POST_HTML_UPDATE = "http://localhost:8080/web_test/post/html/update";
+    private static final String URL_POST = Util.SERVER_ROOT + "/post";
+    private static final String URL_POST_IMAGE = Util.SERVER_ROOT + "/post/image";
+    private static final String URL_POST_HTML_UPDATE = Util.SERVER_ROOT + "/post/html/update";
 
     private String mUserId;
     private RichEditor mEditor = null;
@@ -104,7 +104,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private int PROFILE_IMAGE_OUTPUT_X;
     private int PROFILE_IMAGE_OUTPUT_Y;
 
-    private static final String UPLOAD_IMG_FOLDER = "http://localhost:8080/web_test/image_test/upload_image/";
+    private static final String UPLOAD_IMG_FOLDER = Util.SERVER_ROOT + "/image_test/upload_image/";
 
     interface HTMLListener {
         void OnGetHTMLSourceCallback(String html);

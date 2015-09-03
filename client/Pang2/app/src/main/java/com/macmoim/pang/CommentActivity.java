@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.util.Util;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 
@@ -32,7 +33,7 @@ public class CommentActivity extends AppCompatActivity {
     private EditText mCommentEdit;
     private ProgressDialog mDialog;
 
-    private static final String URL_COMMENT = "http://localhost:8080/web_test/comment";
+    private static final String URL_COMMENT = Util.SERVER_ROOT+"/comment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

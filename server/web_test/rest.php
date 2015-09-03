@@ -7,7 +7,9 @@ function get_userinfo_by_id($user_id) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -35,7 +37,9 @@ function get_user_list() {
 	// build JSON array
 	$user_list = array ();
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}

@@ -5,7 +5,9 @@ function rest_get_image_list($category) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -73,7 +75,9 @@ function rest_get_image_list_by_timestamp($category, $timestamp) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}

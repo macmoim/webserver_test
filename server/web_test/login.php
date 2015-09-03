@@ -4,7 +4,9 @@ $id = $_POST ['member_id'];
 $pw = $_POST ['member_password'];
 $dbname = 'db_chat_member_test';
 
-$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+include "./image_test/dbconfig.php";
+	
+$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 if ($mysqli->connect_errno) {
 	echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }

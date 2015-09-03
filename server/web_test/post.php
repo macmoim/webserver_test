@@ -9,7 +9,9 @@ function rest_get($id) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -54,7 +56,9 @@ function get_post($user_id) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -105,7 +109,9 @@ function rest_search($text) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -255,8 +261,8 @@ function rest_post() {
 		$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' . strtoupper ( $ext );
 	
 		// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
-		$filePath = 'http://localhost:8080/web_test/image_test/upload_html/';//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
-		$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+		$filePath = $uploadHTMLFolderForClient;//'http://localhost:8080/web_test/image_test/upload_html/';//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+		$fileServerPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
 		if(!is_dir($fileServerPath)){
 			@mkdir($fileServerPath);
 		}
@@ -280,7 +286,7 @@ function rest_post() {
 	$upload_date = date ( "Y-m-d H:i:s" );
 	
 	// create and save thumbnail
-	$thumbPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
+	$thumbPath = $thumbnailFolderForClient;//'http://localhost:8080/web_test/image_test/thumbnails/';
 	$thumb_url = isset($_POST['thumb_img_url']) ? $_POST['thumb_img_url'] : null;
 	$thumbimagename = save_thumbnail($thumb_url);
 
@@ -326,11 +332,12 @@ function rest_post() {
 }
 
 function save_thumbnail($thumb_img_url) {
+	include "serverconfig.php";
 	// create and save thumbnail
 	// save thumbnail
-	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
-	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
-	$defaultImagePath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/';
+	$imageServerPath = $uploadImageFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	$thumbServerPath = $thumbnailFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	$defaultImagePath = $defaultImageFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/';
 	$imageName;
 
 	if (isset($thumb_img_url)) {
@@ -387,6 +394,7 @@ function save_thumbnail($thumb_img_url) {
 
 function insert_post_images($post_id, $images_name) {
 	include "./image_test/dbconfig.php";
+	include "serverconfig.php";
 
 	$img_name_arr = explode(":", $images_name);
 
@@ -404,9 +412,9 @@ function insert_post_images($post_id, $images_name) {
 	
 	$mysqli->query ( $create_table );
 
-	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	$imageServerPath = $uploadImageFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
 
-	$ret = NULL;
+	$ret = "";
 	$arr_size = count($img_name_arr);
 	foreach ($img_name_arr as $imgname) {
 		$query = sprintf ( "INSERT INTO post_images
@@ -419,6 +427,7 @@ function insert_post_images($post_id, $images_name) {
 			$ret =  "Failed to insert post_images db: (" . $mysqli->error . ") ";
 		}
 		$insert_id = $mysqli->insert_id;
+		$ret .= "id:".$insert_id." success. ";
 	}
 	
 	
@@ -471,8 +480,9 @@ function delete_post_images($post_id) {
 }
 
 function delete_images_by_name($images_name) {
-	$imageServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
-	$thumbServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	include "serverconfig.php";
+	$imageServerPath = $uploadImageFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_image/';
+	$thumbServerPath = $thumbnailFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 	foreach ($images_name as $var) {
 		if (file_exists($imageServerPath.$var)) {
 			// do not delete default image.
@@ -496,15 +506,18 @@ function delete_images_by_name($images_name) {
 }
 
 function rest_delete($id) {
+	include "serverconfig.php";
 	$post_to_delete_info = array ();
-	$thumbFolderPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
-	$htmlFolderPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	$thumbFolderPath = $thumbnailFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
+	$htmlFolderPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
 	$imgfilename = array();
 	
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -568,7 +581,10 @@ function rest_delete($id) {
 }
 
 function rest_put($post_id, $keys, $values, $images_name, $thumbnail_img_url) {
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	include "serverconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -657,7 +673,7 @@ function rest_put($post_id, $keys, $values, $images_name, $thumbnail_img_url) {
 
 
 
-	$thumbUserPath = 'http://localhost:8080/web_test/image_test/thumbnails/';
+	$thumbUserPath = $thumbnailFolderForClient;//'http://localhost:8080/web_test/image_test/thumbnails/';
 
 	// update post
 	$sql_query = "UPDATE posts SET ";
@@ -703,7 +719,8 @@ function rest_put($post_id, $keys, $values, $images_name, $thumbnail_img_url) {
 }
 
 function delete_html_file($filename_old) {
-	$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	include "serverconfig.php";
+	$fileServerPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
 
 	if(!is_dir($fileServerPath)){
 		return FALSE;
@@ -723,7 +740,9 @@ function rest_get_images_name($post_id) {
 	// normally this info would be pulled from a database.
 	// build JSON array.
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -759,6 +778,7 @@ function rest_get_images_name($post_id) {
 }
 
 function rest_post_html_update() {
+	include "serverconfig.php";
 	if (! isset ( $_FILES ['html_file'] )) {
 		return ( "업로드 파일 존재하지 않음" );
 	}
@@ -798,7 +818,7 @@ function rest_post_html_update() {
 	$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' . strtoupper ( $ext );
 
 	// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
-	$fileServerPath = $_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	$fileServerPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
 	if(!is_dir($fileServerPath)){
 		@mkdir($fileServerPath);
 	}

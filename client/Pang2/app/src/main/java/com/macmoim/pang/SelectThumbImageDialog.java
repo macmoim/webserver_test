@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.macmoim.pang.app.AppController;
+import com.macmoim.pang.util.Util;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class SelectThumbImageDialog extends Dialog implements View.OnClickListen
     private Listener mListener;
     private int mSelectedIndex = 0;
 
-    private static final String URL_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_image/";
+    private static final String URL_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_image/";
 
     public interface Listener {
         public void onSeletedThumbnail(String url);

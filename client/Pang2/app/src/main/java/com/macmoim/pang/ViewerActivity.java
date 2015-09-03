@@ -66,11 +66,11 @@ import java.util.Map;
 public class ViewerActivity extends AppCompatActivity {
     private static final String TAG = "ViewerActivity";
 
-    private static final String URL_LIKE = "http://localhost:8080/web_test/like";
-    private static final String URL_STAR = "http://localhost:8080/web_test/star";
-    private static final String URL_POST = "http://localhost:8080/web_test/post";
-    private static final String URL_COMMENT = "http://localhost:8080/web_test/comment";
-    private static final String URL_SHARE = "http://localhost:8080/web_test/post/share";
+    private static final String URL_LIKE = Util.SERVER_ROOT + "/like";
+    private static final String URL_STAR = Util.SERVER_ROOT + "/star";
+    private static final String URL_POST = Util.SERVER_ROOT + "/post";
+    private static final String URL_COMMENT = Util.SERVER_ROOT + "/comment";
+    private static final String URL_SHARE = Util.SERVER_ROOT + "/post/share";
 
     private RichViewer mViewer;
     private Toolbar mToolbar;

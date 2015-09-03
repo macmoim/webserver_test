@@ -39,6 +39,7 @@ import com.macmoim.pang.adapter.FoodLargeRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +54,7 @@ import java.util.Objects;
 public class FoodListFragment extends Fragment {
     private static final String TAG = "FoodListFragment";
 
-    private String URL = "http://localhost:8080/web_test/thumbImageList";
+    private String URL = Util.SERVER_ROOT + "/thumbImageList";
     private List<FoodItem> feedItems;
     RecyclerView rv;
     private SwipeRefreshLayout mSwipeRefreshLayout;

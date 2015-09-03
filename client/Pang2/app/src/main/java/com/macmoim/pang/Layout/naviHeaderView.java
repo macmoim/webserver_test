@@ -17,6 +17,7 @@ import com.macmoim.pang.R;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +39,8 @@ public class naviHeaderView {
     private TextView mRankingView = null;
     private TextView mScoreView = null;
     private String user_id;
-    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
-    private static final String _GET_URL = "http://localhost:8080/web_test/profile";
+    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_profile_image/";
+    private static final String _GET_URL = Util.SERVER_ROOT + "/profile";
 
     private static final String VOLLEY_REQ_TAG_PROFILE = "get-profile";
 

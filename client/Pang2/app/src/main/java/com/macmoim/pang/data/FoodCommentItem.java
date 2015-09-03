@@ -1,7 +1,9 @@
 package com.macmoim.pang.data;
 
+import com.macmoim.pang.util.Util;
+
 public class FoodCommentItem {
-    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = "http://localhost:8080/web_test/image_test/upload_profile_image/";
+    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_profile_image/";
     private int postId;
     private String postUserId, commentUserId, timeStamp, comment, profileImgUrl;
 

@@ -177,7 +177,7 @@ $app->post('/profile/image/update', function () use ($app) {
 });
 
 $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $timeStamp=NULL) {
-	include __DIR__.'\image_test\thumbnailImage.php';
+	include __DIR__.'/image_test/thumbnailImage.php';
 	if (isset($timeStamp)) {
 		$value = rest_get_image_list_by_timestamp($category, $timeStamp);
 	} else {
@@ -188,7 +188,7 @@ $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $tim
 });
 
 $app->get('/post/share/:htmlUrl', function ($htmlUrl) {
-	include __DIR__.'\front\frontpage.php';
+	include __DIR__.'/front/frontpage.php';
 	if (isset($htmlUrl)) {
 		shareHtml($htmlUrl);	
 		

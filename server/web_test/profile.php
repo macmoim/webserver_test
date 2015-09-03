@@ -7,7 +7,9 @@ function rest_get($id) {
 
 	$ret_detail = update_user_ranking();
 	
-	$mysqli = new mysqli ( "localhost", "root", "111111", 'db_chat_member_test' );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -42,7 +44,9 @@ function rest_get($id) {
 function rest_post( $keys, $values){
 	$dbname = 'db_chat_member_test';
 
-	$mysqli = new mysqli ( "localhost", "root", "111111", $dbname );
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
@@ -121,8 +125,6 @@ function rest_post( $keys, $values){
 
 function rest_put_all($id, $user_id, $name, $email, $gender, $score, $intro, $img_url){
 
-	$dbname = 'db_chat_member_test';
-
 	include "./image_test/dbconfig.php";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
 
@@ -180,8 +182,6 @@ function rest_put_all($id, $user_id, $name, $email, $gender, $score, $intro, $im
 }
 
 function rest_put($id, $keys, $values){
-
-	$dbname = 'db_chat_member_test';
 
 	include "./image_test/dbconfig.php";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
