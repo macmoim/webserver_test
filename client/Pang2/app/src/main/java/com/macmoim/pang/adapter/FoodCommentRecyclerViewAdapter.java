@@ -83,7 +83,7 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
                     .into(holder.mProfilePic);
         }
 
-        holder.mUserIdTv.setText(item.getCommentUserId());
+        holder.mUserIdTv.setText(item.getCommentUserName());
         holder.mTimeStampTv.setText(item.getTimeStamp());
         holder.mCommentTv.setText(item.getComment());
     }

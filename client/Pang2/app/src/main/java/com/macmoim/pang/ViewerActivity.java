@@ -372,6 +372,7 @@ public class ViewerActivity extends AppCompatActivity {
                             item.setPostId(post_id);
                             item.setPostUserId(postUserId);
                             item.setCommentUserId(feedObj.getString("comment_user_id"));
+                            item.setCommentUserName(feedObj.getString("comment_user_name"));
                             item.setComment(feedObj.getString("comment"));
                             item.setTimeStamp(feedObj.getString("upload_date"));
                             item.setProfileImgUrl(feedObj.getString("user_profile_img_url"));

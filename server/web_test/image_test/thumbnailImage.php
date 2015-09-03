@@ -11,8 +11,10 @@ function rest_get_image_list($category) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT id, user_id, title, upload_filename, upload_date, thumb_img_path
-	                   FROM posts";
+	$sql_query = "SELECT posts.id as p_id, posts.user_id as p_user_id, title, upload_filename, upload_date, thumb_img_path, rank, profiles.user_name as profile_user_name
+	                   FROM posts LEFT JOIN profiles ON posts.user_id = profiles.user_id";
+
+
 	$sql_order_by = " ORDER BY upload_date";
 	if (isset($category)) {
 		
@@ -36,12 +38,13 @@ function rest_get_image_list($category) {
 				
 				
 				array_push ( $post_info, array (
-					"id" => $row ['id'],
+					"id" => $row ['p_id'],
 					"title" => $row ['title'],
-					"user_id" => $row ['user_id'],
+					"user_id" => $row ['p_user_id'],
 					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
-					"img_path" => $row ['thumb_img_path']
+					"img_path" => $row ['thumb_img_path'],
+					"user_name" => $row ['profile_user_name'],
 				) );
 				
 				
@@ -81,8 +84,8 @@ function rest_get_image_list_by_timestamp($category, $timestamp) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT id, user_id, title, upload_filename, upload_date, thumb_img_path
-	                   FROM posts WHERE upload_date > '$timestamp'";
+	$sql_query = "SELECT posts.id as p_id, posts.user_id as p_user_id, title, upload_filename, upload_date, thumb_img_path, rank, profiles.user_name as profile_user_name
+	                   FROM posts LEFT JOIN profiles ON posts.user_id = profiles.user_id WHERE upload_date > '$timestamp'";
 	$sql_order_by = "";
 	if (isset($category)) {
 		
@@ -106,12 +109,13 @@ function rest_get_image_list_by_timestamp($category, $timestamp) {
 				
 				
 				array_push ( $post_info, array (
-					"id" => $row ['id'],
+					"id" => $row ['p_id'],
 					"title" => $row ['title'],
-					"user_id" => $row ['user_id'],
+					"user_id" => $row ['p_user_id'],
 					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
-					"img_path" => $row ['thumb_img_path']
+					"img_path" => $row ['thumb_img_path'],
+					"user_name" => $row ['profile_user_name'],
 				) );
 				
 				

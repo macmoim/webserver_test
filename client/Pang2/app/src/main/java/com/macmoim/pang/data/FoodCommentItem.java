@@ -2,18 +2,19 @@ package com.macmoim.pang.data;
 
 public class FoodCommentItem {
     private int postId;
-    private String postUserId, commentUserId, timeStamp, comment, profileImgUrl;
+    private String postUserId, commentUserId, commentUserName, timeStamp, comment, profileImgUrl;
 
     public FoodCommentItem() {
     }
 
-    public FoodCommentItem(int postId, String postUserId, String commentUserId, String comment, String timeStamp, String profileImageUrl) {
+    public FoodCommentItem(int postId, String postUserId, String commentUserId, String commentUserName, String comment, String timeStamp, String profileImageUrl) {
         super();
         this.postId = postId;
         this.postUserId = postUserId;
         this.commentUserId = commentUserId;
         this.timeStamp = timeStamp;
         this.profileImgUrl = profileImageUrl;
+        this.commentUserName = commentUserName;
     }
 
 
@@ -39,6 +40,14 @@ public class FoodCommentItem {
 
     public void setCommentUserId(String commentUserId) {
         this.commentUserId = commentUserId;
+    }
+
+    public String getCommentUserName() {
+        return commentUserName;
+    }
+
+    public void setCommentUserName(String commentUserName) {
+        this.commentUserName = commentUserName;
     }
 
     public String getTimeStamp() {

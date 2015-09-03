@@ -28,7 +28,8 @@ function rest_get($post_id) {
 					"comment_user_id" => $row ['comment_user_id'],
 					"comment" => $row ['comment'],
 					"upload_date" => $row ['upload_date'],
-					"user_profile_img_url" => $row ['profile_img_url']
+					"user_profile_img_url" => $row ['profile_img_url'], 
+					"comment_user_name" => $row ['user_name'], 
 				) );
 				
 				
