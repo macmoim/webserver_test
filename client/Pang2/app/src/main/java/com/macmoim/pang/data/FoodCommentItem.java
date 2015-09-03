@@ -1,9 +1,6 @@
 package com.macmoim.pang.data;
 
-import com.macmoim.pang.util.Util;
-
 public class FoodCommentItem {
-    private static final String UPLOAD_PROFILE_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_profile_image/";
     private int postId;
     private String postUserId, commentUserId, timeStamp, comment, profileImgUrl;
 
@@ -68,7 +65,7 @@ public class FoodCommentItem {
         if (profileImgUrl == null || "null".equals(profileImgUrl)) {
             this.profileImgUrl = null;
         } else {
-            this.profileImgUrl = UPLOAD_PROFILE_IMAGE_FOLDER+profileImgUrl;
+            this.profileImgUrl = profileImgUrl;
         }
     }
 }
