@@ -26,12 +26,15 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
+import com.macmoim.pang.Layout.CircleFlatingMenu;
+import com.macmoim.pang.Layout.CircleFlatingMenuWithActionView;
 import com.macmoim.pang.adapter.FoodCommentRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -76,12 +79,10 @@ public class ViewerActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private Button mLikeBtn;
     private boolean isLikeCheck;
-    private ViewGroup mRankingLayout;
-    private ViewGroup mShareLayout;
-    private Rect mRankingLayoutRect;
-    private Rect mShareLayoutRect;
-    private ArrayList<ImageView> mRankingStartArr;
+    private ArrayList<View> mRankingStartArr;
     private Button mRankingBtn;
+    CircleFlatingMenuWithActionView mShareCf;
+    CircleFlatingMenuWithActionView mRankingCf;
     private int mStar;
     private int mLikeDbId = -1;
     private int mStarDbId = -1;
@@ -145,26 +146,12 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
-        mRankingLayout = (ViewGroup) findViewById(R.id.ranking_layout);
-        setupRankingStarView();
 
         mRankingBtn = (Button) findViewById(R.id.ranking_btn);
-        mRankingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBottomView(mRankingLayout);
-            }
-        });
+        setStarFloationAction(mRankingBtn);
 
-        mShareLayout = (ViewGroup) findViewById(R.id.share_layout);
-        setupShareView();
 
-        ((Button) findViewById(R.id.share_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prepareShareContent();
-            }
-        });
+        setShareFloationAction((Button) findViewById(R.id.share_btn));
 
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
         setupRecyclerView(mCommentRv);
@@ -222,6 +209,11 @@ public class ViewerActivity extends AppCompatActivity {
                         CollapsingToolbarLayout collapsingToolbar =
                                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
                         collapsingToolbar.setTitle(mTitle);
+
+                        ((TextView)findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
+                        String score = response.getString("rank");
+                        ((TextView)findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
+                        ((TextView)findViewById(R.id.user_name_text)).setText(response.getString("user_name"));
 
                         postUserId = response.getString("user_id");
 
@@ -584,62 +576,63 @@ public class ViewerActivity extends AppCompatActivity {
         return true;
     }
 
-    private void showBottomView(View v) {
-        if (v == null) {
-            return;
-        }
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-            if (v == mRankingLayout) {
-                mRankingLayout.getHitRect(mRankingLayoutRect);
-            } else if (v == mShareLayout) {
-                mShareLayout.getHitRect(mShareLayoutRect);
+    private void setShareFloationAction(View actionView) {
+        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil};
+
+        mShareCf = new CircleFlatingMenuWithActionView(this, actionView);
+        mShareCf.setListener(new CircleFlatingMenu.Listener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if ((int) v.getTag() == R.drawable.ic_facebook) {
+                        new ShareFacebookTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                        mShareCf.menuClose(false);
+                    } else if ((int) v.getTag() == R.drawable.ic_dashboard) {
+                        new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
+                        mShareCf.menuClose(false);
+                    } else if ((int) v.getTag() == R.drawable.ic_pencil) {
+                        new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
+                        mShareCf.menuClose(false);
+                    }
+
+                }
+                return true;
             }
-        }
+        });
+        mShareCf.addResId(id);
+        mShareCf.setItemAngle(-135, -45);
+        mShareCf.setItemRadius(getResources().getDimensionPixelSize(R.dimen.radius_medium));
+        mShareCf.setFloationAction();
     }
 
-    private void closeBottomView(View v) {
-        if (v == null) {
-            return;
-        }
-        if (v.getVisibility() == View.VISIBLE) {
-            v.setVisibility(View.GONE);
-            if (v == mRankingLayout) {
-                putStar(mStar);
+    private void setStarFloationAction(View actionView) {
+        final int[] id = {R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor};
+        final int TAG_BASE = 110;
+        final int[] viewTags = {TAG_BASE, TAG_BASE + 1, TAG_BASE + 2, TAG_BASE + 3, TAG_BASE + 4};
+
+        mRankingCf = new CircleFlatingMenuWithActionView(this, actionView);
+        mRankingCf.setListener(new CircleFlatingMenu.Listener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "mRankingCf " + event.getAction());
+                int star = (int) v.getTag() - TAG_BASE;
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    setRankStar(star);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    putStar(star + 1);
+                    mRankingCf.menuClose(false);
+                    return true;
+                }
+                return true;
             }
-        }
-    }
+        });
+        mRankingCf.addResId(id);
+        mRankingCf.addViewTags(viewTags);
+        mRankingCf.setItemAngle(-180, 0);
+        mRankingCf.setItemRadius(getResources().getDimensionPixelSize(R.dimen.radius_medium));
+        mRankingCf.setFloationAction();
 
-    private void setupRankingStarView() {
-        mRankingStartArr = new ArrayList<>();
-        StarClickListener starListener = new StarClickListener();
-        mRankingStartArr.add((ImageView) findViewById(R.id.star1));
-        mRankingStartArr.add((ImageView) findViewById(R.id.star2));
-        mRankingStartArr.add((ImageView) findViewById(R.id.star3));
-        mRankingStartArr.add((ImageView) findViewById(R.id.star4));
-        mRankingStartArr.add((ImageView) findViewById(R.id.star5));
-
-        for (ImageView v : mRankingStartArr) {
-            v.setOnClickListener(starListener);
-        }
-
-        mRankingLayoutRect = new Rect();
-    }
-
-    private void setupShareView() {
-        ShareClickListener shareListener = new ShareClickListener();
-        ((Button) findViewById(R.id.facebook_share_btn)).setOnClickListener(shareListener);
-        ((Button) findViewById(R.id.kakao_story_share_btn)).setOnClickListener(shareListener);
-        ((Button) findViewById(R.id.etc_share_btn)).setOnClickListener(shareListener);
-
-        mShareLayoutRect = new Rect();
-    }
-
-    private void prepareShareContent() {
-        if (mHtmlFileName == null) {
-            return;
-        }
-        showBottomView(mShareLayout);
+        mRankingStartArr = mRankingCf.getSubactionViews();
     }
 
     private void shareContent(Uri shareImageUri) {
@@ -661,36 +654,6 @@ public class ViewerActivity extends AppCompatActivity {
         Auth auth = new FacebookAuth(this, null);
         auth.share(url, contentUri);
 
-    }
-
-    private class StarClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (mRankingStartArr == null) {
-                return;
-            }
-            int clickedIndex = mRankingStartArr.indexOf(v);
-            setRankStar(clickedIndex);
-
-        }
-    }
-
-    private class ShareClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.facebook_share_btn:
-                    new ShareFacebookTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
-                    break;
-                case R.id.kakao_story_share_btn:
-                    new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
-                    break;
-                case R.id.etc_share_btn:
-                    new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
-                    break;
-            }
-            closeBottomView(mShareLayout);
-        }
     }
 
     private void setRankStar(int starIndexInArray) {
@@ -794,26 +757,12 @@ public class ViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mRankingLayoutRect.contains((int) event.getX(), (int) event.getY())) {
-            closeBottomView(mRankingLayout);
-        }
-        if (!mShareLayoutRect.contains((int) event.getX(), (int) event.getY())) {
-            closeBottomView(mShareLayout);
-        }
 
         return super.onTouchEvent(event);
     }
 
     @Override
     public void onBackPressed() {
-        if (mRankingLayout != null && mRankingLayout.getVisibility() == View.VISIBLE) {
-            closeBottomView(mRankingLayout);
-            return;
-        }
-        if (mShareLayout != null && mShareLayout.getVisibility() == View.VISIBLE) {
-            closeBottomView(mShareLayout);
-            return;
-        }
         super.onBackPressed();
     }
 
@@ -828,27 +777,28 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_HTML);
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_COMMENT);
+        if (mShareCf != null) {
+            mShareCf.setListener(null);
+            mShareCf = null;
+        }
+        if (mRankingCf != null) {
+            mRankingCf.setListener(null);
+            mRankingCf = null;
+        }
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
             mLikeBtn = null;
         }
         if (mRankingBtn != null) {
-            mRankingBtn.setOnClickListener(null);
             mRankingBtn = null;
         }
         if (mRankingStartArr != null) {
-            for (ImageView v : mRankingStartArr) {
+            for (View v : mRankingStartArr) {
                 v.setOnClickListener(null);
                 v = null;
             }
             mRankingStartArr.clear();
             mRankingStartArr = null;
-        }
-        if (mRankingLayout != null) {
-            mRankingLayout = null;
-        }
-        if (mShareLayout != null) {
-            mShareLayout = null;
         }
         if (mCommentRv != null) {
             mCommentRv.removeAllViews();
@@ -857,8 +807,6 @@ public class ViewerActivity extends AppCompatActivity {
             mCommentRv = null;
         }
         mViewer = null;
-        mRankingLayoutRect = null;
-        mShareLayoutRect = null;
         super.onDestroy();
 
     }

@@ -15,6 +15,7 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,11 @@ import java.util.Objects;
 public class CircleFlatingMenu implements View.OnTouchListener {
     protected Activity mActivity;
     protected int[] Resid = null;
+    protected int[] mTags = null;
+
+    protected int mStartAngle = -1;
+    protected int mEndAngle = -1;
+    protected int mRadius = -1;
 
     protected Listener mListener;
     protected FloatingActionMenu rightLowerMenu;
@@ -43,6 +49,9 @@ public class CircleFlatingMenu implements View.OnTouchListener {
     public void addResId(int[] id) {
         Resid = id;
     }
+    public void addViewTags(int[] viewTags) {
+        mTags = viewTags;
+    }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void setFloationAction() {
@@ -52,6 +61,7 @@ public class CircleFlatingMenu implements View.OnTouchListener {
             e.printStackTrace();
             return;
         }
+
         int blueSubActionButtonSize = mActivity.getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_size);
         int blueSubActionButtonContentMargin = mActivity.getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_content_margin);
 
@@ -114,12 +124,32 @@ public class CircleFlatingMenu implements View.OnTouchListener {
         });
     }
 
+    public ArrayList<View> getSubactionViews() {
+        if (rightLowerMenu == null) {
+            return null;
+        }
+        ArrayList<View> subViews = new ArrayList<>();
+        for (FloatingActionMenu.Item item : rightLowerMenu.getSubActionItems()) {
+            subViews.add(item.view);
+        }
+        return subViews;
+    }
+
     public void menuOpen(boolean animated){
         rightLowerMenu.open(animated);
     }
 
     public void menuClose(boolean animated){
         rightLowerMenu.close(animated);
+    }
+
+    public void setItemAngle(int startAngle, int endAngle) {
+        mStartAngle = startAngle;
+        mEndAngle = endAngle;
+    }
+
+    public void setItemRadius(int radius) {
+        mRadius = radius;
     }
 
     @Override

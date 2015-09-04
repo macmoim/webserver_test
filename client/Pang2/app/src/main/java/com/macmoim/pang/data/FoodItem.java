@@ -4,12 +4,12 @@ import com.macmoim.pang.util.Util;
 
 public class FoodItem {
     private int id;
-    private String name, image, timeStamp, userId, userName;
+    private String name, image, timeStamp, userId, userName, likeSum, score;
 
     public FoodItem() {
     }
 
-    public FoodItem(int id, String name, String userId, String userName, String image, String timeStamp) {
+    public FoodItem(int id, String name, String userId, String userName, String image, String timeStamp, String likeSum, String score) {
         super();
         this.id = id;
         this.name = name;
@@ -17,6 +17,8 @@ public class FoodItem {
         this.timeStamp = timeStamp;
         this.userId = userId;
         this.userName = userName;
+        this.likeSum = likeSum;
+        this.score = score;
     }
 
     public int getId() {
@@ -68,4 +70,19 @@ public class FoodItem {
         this.timeStamp = timeStamp;
     }
 
+    public String getLikeSum() {
+        return likeSum;
+    }
+
+    public void setLikeSum(String likeSum) {
+        this.likeSum = likeSum;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
 }

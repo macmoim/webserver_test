@@ -310,6 +310,10 @@ public class FoodListFragment extends Fragment {
                     item.setImge(image);
                     item.setTimeStamp(feedObj.getString("date"));
 
+                    item.setLikeSum(feedObj.getString("like_sum"));
+                    String score = feedObj.getString("score");
+                    item.setScore("null".equals(score) ? "0" : score);
+
 
                     Log.d(TAG, "parseJsonFeed dbname " + feedObj
                             .getString("img_path"));

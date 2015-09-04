@@ -55,61 +55,103 @@
                 android:layout_height="100dp"
                 android:scaleType="fitCenter"></com.android.volley.toolbox.NetworkImageView>-->
 
+
             <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/profilePic"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:scaleType="centerCrop"></com.android.volley.toolbox.NetworkImageView>
+                android:scaleType="centerCrop">
+
+            </com.android.volley.toolbox.NetworkImageView>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="@dimen/feed_item_profile_info_padd">
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/user_id"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/feed_item_timestamp" />
-
-                <TextView
-                    android:id="@+id/timestamp"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/timestamp"
-                    android:textSize="@dimen/feed_item_timestamp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/del_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/ic_close"
-                    android:visibility="gone" />
+                    android:layout_weight="3"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/feed_item_profile_info_padd">
 
-                <Button
-                    android:id="@+id/edit_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/ic_pencil"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/user_id"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textSize="@dimen/feed_item_timestamp" />
+
+                    <TextView
+                        android:id="@+id/timestamp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/timestamp"
+                        android:textSize="@dimen/feed_item_timestamp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical">
+
+                        <ImageView
+                            android:id="@+id/like_imageview"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/like_nor" />
+
+                        <TextView
+                            android:id="@+id/like_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/like_imageview"
+                            android:gravity="center_vertical" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:id="@+id/score_imageview"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/star_nor" />
+
+                        <TextView
+                            android:id="@+id/score_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/score_imageview"
+                            android:gravity="center_vertical" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
 

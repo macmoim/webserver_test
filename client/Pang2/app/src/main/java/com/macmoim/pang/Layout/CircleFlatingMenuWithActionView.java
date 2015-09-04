@@ -12,6 +12,7 @@ import com.macmoim.pang.R;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -33,6 +34,10 @@ public class CircleFlatingMenuWithActionView extends CircleFlatingMenu {
         } catch (Exception e) {
             e.printStackTrace();
             return;
+        }
+
+        if (mTags == null) {
+            mTags = Resid;
         }
 
         int blueSubActionButtonSize = mActivity.getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_size);
@@ -57,15 +62,21 @@ public class CircleFlatingMenuWithActionView extends CircleFlatingMenu {
         // Set 4 default SubActionButtons
 
         FloatingActionMenu.Builder builder = new FloatingActionMenu.Builder(mActivity);
-        builder.setStartAngle(0)
-                .setEndAngle(-90)
-                .setRadius(mActivity.getResources().getDimensionPixelSize(R.dimen.radius_medium));
+        if (mStartAngle != -1) {
+            builder.setStartAngle(mStartAngle);
+        }
+        if (mEndAngle != -1) {
+            builder.setEndAngle(mEndAngle);
+        }
+        if (mRadius != -1) {
+            builder.setRadius(mRadius);
+        }
 
         for (int i = 0; i < Resid.length; i++) {
             iv[i] = new ImageView(mActivity);
             iv[i].setImageDrawable(mActivity.getResources().getDrawable(Resid[i]));
             iv[i].setOnTouchListener(this);
-            iv[i].setTag(Resid[i]);
+            iv[i].setTag(mTags[i]);
             builder.addSubActionView(lCSubBuilder.setContentView(iv[i]).build());
         }
         rightLowerMenu = builder.attachTo(mActionView).build();

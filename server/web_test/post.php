@@ -15,13 +15,21 @@ function rest_get($id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path
-	                   FROM posts WHERE id = '$id'";
+	$sql_query = "SELECT posts.user_id as p_user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path, rank,
+					count(like_bool) as likes_sum, profiles.user_name
+					FROM posts 
+					LEFT JOIN likes
+					ON likes.post_id = posts.id AND likes.like_bool = '1'
+					LEFT JOIN profiles 
+                    			ON profiles.user_id = posts.user_id
+					WHERE posts.id = '$id'";
+
 	if ($result = $mysqli->query ( $sql_query )) {
 		$row = $result->fetch_array ();
 		if (isset ( $row ['db_filename'] )) {
 			$post_info = array (
-					"user_id" => $row ['user_id'],
+					"user_id" => $row ['p_user_id'],
+					"user_name" => $row ['user_name'],
 					"title" => $row ['title'],
 					"upload_filename" => $row ['upload_filename'],
 					"db_filename" => $row ['db_filename'],
@@ -29,6 +37,8 @@ function rest_get($id) {
 					"upload_date" => $row ['upload_date'],
 					"category" => $row ['category'],
 					"thumb_img_path" => $row['thumb_img_path'],
+					"rank" => $row['rank'],
+					"like_sum" => $row['likes_sum'],
 					"ret_val" => "success"
 			);
 		} else {

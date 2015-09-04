@@ -33,19 +33,9 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 
     private final TypedValue mTypedValue = new TypedValue();
     private int mBackground;
-    private List<FoodItem> mValues;
+    protected List<FoodItem> mValues;
 
-    private Listener mListener;
     private boolean mEnableDelete = false;
-
-    public interface Listener {
-        public void onDeleteButtonClick(int dbId);
-        public void onEditButtonClick(int dbId);
-    }
-
-    public void setListener(Listener l) {
-        mListener = l;
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
@@ -56,6 +46,8 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
 
+
+
         public ViewHolder(View view) {
             super(view);
             mView = view;
@@ -64,8 +56,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
             mTimeStampTv = (TextView) view
                     .findViewById(R.id.timestamp);
-            view.findViewById(R.id.del_btn).setVisibility(View.GONE);
-            view.findViewById(R.id.edit_btn).setVisibility(View.GONE);
+
         }
 
         @Override

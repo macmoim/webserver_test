@@ -132,6 +132,8 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
             }
         });
         mCf.addResId(id);
+        mCf.setItemAngle(0, -90);
+        mCf.setItemRadius(activity.getResources().getDimensionPixelSize(R.dimen.radius_medium));
         mCf.setFloationAction();
     }
 }
