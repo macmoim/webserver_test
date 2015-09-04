@@ -84,14 +84,18 @@ public class ProfileActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
-        user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
+        setUserId();
         setBackDropInit();
         mFeedItem = new FeedItem();
         setAllFocus();
         OnGetData();
         setFloationAction();
 
+    }
+
+    protected void setUserId() {
+        user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
+        user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
     }
 
     protected void setBackDropInit() {
@@ -148,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void OnGetData() {
+    protected void OnGetData() {
 
         String url = _URL_PROFILE + "/" + user_id;
 

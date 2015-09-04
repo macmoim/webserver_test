@@ -60,6 +60,10 @@ class RequestFeedListActivity extends AppCompatActivity {
 
         rv = (RecyclerView) findViewById(R.id.feed_recyclerview);
 
+        setUserId();
+    }
+
+    protected void setUserId() {
         user_id = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
         user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
     }

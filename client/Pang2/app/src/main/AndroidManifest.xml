@@ -98,6 +98,14 @@
                 android:value="com.macmoim.pang.MainActivity" />
         </activity>
         <activity
+            android:name="com.macmoim.pang.OtherUserProfileActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:parentActivityName="com.macmoim.pang.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.MainActivity" />
+        </activity>
+        <activity
             android:name="com.macmoim.pang.EditProfileActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
@@ -124,7 +132,16 @@
 
         <activity
             android:name="com.macmoim.pang.MyPostActivity"
-            android:configChanges="keyboard|keyboardHidden|screenSize"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:parentActivityName="com.macmoim.pang.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.macmoim.pang.OtherUserPostActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

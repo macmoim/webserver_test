@@ -1,14 +1,20 @@
 package com.macmoim.pang.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.macmoim.pang.Layout.CircleFlatingMenu;
+import com.macmoim.pang.Layout.CircleFlatingMenuWithActionView;
+import com.macmoim.pang.OtherUserPostActivity;
+import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.data.FoodCommentItem;
 
@@ -22,6 +28,8 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
     private Activity activity;
 
     private List<FoodCommentItem> mValues;
+
+    CircleFlatingMenuWithActionView mCf;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
@@ -86,10 +94,44 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         holder.mUserIdTv.setText(item.getCommentUserName());
         holder.mTimeStampTv.setText(item.getTimeStamp());
         holder.mCommentTv.setText(item.getComment());
+
+        setFloationAction(holder.mProfilePic, item);
     }
 
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    private void setFloationAction(View actionView, final FoodCommentItem item) {
+        final int[] id = {R.drawable.person, R.drawable.ic_dashboard};
+
+        mCf = new CircleFlatingMenuWithActionView(activity, actionView);
+        mCf.setListener(new CircleFlatingMenu.Listener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if ((int) v.getTag() == R.drawable.person) {
+                        mCf.menuClose(false);
+                        Intent intent = new Intent(activity, OtherUserProfileActivity.class);
+                        intent.putExtra("other-user-id", item.getCommentUserId());
+                        intent.putExtra("other-user-name", item.getCommentUserName());
+                        activity.startActivity(intent);
+//                        finish();
+                    } else if ((int) v.getTag() == R.drawable.ic_dashboard) {
+                        mCf.menuClose(false);
+                        Intent intent = new Intent(activity, OtherUserPostActivity.class);
+                        intent.putExtra("other-user-id", item.getCommentUserId());
+                        intent.putExtra("other-user-name", item.getCommentUserName());
+                        activity.startActivity(intent);
+
+                    }
+
+                }
+                return true;
+            }
+        });
+        mCf.addResId(id);
+        mCf.setFloationAction();
     }
 }

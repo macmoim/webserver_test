@@ -55,4 +55,5 @@
 
     <dimen name="blue_sub_action_button_content_margin">16dp</dimen>
     <dimen name="blue_sub_action_button_size">48dp</dimen>
+    <dimen name="radius_medium">45dp</dimen>
 </resources>
