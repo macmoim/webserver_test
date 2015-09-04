@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.macmoim.pang.Layout.swipe.SimpleSwipeListener;
+import com.macmoim.pang.Layout.swipe.SwipeLayout;
+import com.macmoim.pang.Layout.swipe.adapters.RecyclerSwipeAdapter;
 import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
@@ -25,7 +30,7 @@ import java.util.List;
 /**
  * Created by P14983 on 2015-07-27.
  */
-public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerViewAdapter.ViewHolder> {
+public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFoodRecyclerViewAdapter.ViewHolder> {
 
     private Activity activity;
     private LayoutInflater inflater;
@@ -40,6 +45,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 
     public interface Listener {
         public void onDeleteButtonClick(int dbId);
+
         public void onEditButtonClick(int dbId);
     }
 
@@ -50,22 +56,26 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
 
+        public SwipeLayout swipeLayout;
         public final View mView;
         public final NetworkImageView mImageView;
         public final TextView mNameTv;
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
+        public final ImageView mDeleteBtn;
+        public final ImageView mEditBtn;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             mImageView = (NetworkImageView) view.findViewById(R.id.profilePic);
             mNameTv = (TextView) view.findViewById(R.id.name);
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
             mTimeStampTv = (TextView) view
                     .findViewById(R.id.timestamp);
-            view.findViewById(R.id.del_btn).setVisibility(View.GONE);
-            view.findViewById(R.id.edit_btn).setVisibility(View.GONE);
+            mDeleteBtn = (ImageView) view.findViewById(R.id.del_btn);
+            mEditBtn = (ImageView) view.findViewById(R.id.edit_btn);
         }
 
         @Override
@@ -78,7 +88,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         return mValues.get(position);
     }
 
-    public FoodRecyclerViewAdapter(Activity activity, List<FoodItem> items) {
+    public SwipeFoodRecyclerViewAdapter(Activity activity, List<FoodItem> items) {
 //        activity.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
 //        mBackground = mTypedValue.resourceId;
         mValues = items;
@@ -100,7 +110,14 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-
+        Log.d("TTT", "onBindViewHolder");
+        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.del_btn));
+            }
+        });
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,14 +145,28 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 //                    .into(holder.mImageView);
 //        } else {
         // user profile pic
-        holder.mImageView.setImageUrl(getImageFolderURL()+item.getImge(), imageLoader);
+        holder.mImageView.setImageUrl(getImageFolderURL() + item.getImge(), imageLoader);
 //        }
 
         holder.mNameTv.setText(item.getName());
-        holder.mUserIdTv.setText(item.getUserName());
+        holder.mUserIdTv.setText(item.getUserId());
 
         holder.mTimeStampTv.setText(item.getTimeStamp());
 
+        final int dbId = item.getId();
+            holder.mDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDeleteButtonClick(dbId);
+                }
+            });
+
+            holder.mEditBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onEditButtonClick(dbId);
+                }
+            });
     }
 
     @Override
@@ -143,7 +174,12 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         return mValues.size();
     }
 
-    public String getImageFolderURL () {
+    public String getImageFolderURL() {
         return Util.IMAGE_THUMBNAIL_FOLDER_URL;
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
     }
 }
