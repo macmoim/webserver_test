@@ -3,6 +3,7 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -40,19 +41,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import butterknife.Bind;
+import butterknife.BindDimen;
+import butterknife.BindDrawable;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
 
 
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class LogInActivity extends AppCompatActivity
-        implements View.OnClickListener, Auth.OnAuthListener {
+        implements Auth.OnAuthListener {
     private final String TAG = "LogInActivity";
     private static final String _URL_PROFILE = Util.SERVER_ROOT + "/profile";
 
-    LinearLayout lFaceBook;
+    @BindDimen(R.dimen.view_pager_indicator_normal_margin)
+    int iViewPagerIndicatorNormalMargin;
+    @BindDimen(R.dimen.view_pager_indicator_select_margin)
+    int iViewPagerIndicatorSelectMargin;
+
+    @BindDrawable(R.drawable.circle_mustard_normal)
+    Drawable CircleMustardNormal;
+    @BindDrawable(R.drawable.circle_mustard_selected)
+    Drawable CircleMustardSelect;
+
+    @Bind(R.id.facebook_tv)
     TextView tvFaceBook;
-    LinearLayout lGoogle;
-    LinearLayout lKakao;
+
+    @OnClick({R.id.facebook_area, R.id.google_plus_area, R.id.kakao_area})
+    public void OnClickLogIn(View view) {
+        int _Id = view.getId();
+
+        if (_Id == R.id.facebook_area) {
+            if ((FacebookAuth.isCurrentState())) {
+                FacebookAuth.revoke();
+            } else {
+                FacebookAuth.login();
+            }
+        } else if (_Id == R.id.google_plus_area) {
+            GoogleAuth.login();
+        } else if (_Id == R.id.kakao_area) {
+            // TODO : KAKAO
+        } else {
+            // none
+        }
+    }
 
     GoogleAuth GoogleAuth;
     FacebookAuth FacebookAuth;
@@ -79,14 +113,7 @@ public class LogInActivity extends AppCompatActivity
 
         mContext = getApplicationContext();
 
-        lFaceBook = (LinearLayout) findViewById(R.id.facebook_area);
-        tvFaceBook = (TextView) findViewById(R.id.facebook_tv);
-        lGoogle = (LinearLayout) findViewById(R.id.google_plus_area);
-        lKakao = (LinearLayout) findViewById(R.id.kakao_area);
-
-        lFaceBook.setOnClickListener(this);
-        lGoogle.setOnClickListener(this);
-        lKakao.setOnClickListener(this);
+        ButterKnife.bind(this);
 
         GoogleAuth = new GoogleAuth(this, this);
         FacebookAuth = new FacebookAuth(this, this);
@@ -135,24 +162,6 @@ public class LogInActivity extends AppCompatActivity
         }
 
         FacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onClick(View view) {
-        int viewId = view.getId();
-
-        if (viewId == R.id.facebook_area) {
-            if ((FacebookAuth.isCurrentState())) {
-                FacebookAuth.revoke();
-            } else {
-                FacebookAuth.login();
-            }
-        } else if (viewId == R.id.google_plus_area) {
-            GoogleAuth.login();
-        } else {
-            //TODO : KAKAO
-        }
-
     }
 
     @Override
@@ -281,7 +290,7 @@ public class LogInActivity extends AppCompatActivity
     private void BuildPagerViewIndicatorLayout() {
         PagerViewIndicatorLayout = LinearLayout.class.cast(findViewById(R.id.view_pager_indicator));
 
-        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
+        int _Padding = iViewPagerIndicatorNormalMargin;
 
         for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
             ImageView _Indicator = new ImageView(this);
@@ -300,18 +309,18 @@ public class LogInActivity extends AppCompatActivity
     }
 
     private void SetPagerViewIndicatorLayout(int index) {
-        int _Padding = (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
+        int _Padding = iViewPagerIndicatorNormalMargin;
 
         if (index < LogInPagerViewAdapter.getCount()) {
             for (int i = 0; i < LogInPagerViewAdapter.getCount(); i++) {
                 ImageView _Indicator = (ImageView) PagerViewIndicatorLayout.getChildAt(i);
-                _Padding = (i == index) ? (int) getResources().getDimension(R.dimen.view_pager_indicator_select_margin)
-                        : (int) getResources().getDimension(R.dimen.view_pager_indicator_normal_margin);
+
+                _Padding = (i == index) ? iViewPagerIndicatorSelectMargin : iViewPagerIndicatorNormalMargin;
 
                 if (i == index) {
-                    _Indicator.setImageResource(R.drawable.circle_mustard_selected);
+                    _Indicator.setImageDrawable(CircleMustardSelect);
                 } else {
-                    _Indicator.setImageResource(R.drawable.circle_mustard_normal);
+                    _Indicator.setImageDrawable(CircleMustardNormal);
                 }
 
                 _Indicator.setPadding(_Padding, _Padding, _Padding, _Padding);

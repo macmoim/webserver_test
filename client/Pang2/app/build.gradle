@@ -52,4 +52,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+    // adding the butter knife library :: easily annotation
+    // why used > simple coding. hate nogada
+    // cf > http://jakewharton.github.io/butterknife/
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
