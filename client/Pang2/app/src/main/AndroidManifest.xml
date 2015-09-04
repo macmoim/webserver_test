@@ -124,7 +124,7 @@
 
         <activity
             android:name="com.macmoim.pang.MyPostActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize"
+            android:configChanges="keyboard|keyboardHidden|screenSize"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

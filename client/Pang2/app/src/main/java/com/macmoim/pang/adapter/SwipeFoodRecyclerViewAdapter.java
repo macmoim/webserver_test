@@ -111,7 +111,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Log.d("TTT", "onBindViewHolder");
-        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {

@@ -46,6 +46,7 @@
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
         swipe:leftEdgeSwipeOffset="0dp"
         swipe:rightEdgeSwipeOffset="0dp">
 
