@@ -65,7 +65,7 @@ class RequestFeedListActivity extends AppCompatActivity {
     }
 
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    protected void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(new FoodRecyclerViewAdapter(this, feedItems));

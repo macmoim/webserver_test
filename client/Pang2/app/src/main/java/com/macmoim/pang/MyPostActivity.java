@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,7 +17,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.Layout.swipe.util.Attributes;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
+import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
@@ -25,13 +30,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
 
 /**
  * Created by P11872 on 2015-08-16.
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class MyPostActivity extends RequestFeedListActivity implements FoodRecyclerViewAdapter.Listener {
+public class MyPostActivity extends RequestFeedListActivity implements SwipeFoodRecyclerViewAdapter.Listener {
 
     private String URL = Util.SERVER_ROOT + "/post/user";
     private String URL_DELETE = Util.SERVER_ROOT + "/post";
@@ -43,7 +52,18 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((FoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
+        ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
+
+    }
+
+
+    protected void setupRecyclerView(RecyclerView recyclerView) {
+        feedItems = new ArrayList<FoodItem>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setAdapter(new SwipeFoodRecyclerViewAdapter(this, feedItems));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
+        ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setMode(Attributes.Mode.Single);
+        recyclerView.setItemAnimator(new FadeInLeftAnimator());
     }
 
     @Override
@@ -213,7 +233,7 @@ public class MyPostActivity extends RequestFeedListActivity implements FoodRecyc
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_DEL_MYPOST);
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_MYPOST);
-        ((FoodRecyclerViewAdapter) rv.getAdapter()).setListener(null);
+        ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setListener(null);
         super.onDestroy();
     }
 }
