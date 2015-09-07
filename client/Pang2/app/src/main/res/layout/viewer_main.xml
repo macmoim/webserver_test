@@ -66,7 +66,7 @@
                     android:id="@+id/user_name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -83,9 +83,9 @@
                         android:id="@+id/like_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
                         android:layout_toRightOf="@id/like_imageview"
-                        android:textColor="@android:color/white"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@android:color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -103,9 +103,9 @@
                         android:id="@+id/score_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
                         android:layout_toRightOf="@id/score_imageview"
-                        android:textColor="@android:color/white"/>
+                        android:gravity="center_vertical"
+                        android:textColor="@android:color/white" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -177,6 +177,7 @@
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/comment_float_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
@@ -189,63 +190,93 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/basePrimaryBackgroundColour"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/star_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/basePrimaryBackgroundColour"
+            android:alpha="0.5"
+            android:visibility="invisible"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal|center_vertical">
 
-            <Button
-                android:id="@+id/like_btn"
+            <ImageView
+                android:id="@+id/star01"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/like_nor_white" />
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/comment_btn"
+                android:background="@drawable/star_nor_white"/>
+            <ImageView
+                android:id="@+id/star02"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_discuss" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/ranking_btn"
+                android:background="@drawable/star_nor_white"/>
+            <ImageView
+                android:id="@+id/star03"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/star_nor_white" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/share_btn"
+                android:background="@drawable/star_nor_white"/>
+            <ImageView
+                android:id="@+id/star04"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_share_white" />
-        </RelativeLayout>
+                android:background="@drawable/star_nor_white"/>
+            <ImageView
+                android:id="@+id/star05"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/star_nor_white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/basePrimaryBackgroundColour"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/like_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/like_nor_white" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/ranking_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/star_nor_white" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/share_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/ic_share_white" />
+            </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

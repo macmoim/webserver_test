@@ -1,5 +1,7 @@
 package com.macmoim.pang;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,10 +25,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -79,16 +82,18 @@ public class ViewerActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private Button mLikeBtn;
     private boolean isLikeCheck;
-    private ArrayList<View> mRankingStartArr;
+    private ArrayList<ImageView> mRankingStartArr;
     private Button mRankingBtn;
     CircleFlatingMenuWithActionView mShareCf;
-    CircleFlatingMenuWithActionView mRankingCf;
     private int mStar;
     private int mLikeDbId = -1;
     private int mStarDbId = -1;
     private String mHtmlFileName;
     private String mThumbFileName;
     private String mTitle;
+
+    private LinearLayout mRankingView;
+    private Rect mRankingViewRect;
 
     private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
@@ -137,18 +142,17 @@ public class ViewerActivity extends AppCompatActivity {
                                     }
         );
 
-
-        ((Button) findViewById(R.id.comment_btn)).setOnClickListener(new View.OnClickListener() {
+        ((FloatingActionButton) findViewById(R.id.comment_float_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 startAddCommentActivity();
             }
         });
 
 
+        mRankingView = (LinearLayout) findViewById(R.id.star_view);
         mRankingBtn = (Button) findViewById(R.id.ranking_btn);
-        setStarFloationAction(mRankingBtn);
+        setupRankingStarView();
 
 
         setShareFloationAction((Button) findViewById(R.id.share_btn));
@@ -210,10 +214,10 @@ public class ViewerActivity extends AppCompatActivity {
                                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
                         collapsingToolbar.setTitle(mTitle);
 
-                        ((TextView)findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
+                        ((TextView) findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
                         String score = response.getString("rank");
-                        ((TextView)findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
-                        ((TextView)findViewById(R.id.user_name_text)).setText(response.getString("user_name"));
+                        ((TextView) findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
+                        ((TextView) findViewById(R.id.user_name_text)).setText(response.getString("user_name"));
 
                         postUserId = response.getString("user_id");
 
@@ -605,34 +609,92 @@ public class ViewerActivity extends AppCompatActivity {
         mShareCf.setFloationAction();
     }
 
-    private void setStarFloationAction(View actionView) {
-        final int[] id = {R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor, R.drawable.star_nor};
-        final int TAG_BASE = 110;
-        final int[] viewTags = {TAG_BASE, TAG_BASE + 1, TAG_BASE + 2, TAG_BASE + 3, TAG_BASE + 4};
+    private void setupRankingStarView() {
+        if (mRankingStartArr == null) {
+            mRankingStartArr = new ArrayList<>();
+        }
 
-        mRankingCf = new CircleFlatingMenuWithActionView(this, actionView);
-        mRankingCf.setListener(new CircleFlatingMenu.Listener() {
+        if (mRankingViewRect == null) {
+            mRankingViewRect = new Rect();
+            mRankingView.getHitRect(mRankingViewRect);
+        }
+
+        int[] starViewIds = {R.id.star01, R.id.star02, R.id.star03, R.id.star04, R.id.star05};
+        for (int i = 0; i < starViewIds.length; i++) {
+            mRankingStartArr.add((ImageView) findViewById(starViewIds[i]));
+        }
+
+        mRankingView.setOnTouchListener(new RankingStarTouchListener());
+
+        mRankingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "mRankingCf " + event.getAction());
-                int star = (int) v.getTag() - TAG_BASE;
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    setRankStar(star);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    putStar(star + 1);
-                    mRankingCf.menuClose(false);
-                    return true;
+            public void onClick(View v) {
+                if (mRankingView.getVisibility() != View.VISIBLE) {
+                    showRankingViewAnim();
+                } else {
+                    invisibleRankingViewAnim();
                 }
-                return true;
             }
         });
-        mRankingCf.addResId(id);
-        mRankingCf.addViewTags(viewTags);
-        mRankingCf.setItemAngle(-180, 0);
-        mRankingCf.setItemRadius(getResources().getDimensionPixelSize(R.dimen.radius_medium));
-        mRankingCf.setFloationAction();
+    }
 
-        mRankingStartArr = mRankingCf.getSubactionViews();
+    private void showRankingViewAnim() {
+        mRankingView.setVisibility(View.VISIBLE);
+
+        float startXPoint = mRankingStartArr.get(0).getLeft();
+        float[] endXPoint = new float[4];
+        ObjectAnimator[] animation = new ObjectAnimator[4];
+        for (int i = 1; i < mRankingStartArr.size(); i++) {
+            endXPoint[i - 1] = mRankingStartArr.get(i).getLeft();
+
+            PropertyValuesHolder pvhTransX = PropertyValuesHolder.ofFloat(View.X, startXPoint, endXPoint[i - 1]);
+            animation[i - 1] = ObjectAnimator.ofPropertyValuesHolder(mRankingStartArr.get(i), pvhTransX);
+            animation[i - 1].setDuration(1000);
+            animation[i - 1].start();
+        }
+
+    }
+
+    private class RankingStarTouchListener implements View.OnTouchListener {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (mRankingStartArr == null) {
+                return false;
+            }
+            int touchX = (int) event.getX();
+            int touchY = (int) event.getY();
+
+            int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_UP) {
+                int hitImageIndex = 0;
+                int arrLength = mRankingStartArr.size();
+                Rect r = new Rect();
+                for (int i = 0; i < arrLength; i++) {
+                    mRankingStartArr.get(i).getHitRect(r);
+                    if (r.contains(touchX, touchY)) {
+                        hitImageIndex = i;
+                        break;
+                    }
+                }
+                if (hitImageIndex == 0) {
+                    if (touchX > mRankingStartArr.get(arrLength-1).getRight()) {
+                        hitImageIndex = arrLength-1;
+                    }
+                }
+                setRankStar(hitImageIndex);
+            }
+
+            return true;
+        }
+    }
+
+    private void invisibleRankingViewAnim() {
+        if (mRankingView != null) {
+            mRankingView.setVisibility(View.INVISIBLE);
+        }
+        if (mStar > 0) {
+            putStar(mStar);
+        }
     }
 
     private void shareContent(Uri shareImageUri) {
@@ -758,11 +820,18 @@ public class ViewerActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        if (mRankingViewRect != null && !mRankingViewRect.contains((int) event.getX(), (int) event.getY())) {
+            invisibleRankingViewAnim();
+        }
         return super.onTouchEvent(event);
     }
 
     @Override
     public void onBackPressed() {
+        if (mRankingView != null && mRankingView.getVisibility() == View.VISIBLE) {
+            invisibleRankingViewAnim();
+            return;
+        }
         super.onBackPressed();
     }
 
@@ -781,10 +850,6 @@ public class ViewerActivity extends AppCompatActivity {
             mShareCf.setListener(null);
             mShareCf = null;
         }
-        if (mRankingCf != null) {
-            mRankingCf.setListener(null);
-            mRankingCf = null;
-        }
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
             mLikeBtn = null;
@@ -792,6 +857,11 @@ public class ViewerActivity extends AppCompatActivity {
         if (mRankingBtn != null) {
             mRankingBtn = null;
         }
+        if (mRankingView != null) {
+            mRankingView.setOnTouchListener(null);
+            mRankingView = null;
+        }
+        mRankingViewRect = null;
         if (mRankingStartArr != null) {
             for (View v : mRankingStartArr) {
                 v.setOnClickListener(null);
