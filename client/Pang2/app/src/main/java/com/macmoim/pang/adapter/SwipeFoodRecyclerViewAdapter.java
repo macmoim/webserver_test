@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.macmoim.pang.Layout.swipe.SimpleSwipeListener;
 import com.macmoim.pang.Layout.swipe.SwipeLayout;
 import com.macmoim.pang.Layout.swipe.adapters.RecyclerSwipeAdapter;
+import com.macmoim.pang.LikeActivity;
 import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
@@ -42,11 +44,15 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
 
     private Listener mListener;
     private boolean mEnableDelete = false;
+    private boolean mEnableLike = false;
+    private boolean mSwipeOpen = false;
 
     public interface Listener {
         public void onDeleteButtonClick(int dbId);
 
         public void onEditButtonClick(int dbId);
+
+        public void onLikeButtonClick(int dbId);
     }
 
     public void setListener(Listener l) {
@@ -64,6 +70,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         public final TextView mTimeStampTv;
         public final ImageView mDeleteBtn;
         public final ImageView mEditBtn;
+        public final ImageView mLikeBtn;
 
         public ViewHolder(View view) {
             super(view);
@@ -76,6 +83,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
                     .findViewById(R.id.timestamp);
             mDeleteBtn = (ImageView) view.findViewById(R.id.del_btn);
             mEditBtn = (ImageView) view.findViewById(R.id.edit_btn);
+            mLikeBtn = (ImageView) view.findViewById(R.id.like_btn2);
         }
 
         @Override
@@ -94,9 +102,12 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         mValues = items;
         this.activity = activity;
 
-
         if (activity instanceof MyPostActivity) {
             mEnableDelete = true;
+        }
+
+        if (activity instanceof LikeActivity) {
+            mEnableLike = true;
         }
     }
 
@@ -110,23 +121,33 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Log.d("TTT", "onBindViewHolder");
+
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
-                //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.del_btn));
+                super.onOpen(layout);
+                mSwipeOpen = true;
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+                //super.onClose(layout);
+                mSwipeOpen = false;
+                return;
             }
         });
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.swipeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Intent i = new Intent(context, ViewerActivity.class);
-                i.putExtra("id", mValues.get(position).getId());
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if(!mSwipeOpen) {
+                    Context context = v.getContext();
+                    Intent i = new Intent(context, ViewerActivity.class);
+                    i.putExtra("id", mValues.get(position).getId());
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                context.startActivity(i);
+                    context.startActivity(i);
+                }
             }
         });
 
@@ -154,6 +175,8 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         holder.mTimeStampTv.setText(item.getTimeStamp());
 
         final int dbId = item.getId();
+
+        if (mEnableDelete) {
             holder.mDeleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -167,6 +190,17 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
                     mListener.onEditButtonClick(dbId);
                 }
             });
+            holder.mLikeBtn.setVisibility(View.GONE);
+        } else if (mEnableLike) {
+            holder.mLikeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onEditButtonClick(dbId);
+                }
+            });
+            holder.mDeleteBtn.setVisibility(View.GONE);
+            holder.mEditBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override

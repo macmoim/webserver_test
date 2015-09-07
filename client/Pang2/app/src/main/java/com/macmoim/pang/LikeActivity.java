@@ -3,6 +3,8 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -10,6 +12,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.Layout.swipe.util.Attributes;
+import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
@@ -19,13 +24,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
 /**
  * Created by P11872 on 2015-08-16.
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class LikeActivity extends RequestFeedListActivity {
+public class LikeActivity extends RequestFeedListActivity implements SwipeFoodRecyclerViewAdapter.Listener {
 
     private String URL = Util.SERVER_ROOT + "/like";
 
@@ -35,6 +43,17 @@ public class LikeActivity extends RequestFeedListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
+
+    }
+
+    protected void setupRecyclerView(RecyclerView recyclerView) {
+        feedItems = new ArrayList<FoodItem>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setAdapter(new SwipeFoodRecyclerViewAdapter(LikeActivity.this, feedItems));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
+        ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setMode(Attributes.Mode.Single);
+        recyclerView.setItemAnimator(new FadeInLeftAnimator());
     }
 
     @Override
@@ -119,5 +138,20 @@ public class LikeActivity extends RequestFeedListActivity {
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
         super.onDestroy();
+    }
+
+    @Override
+    public void onDeleteButtonClick(int dbId) {
+
+    }
+
+    @Override
+    public void onEditButtonClick(int dbId) {
+
+    }
+
+    @Override
+    public void onLikeButtonClick(int dbId) {
+
     }
 }

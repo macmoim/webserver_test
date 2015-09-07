@@ -60,7 +60,7 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     protected void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new SwipeFoodRecyclerViewAdapter(this, feedItems));
+        recyclerView.setAdapter(new SwipeFoodRecyclerViewAdapter(MyPostActivity.this, feedItems));
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
         ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setMode(Attributes.Mode.Single);
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
@@ -203,6 +203,11 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
         intent.putExtra("edit", true);
         intent.putExtra("id", dbId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onLikeButtonClick(int dbId) {
+
     }
 
     private void showDeleteDialog(final int dbId) {
