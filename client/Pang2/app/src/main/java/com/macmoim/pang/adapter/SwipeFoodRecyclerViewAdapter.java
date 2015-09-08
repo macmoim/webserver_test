@@ -48,11 +48,11 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
     private boolean mSwipeOpen = false;
 
     public interface Listener {
-        public void onDeleteButtonClick(int dbId);
+        public void onDeleteButtonClick(int position);
 
-        public void onEditButtonClick(int dbId);
+        public void onEditButtonClick(int position);
 
-        public void onLikeButtonClick(int dbId);
+        public void onLikeButtonClick(int position);
     }
 
     public void setListener(Listener l) {
@@ -174,20 +174,19 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
 
         holder.mTimeStampTv.setText(item.getTimeStamp());
 
-        final int dbId = item.getId();
 
         if (mEnableDelete) {
             holder.mDeleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onDeleteButtonClick(dbId);
+                    mListener.onDeleteButtonClick(position);
                 }
             });
 
             holder.mEditBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onEditButtonClick(dbId);
+                    mListener.onEditButtonClick(position);
                 }
             });
             holder.mLikeBtn.setVisibility(View.GONE);
@@ -195,7 +194,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
             holder.mLikeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onEditButtonClick(dbId);
+                    mListener.onLikeButtonClick(position);
                 }
             });
             holder.mDeleteBtn.setVisibility(View.GONE);

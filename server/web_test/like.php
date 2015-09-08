@@ -136,7 +136,7 @@ function rest_post() {
 	return $like_saving_info;//$debug_msg;
 }
 
-function rest_put($id, $like, $post_user_id, $user_id) {
+function rest_put($id, $like, $post_id, $post_user_id, $user_id) {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -155,9 +155,16 @@ function rest_put($id, $like, $post_user_id, $user_id) {
 	
 	$mysqli->query ( $create_table );
 	
-	$query_update = sprintf ( "UPDATE likes
+	if (!isset($id)) {
+		$query_update = sprintf ( "UPDATE likes
+				SET like_bool = '%s' WHERE post_id = '%s' AND user_id = '%s'",
+			$like, $post_id, $user_id);
+	} else {
+		$query_update = sprintf ( "UPDATE likes
 				SET like_bool = '%s' WHERE id = '%s'",
-			$like, $id);
+			$like, $id);	
+	}
+	
 	
 	$mysqli->query ( $query_update );
 	// check update success

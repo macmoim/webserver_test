@@ -119,10 +119,17 @@ $app->post('/like', function () use ($app) {
 	exit ( json_encode ( $value ) );
 });
 
-$app->put('/like/:id/:like', function ($id, $like) use ($app) {
+$app->put('/like/:id/:like', function ($id = null, $like) use ($app) {
 	$put_vars = $app->request->put();
 	include 'like.php';
-	$value = rest_put($put_vars['id'], $put_vars['like'], $put_vars['post_user_id'], $put_vars['user_id']);
+	$value = rest_put($id, $put_vars['like'], $put_vars['post_id'], $put_vars['post_user_id'], $put_vars['user_id']);
+	exit ( json_encode ( $value ) );
+});
+
+$app->put('/like/:post_id/:user_id/:like', function ($post_id, $user_id, $like) use ($app) {
+	$put_vars = $app->request->put();
+	include 'like.php';
+	$value = rest_put(null, $put_vars['like'], $post_id, $put_vars['post_user_id'], $user_id);
 	exit ( json_encode ( $value ) );
 });
 

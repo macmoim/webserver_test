@@ -18,6 +18,7 @@ import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -25,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
@@ -99,6 +102,9 @@ public class LikeActivity extends RequestFeedListActivity implements SwipeFoodRe
         }
         try {
             if ("success".equals(response.getString("ret_val"))) {
+                if (feedItems != null && feedItems.size() > 0) {
+                    feedItems.clear();
+                }
                 JSONArray feedArray = response.getJSONArray("like_info");
 
                 int length = feedArray.length();
@@ -142,17 +148,70 @@ public class LikeActivity extends RequestFeedListActivity implements SwipeFoodRe
     }
 
     @Override
-    public void onDeleteButtonClick(int dbId) {
+    public void onDeleteButtonClick(int position) {
 
     }
 
     @Override
-    public void onEditButtonClick(int dbId) {
+    public void onEditButtonClick(int position) {
 
     }
 
     @Override
-    public void onLikeButtonClick(int dbId) {
+    public void onLikeButtonClick(int position) {
+        {
 
+            try {
+                Objects.requireNonNull(feedItems, "feedItems is null");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+
+            FoodItem item = feedItems.get(position);
+            String url = URL;
+            int method = Request.Method.PUT;
+
+            Map<String, String> obj = new HashMap<String, String>();
+            int post_id = item.getId();
+            String like_user_id = LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.PROFILE_ID);
+            obj.put("user_id", like_user_id);
+            obj.put("like", "0");
+            obj.put("post_id", String.valueOf(post_id));
+            obj.put("post_user_id", item.getUserId());
+
+            url += "/" + post_id + "/" + like_user_id + "/" + "0";
+
+            Request jsonReq = new CustomRequest(method,
+                    url, obj, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    VolleyLog.d(TAG, "Response: " + response.toString());
+                    if (response != null) {
+                        try {
+                            if (response.has("id")) {
+                                int like_id = response.getInt("id");
+                                Log.d(TAG, "like add db id " + like_id);
+                            } else {
+                                Log.d(TAG, "like update " + response.get("ret"));
+                            }
+                            ShowList();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+
+            // Adding request to volley request queue
+            AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
+        }
     }
 }

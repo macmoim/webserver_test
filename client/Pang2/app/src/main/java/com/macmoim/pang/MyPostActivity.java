@@ -2,7 +2,6 @@ package com.macmoim.pang;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -19,7 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.Layout.swipe.util.Attributes;
-import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
-import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
 
 /**
  * Created by P11872 on 2015-08-16.
@@ -194,16 +191,29 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     }
 
     @Override
-    public void onDeleteButtonClick(int dbId) {
-        showDeleteDialog(dbId);
+    public void onDeleteButtonClick(int position) {
+        try {
+            Objects.requireNonNull(feedItems, "feedItems is null");
+            showDeleteDialog(feedItems.get(position).getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
-    public void onEditButtonClick(int dbId) {
-        Intent intent = new Intent(this, PangEditorActivity.class);
-        intent.putExtra("edit", true);
-        intent.putExtra("id", dbId);
-        startActivity(intent);
+    public void onEditButtonClick(int position) {
+        try {
+            Objects.requireNonNull(feedItems, "feedItems is null");
+            Intent intent = new Intent(this, PangEditorActivity.class);
+            intent.putExtra("edit", true);
+            intent.putExtra("id", feedItems.get(position).getId());
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
