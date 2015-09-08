@@ -35,8 +35,6 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
     private int mBackground;
     protected List<FoodItem> mValues;
 
-    private boolean mEnableDelete = false;
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
 
@@ -75,10 +73,6 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         mValues = items;
         this.activity = activity;
 
-
-        if (activity instanceof MyPostActivity) {
-            mEnableDelete = true;
-        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.macmoim.pang;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
+import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
@@ -23,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * Created by P11872 on 2015-08-16.
@@ -55,6 +61,13 @@ public class SearchActivity extends RequestFeedListActivity {
     protected void onResume() {
         super.onResume();
         Util.openKeyBoard(getApplicationContext());
+    }
+
+    protected void setupRecyclerView(RecyclerView recyclerView) {
+        feedItems = new ArrayList<FoodItem>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setAdapter(new SwipeFoodRecyclerViewAdapter(this, feedItems));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
     }
 
     @Override

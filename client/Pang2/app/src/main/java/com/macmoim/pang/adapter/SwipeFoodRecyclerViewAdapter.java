@@ -22,6 +22,7 @@ import com.macmoim.pang.Layout.swipe.adapters.RecyclerSwipeAdapter;
 import com.macmoim.pang.LikeActivity;
 import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
+import com.macmoim.pang.SearchActivity;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.data.FoodItem;
@@ -46,6 +47,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
     private boolean mEnableDelete = false;
     private boolean mEnableLike = false;
     private boolean mSwipeOpen = false;
+    private boolean mDisableSwipe = false;
 
     public interface Listener {
         public void onDeleteButtonClick(int position);
@@ -109,6 +111,10 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         if (activity instanceof LikeActivity) {
             mEnableLike = true;
         }
+
+        if (activity instanceof SearchActivity) {
+            mDisableSwipe = true;
+        }
     }
 
     @Override
@@ -140,7 +146,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         holder.swipeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mSwipeOpen) {
+                if (!mSwipeOpen) {
                     Context context = v.getContext();
                     Intent i = new Intent(context, ViewerActivity.class);
                     i.putExtra("id", mValues.get(position).getId());
@@ -199,6 +205,8 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
             });
             holder.mDeleteBtn.setVisibility(View.GONE);
             holder.mEditBtn.setVisibility(View.GONE);
+        } else if (mDisableSwipe) {
+            holder.swipeLayout.setSwipeEnabled(false);
         }
     }
 
