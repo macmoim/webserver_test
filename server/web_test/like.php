@@ -122,10 +122,16 @@ function rest_post() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
+
+    if ($_POST["like"] == 1) {
+    	requestGCMmsg($_POST["post_user_id"], $_POST["user_id"]);
+    }
+	
+
 	return $like_saving_info;//$debug_msg;
 }
 
-function rest_put($id, $like) {
+function rest_put($id, $like, $post_user_id, $user_id) {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -162,7 +168,17 @@ function rest_put($id, $like) {
 			"ret" => $ret_val
 	);
 	$mysqli->close ();
+
+	if ($like == 1) {
+    	requestGCMmsg($post_user_id, $user_id);
+    }
+
 	return $like_saving_info;//$debug_msg;
+}
+
+function requestGCMmsg($post_user_id, $user_id) {
+	include 'gcmPush.php';
+	sendMsgToGcm($post_user_id, $user_id);
 }
 
 // $value = "An error has occurred";

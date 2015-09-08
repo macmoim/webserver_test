@@ -17,13 +17,18 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -37,10 +42,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
+import com.macmoim.pang.data.AppPreferences;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.gcm.RegistrationIntentService;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
@@ -59,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     naviHeaderView mNHview;
     CircleFlatingMenu mCf;
+    private ProgressDialog mDialog;
+
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private SimpleAuthListener authListener = new SimpleAuthListener() {
         @Override
@@ -158,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        if (!AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN)) {
+            showGcmSetUplDialog();
+        }
+
     }
 
     protected void setFloationAction() {
@@ -256,6 +273,88 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    private void showGcmSetUplDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.push_agree_title))
+                .setMessage(getString(R.string.push_agree))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.agree), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        registerGCM();
+                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
+                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, true);
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.disagree), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
+                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, false);
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    class GCMBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean sentToken = AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.SENT_TOKEN_TO_SERVER);
+            LocalBroadcastManager.getInstance(MainActivity.this).unregisterReceiver(mRegistrationBroadcastReceiver);
+            removeDialog();
+        }
+    }
+
+
+    private void registerGCM() {
+        showDialog();
+        mRegistrationBroadcastReceiver = new GCMBroadcastReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(AppPreferences.REGISTRATION_COMPLETE));
+
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private void showDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        } else {
+            mDialog = new ProgressDialog(this);
+        }
+
+        mDialog.show();
+
+    }
+
+    private void removeDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+        mDialog = null;
+    }
+
     @Override
     protected void onDestroy() {
         if (mViewPager != null) {
@@ -265,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
             mNHview.onDestroy();
             mNHview = null;
         }
+        mRegistrationBroadcastReceiver = null;
         super.onDestroy();
     }
 

@@ -77,5 +77,14 @@
     <string name="editor_exit">작성을 취소하시겠습니까?\n작성중인 글은 저장되지 않습니다.</string>
     <string name="editor_exit_title">작성 취소</string>
 
+    <string name="push_agree">Show me the Cook 푸쉬 알림에 동의하시겠습니까?</string>
+    <string name="push_agree_title">푸쉬 알림</string>
+    <string name="agree">동의</string>
+    <string name="disagree">거부</string>
+
+    <!--gcm-->
+    <string name="gcm_sender_id" translatable="false">1060290681419</string>
+    <string name="gcm_server_api_key" translatable="false">AIzaSyArwTyrB6Je2H282zBGqqgrwOtS0VdT8K0</string>
+    <!--gcm-->
 
 </resources>

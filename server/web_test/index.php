@@ -122,7 +122,7 @@ $app->post('/like', function () use ($app) {
 $app->put('/like/:id/:like', function ($id, $like) use ($app) {
 	$put_vars = $app->request->put();
 	include 'like.php';
-	$value = rest_put($put_vars['id'], $put_vars['like']);
+	$value = rest_put($put_vars['id'], $put_vars['like'], $put_vars['post_user_id'], $put_vars['user_id']);
 	exit ( json_encode ( $value ) );
 });
 
@@ -197,6 +197,14 @@ $app->get('/post/share/:htmlUrl', function ($htmlUrl) {
 	}
 	
 	exit();
+});
+
+$app->post('/gcmData', function () {
+	include 'gcmPush.php';
+	
+	$value = rest_post_instantId();	
+	
+	exit(json_encode ( $value ));
 });
 
 $app->run();

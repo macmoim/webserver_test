@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -142,7 +141,7 @@ public class ViewerActivity extends AppCompatActivity {
                                     }
         );
 
-        ((FloatingActionButton) findViewById(R.id.comment_float_btn)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.comment_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startAddCommentActivity();
