@@ -72,8 +72,10 @@ function get_post($user_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT id,user_id, title, upload_filename, db_filename, filepath, upload_date, thumb_img_path
-	                   FROM posts WHERE user_id = '$user_id'";
+	$sql_query = "SELECT posts.id, posts.user_id, title, upload_filename, db_filename, filepath, upload_date, thumb_img_path, profiles.user_name
+	                   FROM posts 
+                       LEFT JOIN profiles ON posts.user_id = profiles.user_id
+                       WHERE posts.user_id = '$user_id'";
 	if ($result = $mysqli->query ( $sql_query )) {
 	
 		if (count ( $result ) > 0) {
@@ -86,7 +88,8 @@ function get_post($user_id) {
 					"user_id" => $row ['user_id'],
 					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
-					"img_path" => $row ['thumb_img_path']
+					"img_path" => $row ['thumb_img_path'],
+					"user_name" => $row ['user_name']
 				) );
 			}
 
@@ -125,8 +128,10 @@ function rest_search($text) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT id, user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path
-	                   FROM posts WHERE title LIKE '%$text%'";
+	$sql_query = "SELECT posts.id, posts.user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path, profiles.user_name
+	                   FROM posts 
+	                   LEFT JOIN profiles ON posts.user_id = profiles.user_id
+	                   WHERE title LIKE '%$text%'";
 	if ($result = $mysqli->query ( $sql_query )) {
 		
 		if (count ( $result ) > 0) {
@@ -139,7 +144,8 @@ function rest_search($text) {
 					"user_id" => $row ['user_id'],
 					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
-					"img_path" => $row ['thumb_img_path']
+					"img_path" => $row ['thumb_img_path'],
+					"user_name" => $row ['user_name']
 				) );
 			}
 

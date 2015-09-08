@@ -89,9 +89,16 @@ function rest_post() {
 			"id" => $insert_id
 	);
 	$mysqli->close ();
+
+	requestGCMmsg($_POST['post_user_id'], $_POST['comment_user_id']);
 	return $comment_saving_info;
 }
 
+function requestGCMmsg($post_user_id, $user_id) {
+	include 'gcmPush.php';
+	$push_msg = "댓글을 추가하였습니다.";
+	sendMsgToGcm($post_user_id, $user_id, $push_msg);
+}
 // $value = "An error has occurred";
 // $method = $_SERVER['REQUEST_METHOD'];
 // $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));

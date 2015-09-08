@@ -167,6 +167,7 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
                     item.setId(feedObj.getInt("id"));
                     item.setName(feedObj.getString("title"));
                     item.setUserId(feedObj.getString("user_id"));
+                    item.setUserName(feedObj.getString("user_name"));
 
                     // Image might be null sometimes
                     String image = feedObj.isNull("img_path") ? null : feedObj

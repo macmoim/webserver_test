@@ -1,5 +1,5 @@
 <?php
-function sendMsgToGcm($post_user_id, $user_id) {
+function sendMsgToGcm($post_user_id, $user_id, $push_msg) {
 
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
@@ -59,7 +59,7 @@ function sendMsgToGcm($post_user_id, $user_id) {
 	);
 	$arr=array();
 	$arr['data']=array();
-	$msg = $user_name." 님이 ".$post_user_name."님의 글에 좋아요를 추가하였습니다.";
+	$msg = $user_name." 님이 ".$post_user_name."님의 글에 ".$push_msg;
 	$arr['data']['message']=$msg;
 	$arr['registration_ids']=array();
 	$arr['registration_ids']=$instantIdInfos;

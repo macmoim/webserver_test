@@ -170,7 +170,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
 //        }
 
         holder.mNameTv.setText(item.getName());
-        holder.mUserIdTv.setText(item.getUserId());
+        holder.mUserIdTv.setText(item.getUserName());
 
         holder.mTimeStampTv.setText(item.getTimeStamp());
 

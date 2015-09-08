@@ -98,7 +98,7 @@ $app->post('/star', function () use ($app) {
 $app->put('/star/:id/:star', function ($id, $star) use ($app) {
 	$put_vars = $app->request->put();
 	include 'star.php';
-	$value = rest_put($id, $star, $put_vars['post_id']);
+	$value = rest_put($id, $star, $put_vars['post_id'], $put_vars['post_user_id'], $put_vars['user_id']);
 	exit ( json_encode ( $value ) );
 });
 

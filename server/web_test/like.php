@@ -39,8 +39,12 @@ function get_my_like($user_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT posts.id, posts.user_id as p_user_id, posts.title, posts.upload_filename, posts.upload_date, posts.thumb_img_path 
-						FROM posts JOIN likes ON posts.id = likes.post_id WHERE likes.user_id = '$user_id'";
+	$sql_query = "SELECT DISTINCT posts.id, posts.user_id as p_user_id, posts.title, posts.upload_filename, 
+						posts.upload_date, posts.thumb_img_path, likes.like_bool, profiles.user_name as profile_user_name
+						FROM posts 
+						JOIN likes ON posts.id = likes.post_id 
+						JOIN profiles ON posts.user_id = profiles.user_id
+						WHERE likes.user_id = '$user_id' AND likes.like_bool = 1";
 	
 	if ($result = $mysqli->query ( $sql_query )) {
 		if (count ( $result ) > 0) {
@@ -54,7 +58,8 @@ function get_my_like($user_id) {
 					"user_id" => $row ['p_user_id'],
 					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
-					"img_path" => $row ['thumb_img_path']
+					"img_path" => $row ['thumb_img_path'], 
+					"user_name" => $row ['profile_user_name']
 				) );
 				
 				
@@ -178,7 +183,8 @@ function rest_put($id, $like, $post_user_id, $user_id) {
 
 function requestGCMmsg($post_user_id, $user_id) {
 	include 'gcmPush.php';
-	sendMsgToGcm($post_user_id, $user_id);
+	$push_msg = "좋아요를 추가하였습니다.";
+	sendMsgToGcm($post_user_id, $user_id, $push_msg);
 }
 
 // $value = "An error has occurred";

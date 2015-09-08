@@ -83,6 +83,9 @@ function rest_post() {
 	);
 	$mysqli->close ();
 	saveRank($insert_id, $_POST["post_id"]);
+
+	requestGCMmsg($_POST['post_user_id'], $_POST['user_id']);
+
 	return $like_saving_info;//$debug_msg;
 }
 
@@ -130,7 +133,7 @@ function saveRank($id, $post_id) {
 	$mysqli->close();
 }
 
-function rest_put($id, $star, $post_id) {
+function rest_put($id, $star, $post_id, $post_user_id, $user_id) {
 	include "./image_test/dbconfig.php";
 	$debug_msg = "not work";
 	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
@@ -163,6 +166,7 @@ function rest_put($id, $star, $post_id) {
 		
 	} else {
 		$ret_val = "success";
+		requestGCMmsg($post_user_id, $user_id);
 	}
 	
 	$star_saving_info = array (
@@ -170,7 +174,16 @@ function rest_put($id, $star, $post_id) {
 	);
 	$mysqli->close ();
 	saveRank($id, $post_id);
+
+	
+
 	return $star_saving_info;//$debug_msg;
+}
+
+function requestGCMmsg($post_user_id, $user_id) {
+	include 'gcmPush.php';
+	$push_msg = "평점을 추가하였습니다.";
+	sendMsgToGcm($post_user_id, $user_id, $push_msg);
 }
 
 // $value = "An error has occurred";
