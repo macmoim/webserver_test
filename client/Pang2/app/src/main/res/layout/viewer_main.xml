@@ -207,8 +207,7 @@
             android:id="@+id/star_view"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/basePrimaryBackgroundColour"
-            android:alpha="0.5"
+            android:background="@color/orange_op20"
             android:visibility="invisible"
             android:orientation="horizontal"
             android:gravity="center_horizontal|center_vertical">
@@ -304,11 +303,18 @@
 
     </LinearLayout>
 
-    <!--<com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/zoomin_imageview"
+    <RelativeLayout
+        android:id="@+id/zoomin_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:visibility="gone"></com.android.volley.toolbox.NetworkImageView>-->
+        android:background="@color/black_op"
+        android:visibility="gone">
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/zoomin_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"></com.android.volley.toolbox.NetworkImageView>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

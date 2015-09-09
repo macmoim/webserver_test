@@ -28,12 +28,14 @@ import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.NetworkImageView;
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.Layout.CircleFlatingMenuWithActionView;
@@ -93,7 +95,8 @@ public class ViewerActivity extends AppCompatActivity {
     private String mThumbFileName;
     private String mTitle;
     private CircleImageView profilePic;
-//    private NetworkImageView mZoomInImageView;
+    private NetworkImageView mZoomInImageView;
+    private RelativeLayout mZoomInLayout;
 
     private LinearLayout mRankingView;
     private Rect mRankingViewRect;
@@ -128,8 +131,8 @@ public class ViewerActivity extends AppCompatActivity {
         mViewer.getSettings().setJavaScriptEnabled(true);
         mViewer.getSettings().setDefaultTextEncodingName("UTF-8");
 //        mViewer.setWebChromeClient(new WebChromeClient());
-//        mViewer.setFocusable(false);
-//        mViewer.setFocusableInTouchMode(false);
+        mViewer.setFocusable(false);
+        mViewer.setFocusableInTouchMode(false);
         mViewer.requestFocus();
         mViewer.addJavascriptInterface(new WebAppInterface(), "Android");
 
@@ -174,13 +177,14 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
-//        mZoomInImageView = (NetworkImageView) findViewById(R.id.zoomin_imageview);
-//        mZoomInImageView.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                mZoomInImageView.setVisibility(View.INVISIBLE);
-//            }
-//        });
+        mZoomInLayout = (RelativeLayout) findViewById(R.id.zoomin_layout);
+        mZoomInImageView = (NetworkImageView) findViewById(R.id.zoomin_imageview);
+        mZoomInImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideZoomImage();
+            }
+        });
 
         int id = getIntent().getIntExtra("id", 0);
         showHTML(id);
@@ -862,9 +866,19 @@ public class ViewerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void zoomImage(String url) {
-//        mZoomInImageView.setVisibility(View.VISIBLE);
-//        mZoomInImageView.setImageUrl(url, AppController.getInstance().getImageLoader());
+    private void showZoomImage(String url) {
+        if (mZoomInLayout != null && mZoomInImageView != null) {
+            mZoomInLayout.setVisibility(View.VISIBLE);
+            mZoomInImageView.setImageUrl(url, AppController.getInstance().getImageLoader());
+        }
+    }
+
+    private boolean hideZoomImage() {
+        if (mZoomInLayout != null && mZoomInLayout.getVisibility() == View.VISIBLE) {
+            mZoomInLayout.setVisibility(View.GONE);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -880,6 +894,8 @@ public class ViewerActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mRankingView != null && mRankingView.getVisibility() == View.VISIBLE) {
             invisibleRankingViewAnim();
+            return;
+        } else if (hideZoomImage()) {
             return;
         }
         super.onBackPressed();
@@ -926,7 +942,8 @@ public class ViewerActivity extends AppCompatActivity {
             mCommentRv.setAdapter(null);
             mCommentRv = null;
         }
-//        mZoomInImageView = null;
+        mZoomInImageView = null;
+        mZoomInLayout = null;
         if (mViewer != null) {
             mViewer.destroy();
             mViewer = null;
@@ -950,9 +967,13 @@ public class ViewerActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public void onImageItemClick(String value) {
-            Log.e(TAG, "onImageItemClick viewer " + value);
-            String filename = (String) value.subSequence(value.lastIndexOf("/") + 1, value.length());
-            zoomImage(Util.IMAGE_FOLDER_URL + filename);
+            final String filename = (String) value.subSequence(value.lastIndexOf("/") + 1, value.length());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showZoomImage(Util.IMAGE_FOLDER_URL + filename);
+                }
+            });
         }
     }
 }

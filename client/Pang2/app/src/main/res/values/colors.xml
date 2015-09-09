@@ -21,6 +21,7 @@
     <color name="mustard_op20">#33e6a800</color>
     <color name="mustard_op30">#4ce6a800</color>
     <color name="orange">#ff9100</color>
+    <color name="orange_op20">#33ff9100</color>
     <color name="white">#ffffff</color>
     <color name="feed_bg">#d3d6db</color>
     <color name="feed_item_bg">#ffffff</color>
@@ -36,6 +37,7 @@
     <color name="myNavigationColor">#000000</color>
 
     <color name="selected_gray">#ffdbdbdb</color>
+    <color name="black_op">#dd000000</color>
 
     <!--Login Activity -->
     <color name="facebook_bg">#4c4b6cad</color>

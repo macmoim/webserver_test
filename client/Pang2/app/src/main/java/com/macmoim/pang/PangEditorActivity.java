@@ -1148,12 +1148,10 @@ public class PangEditorActivity extends AppCompatActivity {
             if (mListener != null) {
                 mListener.OnGetHTMLSourceCallback(html);
             }
-            Log.e("resulthtml", html);
         }
 
         @JavascriptInterface
         public void onImageItemClick(String value) {
-            Log.e("onImageItemClick pang editor ", value);
         }
     }
 

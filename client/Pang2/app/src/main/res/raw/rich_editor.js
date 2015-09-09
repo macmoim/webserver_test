@@ -158,7 +158,7 @@ function onDelClick(elem) {
 }
 
 function onImageClick(id) {
-    console.log("onImageClick "+id);
+//    console.log("onImageClick "+id);
     Android.onImageItemClick(id);
 }
 
