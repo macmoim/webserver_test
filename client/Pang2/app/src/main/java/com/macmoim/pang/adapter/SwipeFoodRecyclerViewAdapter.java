@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -34,7 +31,6 @@ import java.util.List;
  * Created by P14983 on 2015-07-27.
  */
 public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFoodRecyclerViewAdapter.ViewHolder> {
-
     private Activity activity;
     private LayoutInflater inflater;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
@@ -70,9 +66,9 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         public final TextView mNameTv;
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
-        public final ImageView mDeleteBtn;
-        public final ImageView mEditBtn;
-        public final ImageView mLikeBtn;
+        public final RelativeLayout mDeleteBtn;
+        public final RelativeLayout mEditBtn;
+        public final RelativeLayout mLikeBtn;
 
         public ViewHolder(View view) {
             super(view);
@@ -83,9 +79,9 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
             mTimeStampTv = (TextView) view
                     .findViewById(R.id.timestamp);
-            mDeleteBtn = (ImageView) view.findViewById(R.id.del_btn);
-            mEditBtn = (ImageView) view.findViewById(R.id.edit_btn);
-            mLikeBtn = (ImageView) view.findViewById(R.id.like_btn2);
+            mDeleteBtn = (RelativeLayout) view.findViewById(R.id.del_btn);
+            mEditBtn = (RelativeLayout) view.findViewById(R.id.edit_btn);
+            mLikeBtn = (RelativeLayout) view.findViewById(R.id.like_btn2);
         }
 
         @Override

@@ -22,6 +22,13 @@
     <color name="mustard_op30">#4ce6a800</color>
     <color name="orange">#ff9100</color>
     <color name="orange_op20">#33ff9100</color>
+    <color name="orange_op30">#4cff9100</color>
+    <color name="orange_op100">#ff9100</color>
+    <color name="green_op30">#4c4cd964</color>
+    <color name="green_op100">#4cd964</color>
+    <color name="red_op30">#4cF44336</color>
+    <color name="red_op100">#F44336</color>
+
     <color name="white">#ffffff</color>
     <color name="feed_bg">#d3d6db</color>
     <color name="feed_item_bg">#ffffff</color>
