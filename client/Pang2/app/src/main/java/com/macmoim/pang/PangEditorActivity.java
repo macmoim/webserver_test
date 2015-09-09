@@ -1150,6 +1150,11 @@ public class PangEditorActivity extends AppCompatActivity {
             }
             Log.e("resulthtml", html);
         }
+
+        @JavascriptInterface
+        public void onImageItemClick(String value) {
+            Log.e("onImageItemClick pang editor ", value);
+        }
     }
 
 

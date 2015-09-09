@@ -24,7 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
+import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,6 +65,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by P14983 on 2015-07-24.
  */
@@ -90,12 +92,15 @@ public class ViewerActivity extends AppCompatActivity {
     private String mHtmlFileName;
     private String mThumbFileName;
     private String mTitle;
+    private CircleImageView profilePic;
+//    private NetworkImageView mZoomInImageView;
 
     private LinearLayout mRankingView;
     private Rect mRankingViewRect;
 
     private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
+    private String postUserName;
     private String mUserId;
 
     private RecyclerView mCommentRv;
@@ -122,9 +127,11 @@ public class ViewerActivity extends AppCompatActivity {
         mViewer.setVerticalScrollBarEnabled(false);
         mViewer.getSettings().setJavaScriptEnabled(true);
         mViewer.getSettings().setDefaultTextEncodingName("UTF-8");
-        mViewer.setWebChromeClient(new WebChromeClient());
-        mViewer.setFocusable(false);
-        mViewer.setFocusableInTouchMode(false);
+//        mViewer.setWebChromeClient(new WebChromeClient());
+//        mViewer.setFocusable(false);
+//        mViewer.setFocusableInTouchMode(false);
+        mViewer.requestFocus();
+        mViewer.addJavascriptInterface(new WebAppInterface(), "Android");
 
         // get like from server
         isLikeCheck = false;
@@ -159,6 +166,21 @@ public class ViewerActivity extends AppCompatActivity {
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
         setupRecyclerView(mCommentRv);
 
+        profilePic = (CircleImageView) findViewById(R.id.profilePic);
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOtherProfileActivity();
+            }
+        });
+
+//        mZoomInImageView = (NetworkImageView) findViewById(R.id.zoomin_imageview);
+//        mZoomInImageView.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                mZoomInImageView.setVisibility(View.INVISIBLE);
+//            }
+//        });
 
         int id = getIntent().getIntExtra("id", 0);
         showHTML(id);
@@ -216,7 +238,21 @@ public class ViewerActivity extends AppCompatActivity {
                         ((TextView) findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
                         String score = response.getString("rank");
                         ((TextView) findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
-                        ((TextView) findViewById(R.id.user_name_text)).setText(response.getString("user_name"));
+                        postUserName = response.getString("user_name");
+                        ((TextView) findViewById(R.id.user_name_text)).setText(postUserName);
+
+                        String profile_img_url = response.getString("profile_img_url");
+                        if (profile_img_url != null) {
+                            Glide.with(profilePic.getContext())
+                                    .load(profile_img_url)
+                                    .fitCenter()
+                                    .into(profilePic);
+                        } else {
+                            Glide.with(profilePic.getContext())
+                                    .load(R.drawable.person)
+                                    .fitCenter()
+                                    .into(profilePic);
+                        }
 
                         postUserId = response.getString("user_id");
 
@@ -676,8 +712,8 @@ public class ViewerActivity extends AppCompatActivity {
                     }
                 }
                 if (hitImageIndex == 0) {
-                    if (touchX > mRankingStartArr.get(arrLength-1).getRight()) {
-                        hitImageIndex = arrLength-1;
+                    if (touchX > mRankingStartArr.get(arrLength - 1).getRight()) {
+                        hitImageIndex = arrLength - 1;
                     }
                 }
                 setRankStar(hitImageIndex);
@@ -816,6 +852,21 @@ public class ViewerActivity extends AppCompatActivity {
         return imgBitmap;
     }
 
+    private void startOtherProfileActivity() {
+        if (postUserId == null || postUserName == null) {
+            return;
+        }
+        Intent intent = new Intent(ViewerActivity.this, OtherUserProfileActivity.class);
+        intent.putExtra("other-user-id", postUserId);
+        intent.putExtra("other-user-name", postUserName);
+        startActivity(intent);
+    }
+
+    private void zoomImage(String url) {
+//        mZoomInImageView.setVisibility(View.VISIBLE);
+//        mZoomInImageView.setImageUrl(url, AppController.getInstance().getImageLoader());
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -875,8 +926,33 @@ public class ViewerActivity extends AppCompatActivity {
             mCommentRv.setAdapter(null);
             mCommentRv = null;
         }
-        mViewer = null;
+//        mZoomInImageView = null;
+        if (mViewer != null) {
+            mViewer.destroy();
+            mViewer = null;
+        }
         super.onDestroy();
 
+    }
+
+    private class WebAppInterface {
+
+
+        /**
+         * Instantiate the interface and set the context
+         */
+        WebAppInterface() {
+        }
+
+        /**
+         * Show a toast from the web page
+         */
+
+        @JavascriptInterface
+        public void onImageItemClick(String value) {
+            Log.e(TAG, "onImageItemClick viewer " + value);
+            String filename = (String) value.subSequence(value.lastIndexOf("/") + 1, value.length());
+            zoomImage(Util.IMAGE_FOLDER_URL + filename);
+        }
     }
 }

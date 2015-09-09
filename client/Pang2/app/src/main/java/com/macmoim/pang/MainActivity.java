@@ -171,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        if (!AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN)) {
+        if (!AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN) ||
+                !AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE)) {
             showGcmSetUplDialog();
         }
 
