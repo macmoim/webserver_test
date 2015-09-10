@@ -35,7 +35,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.NetworkImageView;
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.Layout.CircleFlatingMenuWithActionView;
@@ -49,6 +48,7 @@ import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
+import com.navercorp.volleyextensions.view.ZoomableNetworkImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +95,7 @@ public class ViewerActivity extends AppCompatActivity {
     private String mThumbFileName;
     private String mTitle;
     private CircleImageView profilePic;
-    private NetworkImageView mZoomInImageView;
+    private ZoomableNetworkImageView mZoomInImageView;
     private RelativeLayout mZoomInLayout;
 
     private LinearLayout mRankingView;
@@ -178,7 +178,7 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         mZoomInLayout = (RelativeLayout) findViewById(R.id.zoomin_layout);
-        mZoomInImageView = (NetworkImageView) findViewById(R.id.zoomin_imageview);
+        mZoomInImageView = (ZoomableNetworkImageView) findViewById(R.id.zoomin_imageview);
         mZoomInImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

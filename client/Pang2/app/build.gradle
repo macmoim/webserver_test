@@ -56,4 +56,5 @@ dependencies {
     // why used > simple coding. hate nogada
     // cf > http://jakewharton.github.io/butterknife/
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.navercorp.volleyextensions:volley-views:2.0.+'
 }

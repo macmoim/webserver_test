@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -681,7 +682,9 @@ public class PangEditorActivity extends AppCompatActivity {
 
     private void dispatchCropIntent(Uri imageCaptureUri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
-        PROFILE_IMAGE_OUTPUT_X = mEditor.getWidth() / 2;
+        Point screenSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(screenSize);
+        PROFILE_IMAGE_OUTPUT_X =  screenSize.x / 2;//mEditor.getWidth() / 2;
         PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
         intent.setDataAndType(imageCaptureUri, "image/*");
         intent.putExtra("crop", "true");

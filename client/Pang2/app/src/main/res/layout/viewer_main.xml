@@ -309,12 +309,10 @@
         android:layout_height="match_parent"
         android:background="@color/black_op"
         android:visibility="gone">
-        <com.android.volley.toolbox.NetworkImageView
+        <com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView
             android:id="@+id/zoomin_imageview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:scaleType="fitCenter"></com.android.volley.toolbox.NetworkImageView>
+            android:layout_height="match_parent"></com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView>
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
