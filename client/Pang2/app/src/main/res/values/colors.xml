@@ -28,8 +28,9 @@
     <color name="green_op100">#4cd964</color>
     <color name="red_op30">#4cF44336</color>
     <color name="red_op100">#F44336</color>
+    <color name="white_op30">#4cffffff</color>
+    <color name="white_op100">#ffffff</color>
 
-    <color name="white">#ffffff</color>
     <color name="feed_bg">#d3d6db</color>
     <color name="feed_item_bg">#ffffff</color>
     <color name="feed_item_border">#c2c3c8</color>
