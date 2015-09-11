@@ -14,7 +14,7 @@
   ~ limitations under the License.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo"></style>
 
@@ -46,6 +46,39 @@
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Ext Dialog -->
+    <style name="ExtDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+    <style name="ExtDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="ext_dialog_divider">@color/ext_dialog_divider_black</item>
+        <item name="ext_dialog_list_selector">@drawable/ext_dialog_item_selector</item>
+        <item name="ext_dialog_btn_stacked_selector">@drawable/ext_dialog_item_selector</item>
+        <item name="ext_dialog_btn_positive_selector">@drawable/ext_dialog_btn_right_selector</item>
+        <item name="ext_dialog_btn_negative_selector">@drawable/ext_dialog_btn_left_selector</item>
+
+        <item name="android:windowAnimationStyle">@style/ExtDialogAnimation</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+    <style name="ExtDialogButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ext_dialog_button_frame_height</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="ExtDialogButton.Text" tools:ignore="NewApi">
+        <item name="android:textSize">@dimen/ext_dialog_button_text_size</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@null</item>
+        <item name="android:minWidth">@dimen/ext_dialog_button_min_width</item>
     </style>
 
 </resources>

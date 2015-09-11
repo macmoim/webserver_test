@@ -17,9 +17,12 @@
 <resources>
     <color name="window_background">#FFF5F5F5</color>
 
-    <color name="mustard">#e6a800</color>
+    <color name="mustard_op100">#e6a800</color>
     <color name="mustard_op20">#33e6a800</color>
     <color name="mustard_op30">#4ce6a800</color>
+    <color name="mustard_op60">#99e6a800</color>
+    <color name="mustard_op70">#b2e6a800</color>
+    <color name="mustard_op80">#cce6a800</color>
     <color name="orange">#ff9100</color>
     <color name="orange_op20">#33ff9100</color>
     <color name="orange_op30">#4cff9100</color>
@@ -30,6 +33,8 @@
     <color name="red_op100">#F44336</color>
     <color name="white_op30">#4cffffff</color>
     <color name="white_op100">#ffffff</color>
+    <color name="black_op30">#4c000000</color>
+    <color name="black_op100">#000000</color>
 
     <color name="feed_bg">#d3d6db</color>
     <color name="feed_item_bg">#ffffff</color>
@@ -54,4 +59,16 @@
     <color name="google_plus_bg_stroke">#c94438</color>
     <color name="kakao_bg">#4cffea00</color>
     <color name="kakao_bg_stroke">#ffea00</color>
+
+    <!-- Ext Dialog -->
+    <color name="ext_bg_facebook">#b24b6cad</color>
+    <color name="ext_facebook_color">#4b6cad</color>
+    <color name="ext_bg_google_plus">#b2c94438</color>
+    <color name="ext_google_plus_color">#c94438</color>
+    <color name="ext_bg_kakao">#b2ffea00</color>
+    <color name="ext_kakao_color">#ffea00</color>
+    <color name="ext_dialog_divider_black">#66000000</color>
+    <color name="ext_dialog_item_selected">#33000000</color>
+    <color name="ext_dialog_edit_text_error">#DD2C00</color>
+
 </resources>

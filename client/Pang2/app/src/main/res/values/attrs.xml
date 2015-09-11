@@ -17,4 +17,50 @@
         </attr>
         <attr name="clickToClose" format="boolean" />
     </declare-styleable>
+
+    <!-- Ext Dialog -->
+    <attr name="ext_dialog_medium_font" format="string" />
+    <attr name="ext_dialog_regular_font" format="string" />
+    <attr name="ext_dialog_background_color" format="color" />
+    <attr name="ext_dialog_title_color" format="color" />
+    <attr name="ext_dialog_title_gravity" format="enum">
+        <enum name="start" value="0" />
+        <enum name="center" value="1" />
+        <enum name="end" value="2" />
+    </attr>
+    <attr name="ext_dialog_title_icon" format="reference" />
+    <attr name="ext_dialog_title_icon_max_size" format="dimension" />
+    <attr name="ext_dialog_title_icon_limit_default_size" format="boolean" />
+    <attr name="ext_dialog_content_color" format="color" />
+    <attr name="ext_dialog_content_gravity" format="enum">
+        <enum name="start" value="0" />
+        <enum name="center" value="1" />
+        <enum name="end" value="2" />
+    </attr>
+    <attr name="ext_dialog_btn_stacked_selector" format="reference" />
+    <attr name="ext_dialog_btn_stacked_gravity" format="enum">
+        <enum name="start" value="0" />
+        <enum name="center" value="1" />
+        <enum name="end" value="2" />
+    </attr>
+    <attr name="ext_dialog_btn_positive_selector" format="reference" />
+    <attr name="ext_dialog_btn_negative_selector" format="reference" />
+    <attr name="ext_dialog_btn_positive_color" format="color" />
+    <attr name="ext_dialog_btn_negative_color" format="color" />
+    <attr name="ext_dialog_btn_gravity" format="enum">
+        <enum name="start" value="0" />
+        <enum name="center" value="1" />
+        <enum name="end" value="2" />
+    </attr>
+    <attr name="ext_dialog_btn_widget_color" format="color" />
+    <attr name="ext_dialog_divider" format="color" />
+    <attr name="ext_dialog_divider_color" format="color" />
+    <attr name="ext_dialog_list_selector" format="reference" />
+    <attr name="ext_dialog_item_color" format="color" />
+    <attr name="ext_dialog_items_gravity" format="enum">
+        <enum name="start" value="0" />
+        <enum name="center" value="1" />
+        <enum name="end" value="2" />
+    </attr>
+
 </resources>

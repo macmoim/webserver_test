@@ -1,8 +1,6 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +20,7 @@ import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -222,26 +221,53 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     }
 
     private void showDeleteDialog(final int dbId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        builder.setTitle("Delete post")
+//                .setMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
+//                .setCancelable(true)
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        //finish();
+//                        DeleteItem(dbId);
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        dialog.cancel();
+//                    }
+//                });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
 
-        builder.setTitle("Delete post")
-                .setMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+        ExtDialog.Builder Builder = new ExtDialog.Builder(this);
+
+        Builder.SetTitle("Delete post")
+                .SetMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
+                .SetPositiveButton("Yes")
+                .SetNegativeButton("No")
+                .CallBack(new ExtDialog.ButtonCallback() {
+                    @Override
+                    public void OnPositive(ExtDialog dialog) {
                         //finish();
                         DeleteItem(dbId);
+                        super.OnPositive(dialog);
+                    }
+
+                    @Override
+                    public void OnNegative(ExtDialog dialog) {
+                        super.OnNegative(dialog);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+                .TitleIconRes(R.drawable.ic_trash)
+                .TitleColorRes(R.color.white_op100)
+                .MessageColorRes(R.color.white_op100)
+                .PositiveColorRes(R.color.white_op100)
+                .NegativeColorRes(R.color.white_op100)
+                .BackgroudDrawble(R.drawable.ext_dialog_bg)
+                .DividerColorRes(R.color.mustard_op100)
+                .Show();
     }
 
 

@@ -1,0 +1,14 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.macmoim.pang.dialog.base.DialogButton
+        android:id="@+id/negative"
+        style="@style/ExtDialogButton.Text"
+        tools:text="Negative" />
+
+    <com.macmoim.pang.dialog.base.DialogButton
+        android:id="@+id/positive"
+        style="@style/ExtDialogButton.Text"
+        tools:text="Positive" />
+
+</merge>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,4 +55,25 @@
     <dimen name="blue_sub_action_button_content_margin">16dp</dimen>
     <dimen name="blue_sub_action_button_size">48dp</dimen>
     <dimen name="radius_medium">45dp</dimen>
+
+    <!-- Ext Dialog -->
+    <dimen name="ext_dialog_margin">24dp</dimen>
+    <dimen name="ext_dialog_bg_stroke_width">2dp</dimen>
+    <dimen name="ext_dialog_bg_corner_radius">10dp</dimen>
+    <dimen name="ext_dialog_title_frame_margin_bottom">12dp</dimen>
+    <dimen name="ext_dialog_title_frame_icon_margin">16dp</dimen>
+    <dimen name="ext_dialog_title_frame_text_size">20sp</dimen>
+    <dimen name="ext_dialog_title_frame_icon_max_size">22dp</dimen>
+    <dimen name="ext_dialog_content_padding_top">10dp</dimen>
+    <dimen name="ext_dialog_content_padding_bottom">10dp</dimen>
+    <dimen name="ext_dialog_content_text_size">16sp</dimen>
+    <dimen name="ext_dialog_button_frame_height">52dp</dimen>
+    <dimen name="ext_dialog_button_min_width">100dp</dimen>
+    <dimen name="ext_dialog_button_text_size">16sp</dimen>
+    <dimen name="ext_dialog_divider_top_depth">2dp</dimen>
+    <dimen name="ext_dialog_divider_bottom_depth">1dp</dimen>
+    <dimen name="ext_dialog_list_item_height">48dp</dimen>
+    <dimen name="ext_dialog_list_item_control_margin">8dp</dimen>
+    <dimen name="ext_dialog_circular_progress_border">4dp</dimen>
+
 </resources>
