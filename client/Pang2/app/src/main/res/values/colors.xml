@@ -17,12 +17,15 @@
 <resources>
     <color name="window_background">#FFF5F5F5</color>
 
-    <color name="mustard_op100">#e6a800</color>
-    <color name="mustard_op20">#33e6a800</color>
-    <color name="mustard_op30">#4ce6a800</color>
-    <color name="mustard_op60">#99e6a800</color>
-    <color name="mustard_op70">#b2e6a800</color>
-    <color name="mustard_op80">#cce6a800</color>
+    <color name="mustard_op20">#33ffcc00</color>
+    <color name="mustard_op30">#4cffcc00</color>
+    <color name="mustard_op60">#99ffcc00</color>
+    <color name="mustard_op70">#b2ffcc00</color>
+    <color name="mustard_op80">#ccffcc00</color>
+    <color name="mustard_op90">#e5ffcc00</color>
+    <color name="mustard_op100">#ffcc00</color>
+    <color name="mustard_spot_op90">#e5c7b254</color>
+    <color name="mustard_spot_op100">#c7b254</color>
     <color name="orange">#ff9100</color>
     <color name="orange_op20">#33ff9100</color>
     <color name="orange_op30">#4cff9100</color>
