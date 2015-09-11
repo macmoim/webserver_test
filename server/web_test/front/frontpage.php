@@ -2,7 +2,8 @@
 
 function shareHtml($htmlUrl) {
 
-	$serverPath = $_SERVER ['DOCUMENT_ROOT'] ."/web_test/image_test/upload_html/";
+	include $_SERVER ['DOCUMENT_ROOT']."/web_test/serverconfig.php";
+	$serverPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] ."/web_test/image_test/upload_html/";
 	// echo 'path: '.$serverPath.$htmlUrl;
 
 	if(!file_exists($serverPath.$htmlUrl)) {  // file check

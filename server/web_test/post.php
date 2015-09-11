@@ -16,7 +16,7 @@ function rest_get($id) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
 	$sql_query = "SELECT posts.user_id as p_user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path, rank,
-					count(like_bool) as likes_sum, profiles.user_name
+					count(like_bool) as likes_sum, profiles.user_name, profiles.profile_img_url
 					FROM posts 
 					LEFT JOIN likes
 					ON likes.post_id = posts.id AND likes.like_bool = '1'
@@ -39,6 +39,7 @@ function rest_get($id) {
 					"thumb_img_path" => $row['thumb_img_path'],
 					"rank" => $row['rank'],
 					"like_sum" => $row['likes_sum'],
+					"profile_img_url" => $row['profile_img_url'],
 					"ret_val" => "success"
 			);
 		} else {
@@ -274,7 +275,7 @@ function rest_post() {
 	
 		// 6. 새로운 파일명 생성(마이크로타임과 확장자 이용)
 		$time = explode ( ' ', microtime () );
-		$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' . strtoupper ( $ext );
+		$fileName = $time [1] . substr ( $time [0], 2, 6 ) . '.' . strtolower ( $ext );
 	
 		// 중요 이미지의 경우 웹루트(www) 밖에 위치할 것을 권장(예제 편의상 아래와 같이 설정)
 		$filePath = $uploadHTMLFolderForClient;//'http://localhost:8080/web_test/image_test/upload_html/';//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';

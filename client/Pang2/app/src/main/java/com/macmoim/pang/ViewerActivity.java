@@ -767,9 +767,9 @@ public class ViewerActivity extends AppCompatActivity {
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "[" + getString(R.string.app_name) + "] " + mTitle);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
-//        shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
         startActivity(Intent.createChooser(shareIntent, "Share Food"));
 
     }
@@ -852,7 +852,7 @@ public class ViewerActivity extends AppCompatActivity {
                 file.createNewFile();
             }
             FileOutputStream out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
             out.close();
         } catch (IOException e) {
             Log.d(TAG, "getLocalBitmapUri file making io exception");
