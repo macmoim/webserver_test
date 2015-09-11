@@ -78,7 +78,7 @@
                             android:layout_height="40dp"
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="bottom"
-                            android:text="ID : "
+                            android:text="@string/profile_id"
                             android:focusableInTouchMode="false"
                             android:focusable="false"
                             android:textSize="18sp" />
@@ -107,7 +107,7 @@
                             android:layout_height="40dp"
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="bottom"
-                            android:text="Name : "
+                            android:text="@string/profile_name"
                             android:textSize="18sp" />
 
                         <EditText
@@ -137,7 +137,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:text="Email : "
+                            android:text="@string/profile_email"
                             android:textSize="18sp" />
 
                         <EditText
@@ -176,7 +176,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:text="Gender : "
+                            android:text="@string/profile_gender"
                             android:textSize="18sp" />
 
 
@@ -204,7 +204,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:text="Score : "
+                            android:text="@string/profile_score"
                             android:textSize="18sp" />
 
                         <EditText
@@ -231,7 +231,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/textViewScoreLabel"
                         android:singleLine="true"
-                        android:text="Intro : "
+                        android:text="@string/profile_intro"
                         android:textSize="18sp" />
 
                     <ImageView
@@ -248,7 +248,7 @@
                         android:cursorVisible="true"
                         android:fadeScrollbars="true"
                         android:gravity="top"
-                        android:hint="insert text"
+                        android:hint="@string/profile_intro_text_hint"
                         android:singleLine="false"
                         android:textSize="18sp" />
                 </LinearLayout>

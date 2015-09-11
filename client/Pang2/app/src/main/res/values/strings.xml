@@ -87,4 +87,19 @@
     <string name="gcm_server_api_key" translatable="false">AIzaSyArwTyrB6Je2H282zBGqqgrwOtS0VdT8K0</string>
     <!--gcm-->
 
+    <!--profile-->
+    <string name="profile_id">ID : </string>
+    <string name="profile_name">Name : </string>
+    <string name="profile_email">Email : </string>
+    <string name="profile_gender">Gender : </string>
+    <string name="profile_score">Score : </string>
+    <string name="profile_intro">Intro : </string>
+    <string name="profile_intro_text_hint">insert text</string>
+
+    <!--search-->
+    <string name="no_search_data">There\'s no result.</string>
+
+    <!--error toast-->
+    <string name="network_problem">occured network problem. Please try again.</string>
+
 </resources>

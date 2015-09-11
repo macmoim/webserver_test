@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -131,6 +132,11 @@ public class SearchActivity extends RequestFeedListActivity {
                 JSONArray feedArray = response.getJSONArray("post_info");
 
                 int length = feedArray.length();
+                if (length == 0) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_search_data), Toast.LENGTH_LONG).show();
+                    rv.getAdapter().notifyDataSetChanged();
+                    return;
+                }
                 for (int i = 0; i < length; i++) {
                     JSONObject feedObj = (JSONObject) feedArray.get(i);
 

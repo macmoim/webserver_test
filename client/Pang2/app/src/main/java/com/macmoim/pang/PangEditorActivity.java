@@ -129,21 +129,27 @@ public class PangEditorActivity extends AppCompatActivity {
         edit_manubar = (LinearLayout) findViewById(R.id.edit_menubar);
 
         mEditor = (RichEditor) findViewById(R.id.editor);
-        mEditor.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (edit_manubar.getVisibility() == View.GONE) {
-                    edit_manubar.setVisibility(View.VISIBLE);
-                    mEditor.focusEditor();
-                }
-                return false;
-            }
-        });
-
         mEditor.setEditorHeight(200);
         mEditor.setPlaceholder("Insert text here...");
         mWebAppInterface = new WebAppInterface(this);
         mEditor.addJavascriptInterface(mWebAppInterface, "Android");
+        mEditor.setOnInitialLoadListener(new RichEditor.AfterInitialLoadListener() {
+            @Override
+            public void onAfterInitialLoad(boolean isReady) {
+                if (isReady) {
+                    mEditor.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (edit_manubar.getVisibility() == View.GONE) {
+                                edit_manubar.setVisibility(View.VISIBLE);
+                                mEditor.focusEditor();
+                            }
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
 
         findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1108,8 +1114,12 @@ public class PangEditorActivity extends AppCompatActivity {
             mSelThumbDialog.setListener(null);
             mSelThumbDialog = null;
         }
-        mEditor.destroy();
-        mEditor = null;
+        if (mEditor != null) {
+            mEditor.setOnTouchListener(null);
+            mEditor.setOnInitialLoadListener(null);
+            mEditor.destroy();
+            mEditor = null;
+        }
         mImageUrlArr = null;
         mSpinner.setOnItemSelectedListener(null);
         mSpinner = null;

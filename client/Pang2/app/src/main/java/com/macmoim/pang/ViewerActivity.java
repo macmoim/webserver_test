@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -46,6 +48,7 @@ import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
 import com.navercorp.volleyextensions.view.ZoomableNetworkImageView;
@@ -97,6 +100,7 @@ public class ViewerActivity extends AppCompatActivity {
     private CircleImageView profilePic;
     private ZoomableNetworkImageView mZoomInImageView;
     private RelativeLayout mZoomInLayout;
+    private ProgressDialog mDialog;
 
     private LinearLayout mRankingView;
     private Rect mRankingViewRect;
@@ -135,6 +139,19 @@ public class ViewerActivity extends AppCompatActivity {
         mViewer.setFocusableInTouchMode(false);
         mViewer.requestFocus();
         mViewer.addJavascriptInterface(new WebAppInterface(), "Android");
+        mViewer.setOnInitialLoadListener(new RichEditor.AfterInitialLoadListener() {
+            @Override
+            public void onAfterInitialLoad(boolean isReady) {
+                if (isReady) {
+                    int id = getIntent().getIntExtra("id", 0);
+                    showHTML(id);
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.network_problem), Toast.LENGTH_LONG).show();
+                }
+                removeDialog();
+            }
+        });
+        showDialog();
 
         // get like from server
         isLikeCheck = false;
@@ -186,9 +203,6 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
-        int id = getIntent().getIntExtra("id", 0);
-        showHTML(id);
-
     }
 
     @Override
@@ -224,59 +238,7 @@ public class ViewerActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    String htmlPath = "";
-                    String thumbImgPath = "";
-                    try {
-                        htmlPath = response.getString("filepath");
-                        htmlPath += response.getString("db_filename");
-                        thumbImgPath = response.getString("thumb_img_path");
-                        thumbImgPath = Util.splitFilename(thumbImgPath);
-                        mThumbFileName = thumbImgPath;
-                        mHtmlFileName = Util.splitFilename(htmlPath);
-
-                        mTitle = response.getString("title");
-                        CollapsingToolbarLayout collapsingToolbar =
-                                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-                        collapsingToolbar.setTitle(mTitle);
-
-                        ((TextView) findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
-                        String score = response.getString("rank");
-                        ((TextView) findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
-                        postUserName = response.getString("user_name");
-                        ((TextView) findViewById(R.id.user_name_text)).setText(postUserName);
-
-                        String profile_img_url = response.getString("profile_img_url");
-                        if (profile_img_url != null) {
-                            Glide.with(profilePic.getContext())
-                                    .load(profile_img_url)
-                                    .fitCenter()
-                                    .into(profilePic);
-                        } else {
-                            Glide.with(profilePic.getContext())
-                                    .load(R.drawable.person)
-                                    .fitCenter()
-                                    .into(profilePic);
-                        }
-
-                        postUserId = response.getString("user_id");
-
-                        Log.d(TAG, "showHTML path " + htmlPath);
-//                        ((TextView)findViewById(R.id.post_category)).setText(response.getString("category"));
-//                        ((TextView)findViewById(R.id.post_title)).setText(response.getString("title"));
-//                        mViewer.loadUrl(htmlPath);
-                        new ReadHtmlTask().execute(htmlPath);
-
-
-                        loadBackdrop(Util.IMAGE_FOLDER_URL + thumbImgPath);
-                        getComment();
-                        getLike();
-                        getStar();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
+                    onResponseHTML(response);
                 }
             }
         }, new Response.ErrorListener() {
@@ -289,6 +251,69 @@ public class ViewerActivity extends AppCompatActivity {
 
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_HTML);
+    }
+
+    private void onResponseHTML(JSONObject response) {
+        String htmlPath = "";
+        String thumbImgPath = "";
+        try {
+            if ("success".equals(response.getString("ret_val"))) {
+
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.network_problem), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Log.d(TAG, "onResponseHTML");
+
+            htmlPath = response.getString("filepath");
+            htmlPath += response.getString("db_filename");
+            thumbImgPath = response.getString("thumb_img_path");
+            thumbImgPath = Util.splitFilename(thumbImgPath);
+            mThumbFileName = thumbImgPath;
+            mHtmlFileName = Util.splitFilename(htmlPath);
+
+            mTitle = response.getString("title");
+            CollapsingToolbarLayout collapsingToolbar =
+                    (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            collapsingToolbar.setTitle(mTitle);
+
+            ((TextView) findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
+            String score = response.getString("rank");
+            ((TextView) findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
+            postUserName = response.getString("user_name");
+            ((TextView) findViewById(R.id.user_name_text)).setText(postUserName);
+
+            String profile_img_url = response.getString("profile_img_url");
+            if (profile_img_url != null) {
+                Glide.with(profilePic.getContext())
+                        .load(profile_img_url)
+                        .fitCenter()
+                        .into(profilePic);
+            } else {
+                Glide.with(profilePic.getContext())
+                        .load(R.drawable.person)
+                        .fitCenter()
+                        .into(profilePic);
+            }
+
+            postUserId = response.getString("user_id");
+
+            Log.d(TAG, "showHTML path " + htmlPath);
+//                        ((TextView)findViewById(R.id.post_category)).setText(response.getString("category"));
+//                        ((TextView)findViewById(R.id.post_title)).setText(response.getString("title"));
+//                        mViewer.loadUrl(htmlPath);
+            new ReadHtmlTask().execute(htmlPath);
+
+
+            loadBackdrop(Util.IMAGE_FOLDER_URL + thumbImgPath);
+            getComment();
+            getLike();
+            getStar();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     class ReadHtmlTask extends AsyncTask<String, Void, String> {
@@ -881,6 +906,24 @@ public class ViewerActivity extends AppCompatActivity {
         return false;
     }
 
+    private void showDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        } else {
+            mDialog = new ProgressDialog(this);
+        }
+
+        mDialog.show();
+
+    }
+
+    private void removeDialog() {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+        mDialog = null;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -945,6 +988,7 @@ public class ViewerActivity extends AppCompatActivity {
         mZoomInImageView = null;
         mZoomInLayout = null;
         if (mViewer != null) {
+            mViewer.setOnInitialLoadListener(null);
             mViewer.destroy();
             mViewer = null;
         }
