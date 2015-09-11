@@ -147,8 +147,8 @@ public class ViewerActivity extends AppCompatActivity {
                     showHTML(id);
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.network_problem), Toast.LENGTH_LONG).show();
+                    removeDialog();
                 }
-                removeDialog();
             }
         });
         showDialog();
@@ -239,6 +239,7 @@ public class ViewerActivity extends AppCompatActivity {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     onResponseHTML(response);
+                    removeDialog();
                 }
             }
         }, new Response.ErrorListener() {

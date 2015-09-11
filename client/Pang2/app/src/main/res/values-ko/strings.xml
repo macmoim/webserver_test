@@ -23,6 +23,12 @@
     <string name="login_with_google_plus">구글플러스 계정으로 로그인</string>
     <string name="login_with_kakao">카카오 계정으로 로그인</string>
 
+    <!--push-->
+    <string name="push_agree">Show me the Cook 푸쉬 알림에 동의하시겠습니까?</string>
+    <string name="push_agree_title">푸쉬 알림</string>
+    <string name="agree">동의</string>
+    <string name="disagree">거부</string>
+
     <!--profile-->
     <string name="profile_id">ID : </string>
     <string name="profile_name">이름 : </string>
@@ -37,5 +43,11 @@
 
     <!--error toast-->
     <string name="network_problem">네트워크 연결이 불안정합니다. 다시 시도해주세요.</string>
+
+    <!--delete post-->
+    <string name="delete_post">정말로 삭제하시겠습니까?\n삭제 후 취소가 되지 않습니다.</string>
+    <string name="delete_post_title">글 삭제</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
 
 </resources>

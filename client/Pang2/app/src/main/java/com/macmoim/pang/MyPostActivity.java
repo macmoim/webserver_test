@@ -243,10 +243,10 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
 
         ExtDialog.Builder Builder = new ExtDialog.Builder(this);
 
-        Builder.SetTitle("Delete post")
-                .SetMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
-                .SetPositiveButton("Yes")
-                .SetNegativeButton("No")
+        Builder.SetTitle(getString(R.string.delete_post_title))
+                .SetMessage(getString(R.string.delete_post))
+                .SetPositiveButton(getString(R.string.yes))
+                .SetNegativeButton(getString(R.string.no))
                 .CallBack(new ExtDialog.ButtonCallback() {
                     @Override
                     public void OnPositive(ExtDialog dialog) {

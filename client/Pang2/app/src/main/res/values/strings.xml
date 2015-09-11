@@ -79,8 +79,8 @@
 
     <string name="push_agree">Show me the Cook 푸쉬 알림에 동의하시겠습니까?</string>
     <string name="push_agree_title">푸쉬 알림</string>
-    <string name="agree">동의</string>
-    <string name="disagree">거부</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
 
     <!--gcm-->
     <string name="gcm_sender_id" translatable="false">1060290681419</string>
@@ -101,5 +101,11 @@
 
     <!--error toast-->
     <string name="network_problem">occured network problem. Please try again.</string>
+
+    <!--delete post-->
+    <string name="delete_post">Do you wanna delete this post?\nWe can\'t rollback this execution.</string>
+    <string name="delete_post_title">Delete post</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>
