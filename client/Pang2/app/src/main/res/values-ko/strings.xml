@@ -50,4 +50,10 @@
     <string name="yes">예</string>
     <string name="no">아니오</string>
 
+    <!--floating menu-->
+    <string name="new_post">새 글</string>
+    <string name="my_post">나의 글</string>
+    <string name="my_like">나의 찜</string>
+    <string name="search">검색</string>
+
 </resources>

@@ -38,10 +38,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.macmoim.pang.Layout.CircleFlatingMenu;
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     naviHeaderView mNHview;
     CircleFlatingMenu mCf;
+    com.github.clans.fab.FloatingActionMenu mStraightFloatingMenu;
     private ProgressDialog mDialog;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -116,14 +117,14 @@ public class MainActivity extends AppCompatActivity {
         mNHview.onDraw();
 
 
-
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
         if (mViewPager != null) {
             setupViewPager(mViewPager);
         }
 
-        setFloationAction();
+//        setFloationAction();
+        setStraightFloationAction();
 
 //        final View.OnClickListener mSnackBarClickListener = new View.OnClickListener() {
 //            @Override
@@ -178,8 +179,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void setFloationAction() {
-        final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard_white,R.drawable.ic_search_white};
+    /*protected void setFloationAction() {
+        final int[] id = {R.drawable.ic_edit, R.drawable.sewa, R.drawable.ic_dashboard_white, R.drawable.ic_search_white};
 
         mCf = new CircleFlatingMenu(this);
         mCf.setListener(new CircleFlatingMenu.Listener() {
@@ -187,19 +188,19 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     mDrawerLayout.closeDrawers();
-                    if((int)v.getTag() == id[0]){
+                    if ((int) v.getTag() == id[0]) {
                         mCf.menuClose(false);
                         startPangEditorActivity();
-                    }else if((int)v.getTag() == id[1]){
+                    } else if ((int) v.getTag() == id[1]) {
                         mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, LikeActivity.class));
-                    }else if((int)v.getTag() == id[2]){
+                    } else if ((int) v.getTag() == id[2]) {
                         mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, MyPostActivity.class));
-                    }else if((int)v.getTag() == id[3]){
+                    } else if ((int) v.getTag() == id[3]) {
                         mCf.menuClose(false);
                         startActivity(new Intent(MainActivity.this, SearchActivity.class));
-                    }else{
+                    } else {
 
                     }
 
@@ -209,6 +210,52 @@ public class MainActivity extends AppCompatActivity {
         });
         mCf.addResId(id);
         mCf.setFloationAction();
+    }*/
+
+    protected void setStraightFloationAction() {
+        mStraightFloatingMenu = (com.github.clans.fab.FloatingActionMenu) findViewById(R.id.main_fab_menu);
+        mStraightFloatingMenu.setClosedOnTouchOutside(true);
+        mStraightFloatingMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                if (opened) {
+                } else {
+                }
+            }
+        });
+
+        com.github.clans.fab.FloatingActionButton fab_edit = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_main_edit);
+        com.github.clans.fab.FloatingActionButton fab_like = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_main_like);
+        com.github.clans.fab.FloatingActionButton fab_post = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_main_post);
+        com.github.clans.fab.FloatingActionButton fab_search = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_main_search);
+
+        fab_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPangEditorActivity();
+            }
+        });
+
+        fab_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LikeActivity.class));
+            }
+        });
+
+        fab_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MyPostActivity.class));
+            }
+        });
+
+        fab_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+            }
+        });
     }
 
     private String getNetworkInfo() {
@@ -225,6 +272,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mStraightFloatingMenu != null && mStraightFloatingMenu.isOpened()) {
+            mStraightFloatingMenu.close(true);
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -358,6 +414,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (mStraightFloatingMenu != null) {
+            mStraightFloatingMenu.setOnMenuToggleListener(null);
+            mStraightFloatingMenu = null;
+        }
         if (mViewPager != null) {
             mViewPager = null;
         }

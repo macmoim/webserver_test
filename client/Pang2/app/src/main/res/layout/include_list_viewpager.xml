@@ -57,4 +57,7 @@
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--android:src="@drawable/ic_done" />-->
 
+    <include layout="@layout/include_main_floating_menu"/>
+
+
 </android.support.design.widget.CoordinatorLayout>

@@ -108,4 +108,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <!--floating menu-->
+    <string name="new_post">New post</string>
+    <string name="my_post">My post</string>
+    <string name="my_like">My like</string>
+
 </resources>
