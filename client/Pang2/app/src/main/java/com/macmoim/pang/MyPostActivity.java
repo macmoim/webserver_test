@@ -21,6 +21,8 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -193,7 +195,7 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     public void onDeleteButtonClick(int position) {
         try {
             Objects.requireNonNull(feedItems, "feedItems is null");
-            showDeleteDialog(feedItems.get(position).getId());
+            ShowDeleteDialog(feedItems.get(position).getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -220,54 +222,32 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
 
     }
 
-    private void showDeleteDialog(final int dbId) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        builder.setTitle("Delete post")
-//                .setMessage("Do you wanna delete this post?\nWe can't rollback this execution.")
-//                .setCancelable(true)
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        //finish();
-//                        DeleteItem(dbId);
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        dialog.cancel();
-//                    }
-//                });
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
+    private void ShowDeleteDialog(final int dbId) {
+        AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Title = getString(R.string.delete_post_title);
+        _Attr.TitleColor = R.color.white_op100;
+        _Attr.TitleIcon = R.drawable.ic_trash;
+        _Attr.Message = getString(R.string.delete_post);
+        _Attr.MessageColor = R.color.white_op100;
+        _Attr.NegativeButton = getString(R.string.no);
+        _Attr.NegativeButtonColor = R.color.white_op100;
+        _Attr.PositiveButton = getString(R.string.yes);
+        _Attr.PositiveButtonColor = R.color.white_op100;
+        _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
+            @Override
+            public void OnPositive(ExtDialog dialog) {
+                //finish();
+                DeleteItem(dbId);
+                super.OnPositive(dialog);
+            }
 
-        ExtDialog.Builder Builder = new ExtDialog.Builder(this);
+            @Override
+            public void OnNegative(ExtDialog dialog) {
+                super.OnNegative(dialog);
+            }
+        };
 
-        Builder.SetTitle(getString(R.string.delete_post_title))
-                .SetMessage(getString(R.string.delete_post))
-                .SetPositiveButton(getString(R.string.yes))
-                .SetNegativeButton(getString(R.string.no))
-                .CallBack(new ExtDialog.ButtonCallback() {
-                    @Override
-                    public void OnPositive(ExtDialog dialog) {
-                        //finish();
-                        DeleteItem(dbId);
-                        super.OnPositive(dialog);
-                    }
-
-                    @Override
-                    public void OnNegative(ExtDialog dialog) {
-                        super.OnNegative(dialog);
-                    }
-                })
-                .TitleIconRes(R.drawable.ic_trash)
-                .TitleColorRes(R.color.white_op100)
-                .MessageColorRes(R.color.white_op100)
-                .PositiveColorRes(R.color.white_op100)
-                .NegativeColorRes(R.color.white_op100)
-                .BackgroudDrawble(R.drawable.ext_dialog_bg)
-                .DividerColorRes(R.color.mustard_op100)
-                .Show();
+        ExtDialogSt.Get().AlertExtDialog(this, _Attr);
     }
 
 

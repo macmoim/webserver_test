@@ -1,8 +1,6 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -23,6 +21,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +38,6 @@ import java.util.Objects;
  * Created by P11872 on 2015-08-31.
  */
 public class EditProfileActivity extends ProfileActivity {
-
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
@@ -106,7 +106,7 @@ public class EditProfileActivity extends ProfileActivity {
                 return true;
             }
             case android.R.id.home: {
-                showDeleteDialog();
+                ShowExitEditorDialog();
                 return true;
             }
         }
@@ -115,34 +115,38 @@ public class EditProfileActivity extends ProfileActivity {
 
     @Override
     public void onBackPressed() {
-
-        showDeleteDialog();
+        ShowExitEditorDialog();
     }
 
-    private void showDeleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void ShowExitEditorDialog() {
+        AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Title = getString(R.string.editor_exit_title);
+        _Attr.TitleColor = R.color.white_op100;
+        _Attr.TitleIcon = R.drawable.ic_edit;
+        _Attr.Message = getString(R.string.editor_exit);
+        _Attr.MessageColor = R.color.white_op100;
+        _Attr.NegativeButton = getString(R.string.no);
+        _Attr.NegativeButtonColor = R.color.white_op100;
+        _Attr.PositiveButton = getString(R.string.yes);
+        _Attr.PositiveButtonColor = R.color.white_op100;
+        _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
+            @Override
+            public void OnPositive(ExtDialog dialog) {
+                finish();
+                super.OnPositive(dialog);
+            }
 
-        builder.setTitle(getString(R.string.editor_exit_title))
-                .setMessage(getString(R.string.editor_exit))
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
+            @Override
+            public void OnNegative(ExtDialog dialog) {
+                super.OnNegative(dialog);
+            }
+        };
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        ExtDialogSt.Get().AlertExtDialog(this, _Attr);
     }
 
 
     protected void onRequestData() {
-
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
@@ -235,5 +239,4 @@ public class EditProfileActivity extends ProfileActivity {
         });
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
-
 }

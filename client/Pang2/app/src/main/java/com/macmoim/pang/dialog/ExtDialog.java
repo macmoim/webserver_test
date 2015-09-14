@@ -139,7 +139,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
                         if (_ScrollIndex < 0) {
                             _ScrollIndex = 0;
                         }
-                        
+
                         final int _Index = _ScrollIndex;
                         ListItemView.post(new Runnable() {
                             @Override
@@ -549,18 +549,17 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder TitleIcon(@NonNull Drawable icon) {
-            this.TitleIcon = icon;
+        public Builder TitleIcon(@NonNull Drawable Icon) {
+            if (Icon != null) {
+                this.TitleIcon = Icon;
+            }
             return this;
         }
 
-        public Builder TitleIconRes(@DrawableRes int icon) {
-            this.TitleIcon = ResourcesCompat.getDrawable(BuilderContext.getResources(), icon, null);
-            return this;
-        }
-
-        public Builder TitleIconAttr(@AttrRes int iconAttr) {
-            this.TitleIcon = Utils.ResolveDrawable(BuilderContext, iconAttr);
+        public Builder TitleIconRes(@DrawableRes int Icon) {
+            if (Icon != -1) {
+                this.TitleIcon = ResourcesCompat.getDrawable(BuilderContext.getResources(), Icon, null);
+            }
             return this;
         }
 
