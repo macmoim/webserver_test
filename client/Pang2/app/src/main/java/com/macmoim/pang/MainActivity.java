@@ -146,7 +146,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 mDrawerLayout.closeDrawers();
-                mCf.menuClose(true);
+                if (mCf != null) {
+                    mCf.menuClose(true);
+                }
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         Intent intent = new Intent(MainActivity.this, MyPostActivity.class);
@@ -293,13 +295,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mCf.menuClose(true);
+                if (mCf != null) {
+                    mCf.menuClose(true);
+                }
                 mNHview = new naviHeaderView(this);
                 mNHview.onDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
-                mCf.menuClose(false);
+                if (mCf != null) {
+                    mCf.menuClose(false);
+                }
                 mDrawerLayout.closeDrawers();
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
