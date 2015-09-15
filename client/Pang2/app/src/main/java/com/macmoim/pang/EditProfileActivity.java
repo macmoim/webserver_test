@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -55,9 +54,8 @@ public class EditProfileActivity extends ProfileActivity {
     }
 
     @Override
-    protected void setBackDropInit() {
-        backdropimageView = (ImageView) findViewById(R.id.profile_backdrop);
-        backdropimageView.setOnClickListener(new View.OnClickListener() {
+    protected void BackDropSetOnClickListener() {
+        BackdrropLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -86,7 +84,6 @@ public class EditProfileActivity extends ProfileActivity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

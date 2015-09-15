@@ -2,8 +2,6 @@ package com.macmoim.pang;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -67,8 +66,11 @@ public class ProfileActivity extends AppCompatActivity {
     protected Uri mCropImagedUri;
     static final int REQ_CODE_PICK_PICTURE = 1;
     protected String mImageURL;
-    ImageView backdropimageView;
+    RelativeLayout BackdrropLayout;
     CircleFlatingMenu mCf;
+
+    ImageView ivProfile = null;
+    ImageView ivProfileCircle = null;
 
     protected int mProfileDbId = -1;
 
@@ -76,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.propile);
+        setContentView(R.layout.activity_profile);
 
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(mToolbar);
@@ -98,8 +100,15 @@ public class ProfileActivity extends AppCompatActivity {
         user_name = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_NAME);
     }
 
+    protected void BackDropSetOnClickListener() {
+
+    }
+
     protected void setBackDropInit() {
-        backdropimageView = (ImageView) findViewById(R.id.profile_backdrop);
+        BackdrropLayout = (RelativeLayout) findViewById(R.id.profile_backdrop);
+        ivProfile = (ImageView) findViewById(R.id.profile_image);
+        ivProfileCircle = (ImageView) findViewById(R.id.profile_circle_image);
+        BackDropSetOnClickListener();
     }
 
     protected void setAllFocus() {
@@ -207,21 +216,20 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
     private void loadBackdrop() {
-
         try {
-            Objects.requireNonNull(backdropimageView, " backdropimageView is null");
+            Objects.requireNonNull(ivProfileCircle, " ivProfileCircle is null");
             Objects.requireNonNull(mImageURL, "mImageURL is null ");
 
             if ((mImageURL == null)) {
-                backdropimageView.setImageResource(R.drawable.person);
+                ivProfileCircle.setImageResource(R.drawable.person);
             } else {
-                backdropimageView.setImageURI(Uri.parse(mImageURL));
+                ivProfile.setImageURI(Uri.parse(mImageURL));
+                ivProfileCircle.setImageURI(Uri.parse(mImageURL));
             }
 
-            Glide.with(this).load(new URL(mImageURL)).centerCrop().into(backdropimageView);
-
+            Glide.with(this).load(new URL(mImageURL)).centerCrop().into(ivProfile);
+            Glide.with(this).load(new URL(mImageURL)).centerCrop().into(ivProfileCircle);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (Exception e) {

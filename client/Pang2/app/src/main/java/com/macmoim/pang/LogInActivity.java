@@ -98,7 +98,7 @@ public class LogInActivity extends AppCompatActivity
     private int LogInPagerViewLayoutId;
 
     private final List<Integer> LogInBg = Arrays.asList(
-            R.drawable.bg_login_1,
+            R.drawable.bg_login_6,
             R.drawable.bg_login_2,
             R.drawable.bg_login_3,
             R.drawable.bg_login_4,
