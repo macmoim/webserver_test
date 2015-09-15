@@ -67,15 +67,17 @@
                     android:layout_width="@dimen/feed_item_comment_profile_pic"
                     android:layout_height="@dimen/feed_item_comment_profile_pic"
                     android:layout_gravity="right"
-                    android:src="@drawable/person" >
+                    app:border_color="@color/white_op100"
+                    app:border_width="2dp">
+
                 </de.hdodenhof.circleimageview.CircleImageView>
 
                 <TextView
                     android:id="@+id/user_name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15dp" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -94,8 +96,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/like_imageview"
                         android:gravity="center_vertical"
-                        android:textSize="15dp"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="15dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -115,8 +117,8 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/score_imageview"
                         android:gravity="center_vertical"
-                        android:textSize="15dp"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="15dp" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -208,35 +210,39 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/orange_op20"
-            android:visibility="invisible"
+            android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_horizontal|center_vertical">
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@+id/star01"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/star_nor_white"/>
+                android:background="@drawable/star_nor_white" />
+
             <ImageView
                 android:id="@+id/star02"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/star_nor_white"/>
+                android:background="@drawable/star_nor_white" />
+
             <ImageView
                 android:id="@+id/star03"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/star_nor_white"/>
+                android:background="@drawable/star_nor_white" />
+
             <ImageView
                 android:id="@+id/star04"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/star_nor_white"/>
+                android:background="@drawable/star_nor_white" />
+
             <ImageView
                 android:id="@+id/star05"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/star_nor_white"/>
+                android:background="@drawable/star_nor_white" />
 
         </LinearLayout>
 
@@ -309,6 +315,7 @@
         android:layout_height="match_parent"
         android:background="@color/black_op"
         android:visibility="gone">
+
         <com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView
             android:id="@+id/zoomin_imageview"
             android:layout_width="match_parent"

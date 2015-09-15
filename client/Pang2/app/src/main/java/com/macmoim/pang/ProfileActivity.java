@@ -92,7 +92,6 @@ public class ProfileActivity extends AppCompatActivity {
         setAllFocus();
         OnGetData();
         setFloationAction();
-
     }
 
     protected void setUserId() {
