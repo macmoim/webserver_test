@@ -12,25 +12,24 @@ import static com.macmoim.pang.data.LoginPreferences.*;
  * Created by P11872 on 2015-08-24.
  */
 
-public class startActivity extends AppCompatActivity {
-
+public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent();
+        Intent _Intent = new Intent();
 
-        if (isLogged()){
-            intent.setClass(this, MainActivity.class);
-        }else{
-            intent.setClass(this, LogInActivity.class);
+        if (IsLogged()) {
+            _Intent.setClass(this, MainActivity.class);
+        } else {
+            _Intent.setClass(this, LogInActivity.class);
         }
 
-        startActivity(intent);
+        startActivity(_Intent);
         finish();
     }
 
-    private boolean isLogged(){
+    private boolean IsLogged() {
         return LoginPreferences.GetInstance().getBoolean(this, USER_AUTHENTICATED);
     }
 }

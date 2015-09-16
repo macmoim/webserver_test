@@ -37,6 +37,8 @@ import java.util.Objects;
  * Created by P11872 on 2015-08-31.
  */
 public class EditProfileActivity extends ProfileActivity {
+    private final String TAG = getClass().getName();
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);

@@ -49,11 +49,10 @@ import butterknife.OnClick;
 
 import static com.macmoim.pang.data.LoginPreferences.USER_AUTHENTICATED;
 
-
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class LogInActivity extends AppCompatActivity
-        implements Auth.OnAuthListener {
-    private final String TAG = "LogInActivity";
+public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListener {
+    private final String TAG = getClass().getName();
+
     private static final String _URL_PROFILE = Util.SERVER_ROOT + "/profile";
 
     @BindDimen(R.dimen.view_pager_indicator_normal_margin)
@@ -74,13 +73,13 @@ public class LogInActivity extends AppCompatActivity
         int _Id = view.getId();
 
         if (_Id == R.id.facebook_area) {
-            if ((FacebookAuth.isCurrentState())) {
-                FacebookAuth.revoke();
+            if ((mFacebookAuth.isCurrentState())) {
+                mFacebookAuth.revoke();
             } else {
-                FacebookAuth.login();
+                mFacebookAuth.login();
             }
         } else if (_Id == R.id.google_plus_area) {
-            GoogleAuth.login();
+            mGoogleAuth.login();
         } else if (_Id == R.id.kakao_area) {
             // TODO : KAKAO
         } else {
@@ -88,8 +87,9 @@ public class LogInActivity extends AppCompatActivity
         }
     }
 
-    GoogleAuth GoogleAuth;
-    FacebookAuth FacebookAuth;
+    GoogleAuth mGoogleAuth;
+    FacebookAuth mFacebookAuth;
+
     Context mContext;
 
     private ViewPager LogInPagerView;
@@ -115,11 +115,11 @@ public class LogInActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        GoogleAuth = new GoogleAuth(this, this);
-        FacebookAuth = new FacebookAuth(this, this);
+        mGoogleAuth = new GoogleAuth(this, this);
+        mFacebookAuth = new FacebookAuth(this, this);
 
-        if ((FacebookAuth.isCurrentState())) {
-            tvFaceBook.setText("Log Out");
+        if ((mFacebookAuth.isCurrentState())) {
+            tvFaceBook.setText(getResources().getString(R.string.logout));
         } else {
             tvFaceBook.setText(getResources().getString(R.string.login_with_facebook));
         }
@@ -129,14 +129,14 @@ public class LogInActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (isLogged()) {
+        if (IsLogged()) {
             super.onBackPressed();
         } else {
             finish();
         }
     }
 
-    private boolean isLogged() {
+    private boolean IsLogged() {
         return LoginPreferences.GetInstance().getBoolean(this, USER_AUTHENTICATED);
     }
 
@@ -145,7 +145,7 @@ public class LogInActivity extends AppCompatActivity
         super.onDestroy();
 
         //disconnect google client api
-        GoogleAuth.logout();
+        mGoogleAuth.logout();
     }
 
     @Override
@@ -155,13 +155,13 @@ public class LogInActivity extends AppCompatActivity
         if (requestCode == GoogleAuth.GOOGLE_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 //call connect again because google just authorized app
-                GoogleAuth.login();
+                mGoogleAuth.login();
             } else {
                 onLoginCancel();
             }
         }
 
-        FacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
+        mFacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class LogInActivity extends AppCompatActivity
     public void onRevoke() {
         Log.d(TAG, "Logout Success");
         SocialLogout(SocialProfile.FACEBOOK);
-        Toast.makeText(this, "Log out 되었습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.logout_done), Toast.LENGTH_SHORT).show();
     }
 
     private void SocialLogout(String tag) {
@@ -224,7 +224,7 @@ public class LogInActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                     if ("success".equals(ret)) {
-                        tvFaceBook.setText("Log Out");
+                        tvFaceBook.setText(getResources().getString(R.string.logout));
                         Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
                         gotoMain();
                     } else if ("duplicate".equals(ret)) {

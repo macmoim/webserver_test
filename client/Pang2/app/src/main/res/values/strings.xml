@@ -56,6 +56,8 @@
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="login_with_google_plus">Login with Google +</string>
     <string name="login_with_kakao">Login with Kakao</string>
+    <string name="logout">Log Out</string>
+    <string name="logout_done">You have been Log Out</string>
 
     <string name="save">저장 되었습니다.</string>
     <string name="failsave">저장에 실패 하였습니다. </string>

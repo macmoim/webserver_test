@@ -43,7 +43,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.DesignDemo">
 
-        <activity android:name="com.macmoim.pang.startActivity">
+        <activity android:name="com.macmoim.pang.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -22,6 +22,8 @@
     <string name="login_with_facebook">페이스북 계정으로 로그인</string>
     <string name="login_with_google_plus">구글플러스 계정으로 로그인</string>
     <string name="login_with_kakao">카카오 계정으로 로그인</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_done">로그아웃 되었습니다.</string>
 
     <!--push-->
     <string name="push_agree">Show me the Cook 푸쉬 알림에 동의하시겠습니까?</string>

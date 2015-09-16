@@ -32,6 +32,9 @@ import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.login.Auth;
+import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.login.SocialProfile;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.util.Util;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -51,8 +54,9 @@ import java.util.Objects;
  * Created by P11872 on 2015-08-06.
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class ProfileActivity extends AppCompatActivity {
-    protected static final String TAG = "ProfileActivity";
+public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthListener {
+    private final String TAG = getClass().getName();
+
     protected static final String UPLOAD_PROFILE_IMAGE_FOLDER = Util.SERVER_ROOT + "/image_test/upload_profile_image/";
     protected static final String _URL_PROFILE = Util.SERVER_ROOT + "/profile";
     protected static final String _URL_PROFILE_IMAGE = Util.SERVER_ROOT + "/profile/image";
@@ -74,11 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     protected int mProfileDbId = -1;
 
+    FacebookAuth mFaceBookAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_profile);
+
+        mFaceBookAuth = new FacebookAuth(this, this);
 
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(mToolbar);
@@ -134,10 +142,11 @@ public class ProfileActivity extends AppCompatActivity {
                         finish();
                     } else if ((int) v.getTag() == R.drawable.com_facebook_button_icon) {
                         mCf.menuClose(false);
-                        startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
 
+                        Log.e(TAG, "facebook auth is" + mFaceBookAuth.isCurrentState());
+
+                        mFaceBookAuth.revoke();
                     }
-
                 }
                 return true;
             }
@@ -161,7 +170,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     protected void OnGetData() {
-
         String url = _URL_PROFILE + "/" + user_id;
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
@@ -401,6 +409,40 @@ public class ProfileActivity extends AppCompatActivity {
         mCf = null;
         super.onDestroy();
 
+    }
+
+    @Override
+    public void onLoginSuccess(SocialProfile profile) {
+
+    }
+
+    @Override
+    public void onLoginError(String message) {
+
+    }
+
+    @Override
+    public void onLoginCancel() {
+
+    }
+
+    private void GotoStart() {
+        Intent intent = new Intent(this, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void SocialLogout(String tag) {
+        if (tag.equals(SocialProfile.FACEBOOK)) {
+            LoginPreferences.GetInstance().clear(this);
+            GotoStart();
+        }
+    }
+
+    @Override
+    public void onRevoke() {
+        SocialLogout(SocialProfile.FACEBOOK);
+        Toast.makeText(this, getResources().getString(R.string.logout_done), Toast.LENGTH_SHORT).show();
     }
 
     protected class ViewHolder {
