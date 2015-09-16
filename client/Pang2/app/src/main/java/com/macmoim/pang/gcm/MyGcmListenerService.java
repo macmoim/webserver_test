@@ -34,6 +34,8 @@ import com.macmoim.pang.data.AppPreferences;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
+    private static int mNotiId = 0;
+    public static final String FROM_GCM_EXTRA = "from-gcm";
 
     /**
      * Called when message is received.
@@ -83,7 +85,8 @@ public class MyGcmListenerService extends GcmListenerService {
         }
         Intent intent = new Intent(this, MyPostActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        intent.putExtra(FROM_GCM_EXTRA, true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, mNotiId /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -98,6 +101,10 @@ public class MyGcmListenerService extends GcmListenerService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(mNotiId++ /* ID of notification */, notificationBuilder.build());
+    }
+
+    public static void resetNotiId() {
+        mNotiId = 0;
     }
 }

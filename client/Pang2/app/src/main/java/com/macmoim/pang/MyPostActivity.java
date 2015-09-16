@@ -23,6 +23,7 @@ import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
+import com.macmoim.pang.gcm.MyGcmListenerService;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -51,6 +52,10 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
         super.onCreate(savedInstanceState);
 
         ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
+
+        if (getIntent().getBooleanExtra(MyGcmListenerService.FROM_GCM_EXTRA, false)) {
+            MyGcmListenerService.resetNotiId();
+        }
 
     }
 

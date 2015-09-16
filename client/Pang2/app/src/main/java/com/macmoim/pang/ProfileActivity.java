@@ -428,7 +428,9 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
     private void GotoStart() {
         Intent intent = new Intent(this, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
