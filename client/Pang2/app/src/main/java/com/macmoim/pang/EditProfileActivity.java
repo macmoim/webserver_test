@@ -121,7 +121,7 @@ public class EditProfileActivity extends ProfileActivity {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.editor_exit_title);
         _Attr.TitleColor = R.color.white_op100;
-        _Attr.TitleIcon = R.drawable.ic_edit;
+        _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
         _Attr.MessageColor = R.color.white_op100;
         _Attr.NegativeButton = getString(R.string.no);

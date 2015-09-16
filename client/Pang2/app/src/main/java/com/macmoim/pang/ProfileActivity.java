@@ -426,7 +426,7 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
     }
 
-    private void GotoStart() {
+    private void GotoStartActivity() {
         Intent intent = new Intent(this, StartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -434,10 +434,10 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
         startActivity(intent);
     }
 
-    private void SocialLogout(String tag) {
-        if (tag.equals(SocialProfile.FACEBOOK)) {
+    private void SocialLogout(String Tag) {
+        if (Tag.equals(SocialProfile.FACEBOOK)) {
             LoginPreferences.GetInstance().clear(this);
-            GotoStart();
+            GotoStartActivity();
         }
     }
 

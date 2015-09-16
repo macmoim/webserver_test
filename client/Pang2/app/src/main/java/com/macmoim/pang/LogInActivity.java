@@ -172,12 +172,6 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
         onRequestData(profile);
     }
 
-    private void gotoMain() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
     @Override
     public void onLoginError(String message) {
         Log.e(TAG, message);
@@ -185,6 +179,7 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
 
     @Override
     public void onLoginCancel() {
+
     }
 
     @Override
@@ -200,6 +195,14 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
             LoginPreferences.GetInstance().clear(this);
             tvFaceBook.setText(getResources().getString(R.string.login_with_facebook));
         }
+    }
+
+    private void GotoMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void onRequestData(SocialProfile profile) {
@@ -226,9 +229,9 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
                     if ("success".equals(ret)) {
                         tvFaceBook.setText(getResources().getString(R.string.logout));
                         Toast.makeText(getApplicationContext(), "Log in 되었습니다.", Toast.LENGTH_SHORT).show();
-                        gotoMain();
+                        GotoMainActivity();
                     } else if ("duplicate".equals(ret)) {
-                        gotoMain();
+                        GotoMainActivity();
                     } else {
                         if (LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.USER_SOCIAL) == SocialProfile.FACEBOOK) {
                             SocialLogout(SocialProfile.FACEBOOK);
