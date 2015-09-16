@@ -58,4 +58,9 @@
     <string name="my_like">나의 찜</string>
     <string name="search">검색</string>
 
+    <!--user information dialog-->
+    <string name="user_info">사용자 정보</string>
+    <string name="goto_user_profile">프로필 보기</string>
+    <string name="goto_user_post">작성글 보기</string>
+
 </resources>

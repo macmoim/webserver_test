@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.macmoim.pang.Layout.CircleFlatingMenu;
-import com.macmoim.pang.Layout.CircleFlatingMenuWithActionView;
 import com.macmoim.pang.OtherUserPostActivity;
 import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.data.FoodCommentItem;
+import com.macmoim.pang.dialog.ExtDialog;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
 
     private List<FoodCommentItem> mValues;
 
-    CircleFlatingMenuWithActionView mCf;
+//    CircleFlatingMenuWithActionView mCf;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public String mBoundString;
@@ -95,7 +93,8 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         holder.mTimeStampTv.setText(item.getTimeStamp());
         holder.mCommentTv.setText(item.getComment());
 
-        setFloationAction(holder.mProfilePic, item);
+//        setFloationAction(holder.mProfilePic, item);
+        setProfileViewAction(holder.mProfilePic, item);
     }
 
     @Override
@@ -103,7 +102,39 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         return mValues.size();
     }
 
-    private void setFloationAction(View actionView, final FoodCommentItem item) {
+    private void setProfileViewAction(View actionView, final FoodCommentItem item) {
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] dialogItems = {activity.getResources().getString(R.string.goto_user_profile), activity.getResources().getString(R.string.goto_user_post)};
+                ExtDialog.Builder dialogBuilder = new ExtDialog.Builder(activity);
+                ExtDialog dialog = dialogBuilder.ListItems(dialogItems).ListItemsCallback(new ExtDialog.ListCallback() {
+                    @Override
+                    public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
+                        if (which == 0) {
+                            Intent intent = new Intent(activity, OtherUserProfileActivity.class);
+                            intent.putExtra("other-user-id", item.getCommentUserId());
+                            intent.putExtra("other-user-name", item.getCommentUserName());
+                            activity.startActivity(intent);
+                        } else if (which == 1) {
+                            Intent intent = new Intent(activity, OtherUserPostActivity.class);
+                            intent.putExtra("other-user-id", item.getCommentUserId());
+                            intent.putExtra("other-user-name", item.getCommentUserName());
+                            activity.startActivity(intent);
+
+                        }
+                    }
+                }).SetTitle(activity.getResources().getString(R.string.user_info)).BackgroundColor(activity.getResources().getColor(R.color.mustard_op70))
+                        .ListItemColor(activity.getResources().getColor(R.color.white_op100))
+                        .TitleColor(activity.getResources().getColor(R.color.white_op100))
+                        .Build();
+                dialog.show();
+            }
+        });
+
+    }
+
+    /*private void setFloationAction(View actionView, final FoodCommentItem item) {
         final int[] id = {R.drawable.person, R.drawable.ic_dashboard};
 
         mCf = new CircleFlatingMenuWithActionView(activity, actionView);
@@ -117,7 +148,6 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
                         intent.putExtra("other-user-id", item.getCommentUserId());
                         intent.putExtra("other-user-name", item.getCommentUserName());
                         activity.startActivity(intent);
-//                        finish();
                     } else if ((int) v.getTag() == R.drawable.ic_dashboard) {
                         mCf.menuClose(false);
                         Intent intent = new Intent(activity, OtherUserPostActivity.class);
@@ -135,5 +165,5 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         mCf.setItemAngle(0, -90);
         mCf.setItemRadius(activity.getResources().getDimensionPixelSize(R.dimen.radius_medium));
         mCf.setFloationAction();
-    }
+    }*/
 }

@@ -115,4 +115,9 @@
     <string name="my_post">My post</string>
     <string name="my_like">My like</string>
 
+    <!--user information dialog-->
+    <string name="user_info">User Information</string>
+    <string name="goto_user_profile">User Profile</string>
+    <string name="goto_user_post">User Posts</string>
+
 </resources>
