@@ -1,5 +1,6 @@
 package com.macmoim.pang.util;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +8,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.inputmethod.InputMethodManager;
+
+import com.macmoim.pang.R;
+import com.macmoim.pang.dialog.ExtDialog;
 
 import java.io.File;
 
@@ -17,8 +21,8 @@ public class Util {
     private static final String TAG = "Util";
 
     public static final String SERVER_ROOT = "http://54.65.198.72/web_test";
-    public static final String IMAGE_FOLDER_URL = SERVER_ROOT+"/image_test/upload_image/";
-    public static final String IMAGE_THUMBNAIL_FOLDER_URL = SERVER_ROOT+"/image_test/thumbnails/";
+    public static final String IMAGE_FOLDER_URL = SERVER_ROOT + "/image_test/upload_image/";
+    public static final String IMAGE_THUMBNAIL_FOLDER_URL = SERVER_ROOT + "/image_test/thumbnails/";
 
     public static String MakeStringBuilder(final String... str) {
         String _Str = null;
@@ -116,5 +120,13 @@ public class Util {
                 return null;
             }
         }
+    }
+
+    public static ExtDialog makeProgressDialog(Activity activity) {
+        return new ExtDialog.Builder(activity).Progress(true, 0)
+                .BackgroundColor(activity.getResources().getColor(R.color.mustard_op70))
+                .SetMessage(activity.getResources().getString(R.string.loading))
+                .MessageColor(activity.getResources().getColor(R.color.white_op100))
+                .Build();
     }
 }

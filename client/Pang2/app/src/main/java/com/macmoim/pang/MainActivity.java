@@ -18,7 +18,6 @@ package com.macmoim.pang;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,12 +48,14 @@ import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.AppPreferences;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.gcm.RegistrationIntentService;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SimpleAuthListener;
 import com.macmoim.pang.login.SocialProfile;
+import com.macmoim.pang.util.Util;
 
 /**
  * TODO
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     naviHeaderView mNHview;
     CircleFlatingMenu mCf;
     com.github.clans.fab.FloatingActionMenu mStraightFloatingMenu;
-    private ProgressDialog mDialog;
+    private ExtDialog mDialog;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -404,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = new ProgressDialog(this);
+            mDialog = Util.makeProgressDialog(this);
         }
 
         mDialog.show();
@@ -416,6 +417,14 @@ public class MainActivity extends AppCompatActivity {
             mDialog.dismiss();
         }
         mDialog = null;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mStraightFloatingMenu != null && mStraightFloatingMenu.isOpened()) {
+            mStraightFloatingMenu.close(false);
+        }
     }
 
     @Override

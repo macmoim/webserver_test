@@ -63,4 +63,7 @@
     <string name="goto_user_profile">프로필 보기</string>
     <string name="goto_user_post">작성글 보기</string>
 
+    <!--loading progress dialog-->
+    <string name="loading">잠시만 기다려주세요.</string>
+
 </resources>

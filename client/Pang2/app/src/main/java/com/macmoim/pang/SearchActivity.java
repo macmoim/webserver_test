@@ -1,6 +1,5 @@
 package com.macmoim.pang;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
-import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.adapter.SwipeFoodRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -40,7 +39,7 @@ public class SearchActivity extends RequestFeedListActivity {
     private String URL = Util.SERVER_ROOT + "/post/search";
 
     private EditText mSearchEdit;
-    private ProgressDialog mDialog;
+    private ExtDialog mDialog;
 
     private static final String VOLLEY_REQ_TAG_SEARCH = "search";
 
@@ -175,7 +174,7 @@ public class SearchActivity extends RequestFeedListActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = new ProgressDialog(this);
+            mDialog = Util.makeProgressDialog(this);
         }
 
         mDialog.show();

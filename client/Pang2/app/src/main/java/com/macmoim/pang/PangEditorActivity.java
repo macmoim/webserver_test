@@ -2,10 +2,7 @@ package com.macmoim.pang;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -42,6 +39,9 @@ import com.android.volley.VolleyLog;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.util.Util;
@@ -81,7 +81,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private LinearLayout edit_manubar;
 
     private ArrayList<String> mImageUrlArr;
-    private ProgressDialog mDialog;
+    private ExtDialog mDialog;
 
     private Toolbar mToolbar;
 
@@ -1041,7 +1041,7 @@ public class PangEditorActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = new ProgressDialog(this);
+            mDialog = Util.makeProgressDialog(this);
         }
 
         mDialog.show();
@@ -1061,25 +1061,30 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     private void showEditCancelDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Title = getString(R.string.editor_exit_title);
+        _Attr.TitleColor = R.color.white_op100;
+//        _Attr.TitleIcon = R.drawable.ic_trash;
+        _Attr.Message = getString(R.string.editor_exit);
+        _Attr.MessageColor = R.color.white_op100;
+        _Attr.NegativeButton = getString(R.string.no);
+        _Attr.NegativeButtonColor = R.color.white_op100;
+        _Attr.PositiveButton = getString(R.string.yes);
+        _Attr.PositiveButtonColor = R.color.white_op100;
+        _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
+            @Override
+            public void OnPositive(ExtDialog dialog) {
+                finish();
+            }
 
-        builder.setTitle(getString(R.string.editor_exit_title))
-                .setMessage(getString(R.string.editor_exit))
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
+            @Override
+            public void OnNegative(ExtDialog dialog) {
+                super.OnNegative(dialog);
+                dialog.cancel();
+            }
+        };
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+        ExtDialogSt.Get().AlertExtDialog(this, _Attr);
     }
 
     @Override

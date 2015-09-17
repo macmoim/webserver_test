@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +44,7 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.data.LoginPreferences;
+import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
@@ -100,7 +100,7 @@ public class ViewerActivity extends AppCompatActivity {
     private CircleImageView profilePic;
     private ZoomableNetworkImageView mZoomInImageView;
     private RelativeLayout mZoomInLayout;
-    private ProgressDialog mDialog;
+    private ExtDialog mDialog;
 
     private LinearLayout mRankingView;
     private Rect mRankingViewRect;
@@ -911,7 +911,7 @@ public class ViewerActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = new ProgressDialog(this);
+            mDialog = Util.makeProgressDialog(this);
         }
 
         mDialog.show();

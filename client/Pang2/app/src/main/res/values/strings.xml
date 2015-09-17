@@ -120,4 +120,7 @@
     <string name="goto_user_profile">User Profile</string>
     <string name="goto_user_post">User Posts</string>
 
+    <!--loading progress dialog-->
+    <string name="loading">Loading ...</string>
+
 </resources>

@@ -1,7 +1,6 @@
 package com.macmoim.pang;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +14,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.macmoim.pang.util.Util;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class CommentActivity extends AppCompatActivity {
     private static final String TAG = "CommentActivity";
     private EditText mCommentEdit;
-    private ProgressDialog mDialog;
+    private ExtDialog mDialog;
 
     private static final String URL_COMMENT = Util.SERVER_ROOT+"/comment";
 
@@ -126,7 +126,7 @@ public class CommentActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = new ProgressDialog(this);
+            mDialog = Util.makeProgressDialog(this);
         }
 
         mDialog.show();
