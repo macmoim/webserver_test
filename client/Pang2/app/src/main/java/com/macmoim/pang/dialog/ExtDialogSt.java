@@ -54,4 +54,29 @@ public class ExtDialogSt {
                 .DividerColorRes(R.color.mustard_op100)
                 .Show();
     }
+
+    public ExtDialog GetProgressCircleExtDialog(Context Con, ProgressCircleDialogAttr Attr) {
+        ExtDialog.Builder _Builder = new ExtDialog.Builder(Con);
+        if (Attr.Title != null) {
+            _Builder.SetTitle(Attr.Title);
+        }
+        if (Attr.TitleColor != -1) {
+            _Builder.TitleColorRes(Attr.TitleColor);
+        }
+        if (Attr.TitleIcon != -1) {
+            _Builder.TitleIconRes(Attr.TitleIcon);
+        }
+        if (Attr.Message != null) {
+            _Builder.SetMessage(Attr.Message);
+        }
+        if (Attr.MessageColor != -1) {
+            _Builder.MessageColorRes(Attr.MessageColor);
+        }
+
+        return _Builder
+                .Progress(true, 0)
+                .BackgroudDrawble(R.drawable.ext_dialog_bg)
+                .DividerColorRes(R.color.mustard_op100)
+                .Build();
+    }
 }

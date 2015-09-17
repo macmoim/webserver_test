@@ -1,6 +1,5 @@
 package com.macmoim.pang.util;
 
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,9 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.inputmethod.InputMethodManager;
-
-import com.macmoim.pang.R;
-import com.macmoim.pang.dialog.ExtDialog;
 
 import java.io.File;
 
@@ -122,11 +118,4 @@ public class Util {
         }
     }
 
-    public static ExtDialog makeProgressDialog(Activity activity) {
-        return new ExtDialog.Builder(activity).Progress(true, 0)
-                .BackgroundColor(activity.getResources().getColor(R.color.mustard_op70))
-                .SetMessage(activity.getResources().getString(R.string.loading))
-                .MessageColor(activity.getResources().getColor(R.color.white_op100))
-                .Build();
-    }
 }

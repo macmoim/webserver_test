@@ -42,6 +42,7 @@ import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
+import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.util.Util;
@@ -1041,7 +1042,10 @@ public class PangEditorActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = Util.makeProgressDialog(this);
+            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
+            attr.Message = getResources().getString(R.string.loading);
+            attr.MessageColor = R.color.white_op100;
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
         }
 
         mDialog.show();

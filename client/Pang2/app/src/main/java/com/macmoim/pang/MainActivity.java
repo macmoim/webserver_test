@@ -49,13 +49,14 @@ import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.AppPreferences;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.gcm.RegistrationIntentService;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SimpleAuthListener;
 import com.macmoim.pang.login.SocialProfile;
-import com.macmoim.pang.util.Util;
 
 /**
  * TODO
@@ -405,7 +406,10 @@ public class MainActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = Util.makeProgressDialog(this);
+            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
+            attr.Message = getResources().getString(R.string.loading);
+            attr.MessageColor = R.color.white_op100;
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
         }
 
         mDialog.show();

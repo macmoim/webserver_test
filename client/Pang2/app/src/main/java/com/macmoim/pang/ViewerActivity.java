@@ -45,6 +45,8 @@ import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
@@ -911,7 +913,10 @@ public class ViewerActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = Util.makeProgressDialog(this);
+            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
+            attr.Message = getResources().getString(R.string.loading);
+            attr.MessageColor = R.color.white_op100;
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
         }
 
         mDialog.show();

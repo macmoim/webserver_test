@@ -20,6 +20,8 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -174,7 +176,10 @@ public class SearchActivity extends RequestFeedListActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            mDialog = Util.makeProgressDialog(this);
+            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
+            attr.Message = getResources().getString(R.string.loading);
+            attr.MessageColor = R.color.white_op100;
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
         }
 
         mDialog.show();
