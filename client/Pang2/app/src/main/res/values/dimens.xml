@@ -58,6 +58,23 @@
     <dimen name="blue_sub_action_button_size">48dp</dimen>
     <dimen name="radius_medium">45dp</dimen>
 
+    <!-- Profile Activity -->
+    <dimen name="profile_nest_view_padding_left">10dp</dimen>
+    <dimen name="profile_nest_view_padding_right">10dp</dimen>
+    <dimen name="profile_nest_view_padding_top">38dp</dimen>
+    <dimen name="profile_nest_view_padding_bottom">5dp</dimen>
+    <dimen name="profile_bg_corner_radius">10dp</dimen>
+    <dimen name="profile_bg_stroke">2dp</dimen>
+    <dimen name="profile_bg_padding">20dp</dimen>
+    <dimen name="profile_picture_margin_right">20dp</dimen>
+    <dimen name="profile_item_text_size">16sp</dimen>
+    <dimen name="profile_item_edit_text_size">18sp</dimen>
+    <dimen name="profile_item_edit_margin_left">4dp</dimen>
+    <dimen name="profile_item_edit_margin_right">8dp</dimen>
+    <dimen name="profile_edit_box_padding">10dp</dimen>
+    <dimen name="profile_nested_scroll_view_min_height">700dp</dimen>
+    <dimen name="profile_backdrop_height">300dp</dimen>
+
     <!-- Ext Dialog -->
     <dimen name="ext_dialog_margin">24dp</dimen>
     <dimen name="ext_dialog_bg_stroke_width">2dp</dimen>
