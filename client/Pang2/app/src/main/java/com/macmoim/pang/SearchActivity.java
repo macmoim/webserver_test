@@ -49,7 +49,6 @@ public class SearchActivity extends RequestFeedListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.search_activity);
 
-
         mSearchEdit = (EditText) findViewById(R.id.search_edit);
         ((Button) findViewById(R.id.search_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +62,11 @@ public class SearchActivity extends RequestFeedListActivity {
     protected void onResume() {
         super.onResume();
         Util.openKeyBoard(getApplicationContext());
+    }
+
+    @Override
+    public String GetToolBarTitle() {
+        return getResources().getString(R.string.search);
     }
 
     protected void setupRecyclerView(RecyclerView recyclerView) {

@@ -152,22 +152,31 @@ public class MainActivity extends AppCompatActivity {
                     mCf.menuClose(true);
                 }
                 switch (menuItem.getItemId()) {
-                    case R.id.nav_home:
-                        Intent intent = new Intent(MainActivity.this, MyPostActivity.class);
-                        startActivity(intent);
+                    case R.id.nav_home: {
+                        Intent _Intent = new Intent(MainActivity.this, MainActivity.class);
+                        startActivity(_Intent);
                         break;
-
-                    case R.id.nav_foavorite:
-                        Intent tmptent = new Intent(MainActivity.this, LikeActivity.class);
-                        startActivity(tmptent);
+                    }
+                    case R.id.nav_post: {
+                        Intent _Intent = new Intent(MainActivity.this, MyPostActivity.class);
+                        startActivity(_Intent);
                         break;
-
-                    case R.id.nav_profile:
+                    }
+                    case R.id.nav_foavorite: {
+                        Intent _Intent = new Intent(MainActivity.this, LikeActivity.class);
+                        startActivity(_Intent);
+                        break;
+                    }
+                    case R.id.nav_profile: {
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         break;
-
-                    case R.id.nav_notice:
+                    }
+                    case R.id.nav_notice: {
                         break;
+                    }
+                    case R.id.nav_logout: {
+                        break;
+                    }
                 }
                 return false;
             }

@@ -11,15 +11,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -70,10 +67,10 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     protected Uri mCropImagedUri;
     static final int REQ_CODE_PICK_PICTURE = 1;
     protected String mImageURL;
-    RelativeLayout BackdrropLayout;
+
     CircleFlatingMenu mCf;
 
-    ImageView ivProfile = null;
+
     ImageView ivProfileCircle = null;
 
     protected int mProfileDbId = -1;
@@ -91,8 +88,8 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(mToolbar);
         final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
+        ab.setTitle(getResources().getString(R.string.profile));
 
         setUserId();
         setBackDropInit();
@@ -112,9 +109,8 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     }
 
     protected void setBackDropInit() {
-        BackdrropLayout = (RelativeLayout) findViewById(R.id.profile_backdrop);
-        ivProfile = (ImageView) findViewById(R.id.profile_image);
-        ivProfileCircle = (ImageView) findViewById(R.id.profile_circle_image);
+
+        ivProfileCircle = (ImageView) findViewById(R.id.ivPicture);
         BackDropSetOnClickListener();
     }
 
@@ -200,7 +196,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     }
 
     private void ShowView(JSONObject response) throws JSONException {
-        nViewHolder.setID(response.getString("user_id"));
         nViewHolder.setName(response.getString("user_name"));
         nViewHolder.setEmail(response.getString("user_email"));
         nViewHolder.setmScore(response.getString("user_score"));
@@ -231,11 +226,11 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
             if ((mImageURL == null)) {
                 ivProfileCircle.setImageResource(R.drawable.person);
             } else {
-                ivProfile.setImageURI(Uri.parse(mImageURL));
+
                 ivProfileCircle.setImageURI(Uri.parse(mImageURL));
             }
 
-            Glide.with(this).load(new URL(mImageURL)).centerCrop().into(ivProfile);
+
             Glide.with(this).load(new URL(mImageURL)).centerCrop().into(ivProfileCircle);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -269,30 +264,9 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
         return file;
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sample_actions, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        Log.d(TAG, "onOptionsItemSelected");
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
 
         if (requestCode == REQ_CODE_PICK_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -449,7 +423,7 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
     protected class ViewHolder {
         private Activity mActivity;
-        private EditText mIDView = null;
+
         private EditText mNameView = null;
         private EditText mEmailView = null;
         private EditText mGenderView = null;
@@ -460,7 +434,7 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
         public ViewHolder(Activity activity) {
             this.mActivity = activity;
-            mIDView = (EditText) mActivity.findViewById(R.id.textViewIDValue);
+
             mNameView = (EditText) mActivity.findViewById(R.id.textViewNameValue);
             mEmailView = (EditText) mActivity.findViewById(R.id.textViewEmailValue);
             mGenderView = (EditText) mActivity.findViewById(R.id.textViewGenderValue);
@@ -492,10 +466,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
             mIntroView.setFocusable(state);
         }
 
-        public String getID() {
-            return String.valueOf((mIDView.getText() == null) ? ("") : mIDView.getText());
-        }
-
         public String getName() {
             return String.valueOf((mNameView.getText() == null) ? ("") : mNameView.getText());
         }
@@ -514,15 +484,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
         public String getIntro() {
             return String.valueOf((mIntroView.getText() == null) ? ("") : mIntroView.getText());
-        }
-
-        public void setID(String value) {
-            try {
-                Objects.requireNonNull(value);
-                mIDView.setText(value.equals("null") ? null : value);
-            } catch (Exception e) {
-
-            }
         }
 
         public void setName(String value) {

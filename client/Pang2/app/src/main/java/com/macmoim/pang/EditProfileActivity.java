@@ -57,7 +57,7 @@ public class EditProfileActivity extends ProfileActivity {
 
     @Override
     protected void BackDropSetOnClickListener() {
-        BackdrropLayout.setOnClickListener(new View.OnClickListener() {
+        ivProfileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -149,7 +149,6 @@ public class EditProfileActivity extends ProfileActivity {
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
-        obj.put("user_id", nViewHolder.getID());
         obj.put("user_name", nViewHolder.getName());
         obj.put("user_email", nViewHolder.getEmail());
         obj.put("user_score", nViewHolder.getScore());
@@ -187,7 +186,6 @@ public class EditProfileActivity extends ProfileActivity {
         Map<String, String> obj = new HashMap<String, String>();
         // temp
 
-        obj.put("user_id", nViewHolder.getID());
         obj.put("user_name", nViewHolder.getName());
         obj.put("user_email", nViewHolder.getEmail());
         obj.put("user_score", nViewHolder.getScore());

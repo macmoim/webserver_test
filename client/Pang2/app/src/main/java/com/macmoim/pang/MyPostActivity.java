@@ -59,6 +59,10 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
 
     }
 
+    @Override
+    public String GetToolBarTitle() {
+        return getResources().getString(R.string.my_post);
+    }
 
     protected void setupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();

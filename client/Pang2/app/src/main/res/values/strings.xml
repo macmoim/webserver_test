@@ -50,7 +50,7 @@
     <string name="new_edit">new post</string>
     <string name="submit">submit</string>
     <string name="editor_hint">Insert</string>
-    <string name="search">search</string>
+    <string name="search">Search</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">Login with Facebook</string>
@@ -89,7 +89,8 @@
     <string name="gcm_server_api_key" translatable="false">AIzaSyArwTyrB6Je2H282zBGqqgrwOtS0VdT8K0</string>
     <!--gcm-->
 
-    <!--profile-->
+    <!-- profile -->
+    <string name="profile">Profile</string>
     <string name="profile_id">ID</string>
     <string name="profile_name">Name</string>
     <string name="profile_email">Email</string>
@@ -113,9 +114,11 @@
     <string name="no">No</string>
 
     <!--floating menu-->
+    <string name="home">Home</string>
     <string name="new_post">New post</string>
     <string name="my_post">My post</string>
     <string name="my_like">My like</string>
+    <string name="notics">Notice</string>
 
     <!--user information dialog-->
     <string name="user_info">User Information</string>

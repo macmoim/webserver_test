@@ -37,7 +37,6 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class LikeActivity extends RequestFeedListActivity implements SwipeFoodRecyclerViewAdapter.Listener {
-
     private String URL = Util.SERVER_ROOT + "/like";
 
     private static final String VOLLEY_REQ_TAG_LIKE = "get-mylike";
@@ -48,6 +47,11 @@ public class LikeActivity extends RequestFeedListActivity implements SwipeFoodRe
 
         ((SwipeFoodRecyclerViewAdapter) rv.getAdapter()).setListener(this);
 
+    }
+
+    @Override
+    public String GetToolBarTitle() {
+        return getResources().getString(R.string.my_like);
     }
 
     protected void setupRecyclerView(RecyclerView recyclerView) {

@@ -61,7 +61,7 @@
     <!-- Profile Activity -->
     <dimen name="profile_nest_view_padding_left">10dp</dimen>
     <dimen name="profile_nest_view_padding_right">10dp</dimen>
-    <dimen name="profile_nest_view_padding_top">38dp</dimen>
+    <dimen name="profile_nest_view_padding_top">15dp</dimen>
     <dimen name="profile_nest_view_padding_bottom">5dp</dimen>
     <dimen name="profile_bg_corner_radius">10dp</dimen>
     <dimen name="profile_bg_stroke">2dp</dimen>

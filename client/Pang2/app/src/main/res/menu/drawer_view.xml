@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,31 +14,36 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_post"
             android:icon="@drawable/ic_dashboard"
-            android:title="나의 글" />
-
+            android:title="@string/my_post" />
         <item
             android:id="@+id/nav_foavorite"
             android:icon="@drawable/sewa"
-            android:title="나의 찜" />
+            android:title="@string/my_like" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/person"
-            android:title="프로필" />
+            android:title="@string/profile" />
     </group>
     <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_notice"
                 android:icon="@drawable/ic_forum"
-                android:title="공지사항" />
+                android:title="@string/notics" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_lock"
+                android:title="@string/logout" />
         </menu>
     </item>
-
-
 </menu>

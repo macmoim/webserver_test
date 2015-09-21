@@ -19,7 +19,6 @@ import java.util.List;
  * Created by P11872 on 2015-08-13.
  */
 class RequestFeedListActivity extends AppCompatActivity {
-
     protected static final String TAG = "RequestFeedListActivity";
     protected String category = null;
     protected List<FoodItem> feedItems;
@@ -50,10 +49,18 @@ class RequestFeedListActivity extends AppCompatActivity {
         setupRecyclerView(rv);
     }
 
+    public String GetToolBarTitle() {
+        return null;
+    }
+
     private void initViews() {
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.feed_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (GetToolBarTitle() != null) {
+            getSupportActionBar().setTitle(GetToolBarTitle());
+        }
 
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
