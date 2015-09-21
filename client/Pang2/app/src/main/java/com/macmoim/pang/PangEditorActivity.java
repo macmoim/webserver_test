@@ -729,13 +729,13 @@ public class PangEditorActivity extends AppCompatActivity {
         } else if (requestCode == REQ_CODE_TAKE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
                 if (mCropImagedUri == null) {
-                    Toast.makeText(getApplicationContext(), "촬영에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.capture_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 dispatchCropIntent(mCropImagedUri);
             } else {
-                Toast.makeText(getApplicationContext(), "촬영에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.capture_error), Toast.LENGTH_SHORT).show();
                 return;
             }
         } else if (requestCode == REQ_CODE_CROP) {
@@ -744,7 +744,7 @@ public class PangEditorActivity extends AppCompatActivity {
 
                 new ResizeBitmapTask().execute(new File(mCropImagedUri.getPath()));
             } else {
-                Toast.makeText(getApplicationContext(), "크롭에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.crop_error), Toast.LENGTH_SHORT).show();
                 return;
             }
         }

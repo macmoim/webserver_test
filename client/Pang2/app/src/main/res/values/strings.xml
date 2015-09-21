@@ -103,6 +103,8 @@
 
     <!--error toast-->
     <string name="network_problem">occured network problem. Please try again.</string>
+    <string name="capture_error">fail to capture. Please try again.</string>
+    <string name="crop_error">fail to crop. Please try again.</string>
 
     <!--delete post-->
     <string name="delete_post">Do you wanna delete this post?\nWe can\'t rollback this execution.</string>
