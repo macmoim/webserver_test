@@ -18,6 +18,47 @@
 
 <resources>
 
+    <string name="app_name">쇼미더쿡</string>
+    <string name="menu_settings">설정</string>
+
+    <string-array name="food_spinner">
+        <item>한식</item>
+        <item>중식</item>
+        <item>양식</item>
+        <item>일식</item>
+        <item>유럽식</item>
+    </string-array>
+
+    <string-array name="gender_spinner">
+        <item>남자</item>
+        <item>여자</item>
+    </string-array>
+
+    <string name="editor_title_hint">제목을 입력하세요</string>
+    <string name="new_edit">새 글</string>
+    <string name="submit">업로드</string>
+    <string name="editor_hint">입력</string>
+
+    <string name="save">저장 되었습니다.</string>
+    <string name="failsave">저장에 실패 하였습니다. </string>
+
+    <string name="delete_success">삭제 되었습니다.</string>
+    <string name="delete_fail">삭제에 실패 하였습니다. </string>
+
+    <string name="score">점수</string>
+    <string name="ranking">등수</string>
+
+    <string name="share">공유</string>
+    <string name="content_share">내용 공유</string>
+    <string name="pick_file">파일을 선택하세요.</string>
+
+    <string name="attachment_much_long">첨부파일의 크기는 12MB를 넘길 수 없습니다.</string>
+    <string name="need_facebook_app">페이스 북 앱 설치가 필요합니다.</string>
+
+    <string name="search_hint">검색할 제목을 입력하세요.</string>
+    <string name="editor_exit">작성을 취소하시겠습니까?\n작성중인 글은 저장되지 않습니다.</string>
+    <string name="editor_exit_title">작성 취소</string>
+
     <!-- Log In-->
     <string name="login_with_facebook">페이스북 계정으로 로그인</string>
     <string name="login_with_google_plus">구글플러스 계정으로 로그인</string>
