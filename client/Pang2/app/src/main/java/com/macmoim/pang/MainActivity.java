@@ -53,6 +53,7 @@ import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.gcm.RegistrationIntentService;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
 
 /**
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
     private ExtDialog mDialog;
 
     FacebookAuth mFaceBookAuth;
+    GoogleAuth mGoogleAuth;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -80,6 +82,16 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         setContentView(R.layout.activity_main);
 
         mFaceBookAuth = new FacebookAuth(this, this);
+        mGoogleAuth = new GoogleAuth(this, this);
+        if (SocialProfile.GOOGLE.equals(LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.USER_SOCIAL))) {
+            // use this only when GooglePlusLogin. login again to check user connected to google.
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mGoogleAuth.login();
+                }
+            }).start();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -171,7 +183,12 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
                     }
                     case R.id.nav_logout: {
                         Log.e(TAG, "facebook auth is" + mFaceBookAuth.isCurrentState());
-                        mFaceBookAuth.revoke();
+                        String social = LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.USER_SOCIAL);
+                        if (SocialProfile.GOOGLE.equals(social)) {
+                            mGoogleAuth.revoke();
+                        } else if (SocialProfile.FACEBOOK.equals(social)) {
+                            mFaceBookAuth.revoke();
+                        }
                         break;
                     }
                 }

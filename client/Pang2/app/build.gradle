@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        pang2_release_keystore {
+            keyAlias project.property("SMTC.signing.alias")
+            keyPassword project.property("SMTC.signing.password")
+            storeFile file(project.property("SMTC.signing"))
+            storePassword project.property("SMTC.signing.password")
+        }
+        debug {
+            keyAlias project.property("SMTC.signing.alias")
+            keyPassword project.property("SMTC.signing.password")
+            storeFile file(project.property("SMTC.signing"))
+            storePassword project.property("SMTC.signing.password")
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 

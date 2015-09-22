@@ -2,13 +2,13 @@ package com.macmoim.pang.login;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -33,7 +33,7 @@ public class GoogleAuth extends Auth
         googleApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
@@ -72,7 +72,7 @@ public class GoogleAuth extends Auth
     public void share(String content, Uri imageOrVideo) {
 
         PlusShare.Builder builder = new PlusShare.Builder(hostActivity)
-                                                 .setText(content);
+                .setText(content);
 
         if (imageOrVideo != null){
             ContentResolver contentResolver = hostActivity.getContentResolver();
@@ -120,6 +120,9 @@ public class GoogleAuth extends Auth
             String message = "Google Plus Error: "+ connectionResult.getErrorCode();
             Log.e(LOG_TAG, message);
 
+            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), hostActivity,
+                    0).show();
+
             onAuthListener.onLoginError(message);
         }
     }
@@ -132,6 +135,7 @@ public class GoogleAuth extends Auth
         profile.email = Plus.AccountApi.getAccountName(googleApiClient);
         profile.name = person.getDisplayName();
         profile.network = SocialProfile.GOOGLE;
+        profile.id = person.getId();
 
         if (person.hasCover()){
             Person.Cover cover = person.getCover();
@@ -147,4 +151,5 @@ public class GoogleAuth extends Auth
 
         return profile;
     }
+
 }
