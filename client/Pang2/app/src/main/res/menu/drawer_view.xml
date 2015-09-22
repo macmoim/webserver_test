@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +15,8 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/nav_group_1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
@@ -34,16 +34,17 @@
             android:icon="@drawable/person"
             android:title="@string/profile" />
     </group>
-    <item android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_notice"
-                android:icon="@drawable/ic_forum"
-                android:title="@string/notics" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_lock"
-                android:title="@string/logout" />
-        </menu>
-    </item>
+
+    <group
+        android:id="@+id/nav_group_2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_notice"
+            android:icon="@drawable/ic_forum"
+            android:title="@string/notics" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/logout" />
+    </group>
 </menu>

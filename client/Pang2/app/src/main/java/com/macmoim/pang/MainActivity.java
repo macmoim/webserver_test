@@ -38,12 +38,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.macmoim.pang.Layout.CircleFlatingMenu;
 import com.macmoim.pang.Layout.naviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.AppPreferences;
@@ -54,35 +53,25 @@ import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.gcm.RegistrationIntentService;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
-import com.macmoim.pang.login.GoogleAuth;
-import com.macmoim.pang.login.SimpleAuthListener;
 import com.macmoim.pang.login.SocialProfile;
 
 /**
  * TODO
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Auth.OnAuthListener {
     private final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
-    Auth auth;
 
-    private Button mLogIn;
     private ViewPager mViewPager;
     naviHeaderView mNHview;
-    CircleFlatingMenu mCf;
+    // CircleFlatingMenu mCf;
     com.github.clans.fab.FloatingActionMenu mStraightFloatingMenu;
     private ExtDialog mDialog;
 
+    FacebookAuth mFaceBookAuth;
+
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-
-    private SimpleAuthListener authListener = new SimpleAuthListener() {
-        @Override
-        public void onRevoke() {
-            Log.d(TAG, "SimpleAuthListener()");
-            logoutUser();
-        }
-    };
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -90,23 +79,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFaceBookAuth = new FacebookAuth(this, this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
-
-        String socialNetwork = getNetworkInfo();
-        //create correct auth manager according user account
-        if (socialNetwork.equals(SocialProfile.FACEBOOK)) {
-            auth = new FacebookAuth(this, authListener);
-        } else if (socialNetwork.equals(SocialProfile.GOOGLE)) {
-            auth = new GoogleAuth(this, authListener);
-            auth.login();
-        } else {
-            //TODO : KAKAO
-        }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -117,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
         mNHview = new naviHeaderView(this);
         mNHview.onDraw();
-
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -147,34 +126,52 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                mDrawerLayout.closeDrawers();
-                if (mCf != null) {
-                    mCf.menuClose(true);
-                }
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home: {
                         Intent _Intent = new Intent(MainActivity.this, MainActivity.class);
                         startActivity(_Intent);
+                        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                         break;
                     }
                     case R.id.nav_post: {
                         Intent _Intent = new Intent(MainActivity.this, MyPostActivity.class);
                         startActivity(_Intent);
+                        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                         break;
                     }
                     case R.id.nav_foavorite: {
                         Intent _Intent = new Intent(MainActivity.this, LikeActivity.class);
                         startActivity(_Intent);
+                        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                         break;
                     }
                     case R.id.nav_profile: {
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                         break;
                     }
                     case R.id.nav_notice: {
+                        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                         break;
                     }
                     case R.id.nav_logout: {
+                        Log.e(TAG, "facebook auth is" + mFaceBookAuth.isCurrentState());
+                        mFaceBookAuth.revoke();
                         break;
                     }
                 }
@@ -275,18 +272,6 @@ public class MainActivity extends AppCompatActivity {
         return LoginPreferences.GetInstance().getString(this, LoginPreferences.USER_SOCIAL);
     }
 
-
-    private void logoutUser() {
-        //clear share preferences
-        LoginPreferences.GetInstance().clear(this);
-
-        //clear back stack activity and back to login activity
-        Intent intent = new Intent(this, LogInActivity.class);
-        startActivity(intent);
-
-        finish();
-    }
-
     @Override
     public void onBackPressed() {
         if (mStraightFloatingMenu != null && mStraightFloatingMenu.isOpened()) {
@@ -306,17 +291,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (mCf != null) {
-                    mCf.menuClose(true);
-                }
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
                 mNHview = new naviHeaderView(this);
                 mNHview.onDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
-                if (mCf != null) {
-                    mCf.menuClose(false);
-                }
+//                if (mCf != null) {
+//                    mCf.menuClose(false);
+//                }
                 mDrawerLayout.closeDrawers();
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
@@ -374,6 +359,46 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onLoginSuccess(SocialProfile profile) {
+
+    }
+
+    @Override
+    public void onLoginError(String message) {
+
+    }
+
+    @Override
+    public void onLoginCancel() {
+
+    }
+
+    private void GotoStartActivity() {
+        Intent intent = new Intent(this, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        mDrawerLayout.closeDrawers();
+//                if (mCf != null) {
+//                    mCf.menuClose(true);
+//                }
+    }
+
+    private void SocialLogout(String Tag) {
+        if (Tag.equals(SocialProfile.FACEBOOK)) {
+            LoginPreferences.GetInstance().clear(this);
+            GotoStartActivity();
+        }
+    }
+
+    @Override
+    public void onRevoke() {
+        SocialLogout(SocialProfile.FACEBOOK);
+        Toast.makeText(this, getResources().getString(R.string.logout_done), Toast.LENGTH_SHORT).show();
+    }
+
     class GCMBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -382,7 +407,6 @@ public class MainActivity extends AppCompatActivity {
             removeDialog();
         }
     }
-
 
     private void registerGCM() {
         showDialog();
@@ -422,7 +446,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mDialog.show();
-
     }
 
     private void removeDialog() {
@@ -456,5 +479,4 @@ public class MainActivity extends AppCompatActivity {
         mRegistrationBroadcastReceiver = null;
         super.onDestroy();
     }
-
 }

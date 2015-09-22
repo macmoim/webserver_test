@@ -70,7 +70,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
     CircleFlatingMenu mCf;
 
-
     ImageView ivProfileCircle = null;
 
     protected int mProfileDbId = -1;
