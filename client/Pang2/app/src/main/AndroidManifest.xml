@@ -113,6 +113,7 @@
         <activity
             android:name="com.macmoim.pang.EditProfileActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

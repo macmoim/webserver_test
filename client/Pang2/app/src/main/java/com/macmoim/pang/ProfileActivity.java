@@ -12,7 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +27,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
-import com.macmoim.pang.layout.CircleFlatingMenu;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
@@ -69,8 +69,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     static final int REQ_CODE_PICK_PICTURE = 1;
     protected String mImageURL;
 
-    CircleFlatingMenu mCf;
-
     ImageView ivProfileCircle = null;
 
     protected int mProfileDbId = -1;
@@ -96,7 +94,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
         mFeedItem = new FeedItem();
         setAllFocus();
         OnGetData();
-        setFloationAction();
     }
 
     protected void setUserId() {
@@ -120,35 +117,29 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return true;
     }
 
-    protected void setFloationAction() {
-        final int[] id = {R.drawable.ic_edit, R.drawable.com_facebook_button_icon};
-
-        mCf = new CircleFlatingMenu(this);
-        mCf.setListener(new CircleFlatingMenu.Listener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if ((int) v.getTag() == R.drawable.ic_edit) {
-                        mCf.menuClose(false);
-                        startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class));
-                        finish();
-                    } else if ((int) v.getTag() == R.drawable.com_facebook_button_icon) {
-                        mCf.menuClose(false);
-
-                        Log.e(TAG, "facebook auth is" + mFaceBookAuth.isCurrentState());
-
-                        mFaceBookAuth.revoke();
-                    }
-                }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit: {
+                startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class));
+                finish();
                 return true;
             }
-        });
-        mCf.addResId(id);
-        mCf.setFloationAction();
+            case android.R.id.home: {
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void setData(JSONObject response) throws JSONException {
@@ -380,7 +371,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
     @Override
     protected void onDestroy() {
-        mCf = null;
         super.onDestroy();
 
     }

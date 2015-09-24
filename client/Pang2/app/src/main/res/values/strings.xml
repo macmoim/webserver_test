@@ -98,6 +98,7 @@
     <string name="profile_score">Score</string>
     <string name="profile_intro">Intro</string>
     <string name="profile_intro_text_hint">insert text</string>
+    <string name="edit">edit</string>
 
     <!--search-->
     <string name="no_search_data">There\'s no result.</string>

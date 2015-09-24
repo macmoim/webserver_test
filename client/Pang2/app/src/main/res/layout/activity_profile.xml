@@ -97,6 +97,7 @@
                     android:id="@+id/textViewEmailLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_gravity="bottom"
                     android:text="@string/profile_email"
                     android:textColor="@color/md_grey_500"
@@ -147,6 +148,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_gravity="center_horizontal">
 
                     <TextView
@@ -177,6 +179,7 @@
                     android:id="@+id/textviewIntroLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_below="@+id/textViewScoreLabel"
                     android:singleLine="true"
                     android:text="@string/profile_intro"
@@ -186,7 +189,7 @@
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/textviewIntroLabelValue"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/textviewIntroLabel"
                     android:layout_marginLeft="@dimen/profile_item_edit_margin_left"
                     android:layout_marginRight="@dimen/profile_item_edit_margin_right"

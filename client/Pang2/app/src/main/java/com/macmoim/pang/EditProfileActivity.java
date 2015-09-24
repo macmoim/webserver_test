@@ -45,11 +45,6 @@ public class EditProfileActivity extends ProfileActivity {
     }
 
     @Override
-    protected void setFloationAction() {
-        //super.setFloationAction();
-    }
-
-    @Override
     protected void setAllFocus() {
         nViewHolder = new ViewHolder(this);
         nViewHolder.setviewAllFocus(true);

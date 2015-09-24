@@ -21,8 +21,4 @@ public class OtherUserProfileActivity extends ProfileActivity {
         user_name = getIntent().getStringExtra("other-user-name");
     }
 
-    @Override
-    protected void setFloationAction() {
-        // disable in other profile
-    }
 }
