@@ -243,6 +243,7 @@
     <color name="md_orange_A200">#FFAB40</color>
     <color name="md_orange_A400">#FF9100</color>
     <color name="md_orange_A700">#FF6D00</color>
+    <color name="md_orange_A700_op20">#33FF6D00</color>
 
     <!--deep orange-->
     <color name="md_deep_orange_50">#FBE9A7</color>

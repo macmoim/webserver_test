@@ -34,48 +34,47 @@ import java.util.Objects;
 public class NaviHeaderView {
     private final String TAG = getClass().getName();
 
+    private static final String _GET_URL = Util.SERVER_ROOT + "/profile";
+    private static final String VOLLEY_REQ_TAG_PROFILE = "get-profile";
+    private static final String MAP_KEY_USER_ID = "user_id";
+
     private Activity mActivity = null;
     private ImageView ivUserPic = null;
     private TextView tvUserName = null;
-    private TextView mRankingView = null;
-    private TextView mScoreView = null;
-    private String user_id;
-    private static final String _GET_URL = Util.SERVER_ROOT + "/profile";
-    private static final String VOLLEY_REQ_TAG_PROFILE = "get-profile";
+    private TextView tvUserEmail = null;
+    private TextView tvRanking = null;
+    private TextView tvScore = null;
+
+    private String UserId = null;
 
     public NaviHeaderView(Activity activity) {
         this.mActivity = activity;
+
         ivUserPic = (ImageView) mActivity.findViewById(R.id.user_picture);
         tvUserName = (TextView) mActivity.findViewById(R.id.user_name);
-        mRankingView = (TextView) mActivity.findViewById(R.id.ranking_text);
-        mScoreView = (TextView) mActivity.findViewById(R.id.score_text);
+        tvUserEmail = (TextView) mActivity.findViewById(R.id.user_email);
+        tvRanking = (TextView) mActivity.findViewById(R.id.ranking_text);
+        tvScore = (TextView) mActivity.findViewById(R.id.score_text);
+
+        UserId = LoginPreferences.GetInstance().getString(this.mActivity, LoginPreferences.PROFILE_ID);
     }
 
-    public void onDraw() {
-        user_id = LoginPreferences.GetInstance().getString(this.mActivity, LoginPreferences.PROFILE_ID);
-        drawCPImage(user_id);
-    }
+    public void OnDraw() {
+        Map<String, String> _Map = new HashMap<String, String>();
 
-    private void drawCPImage(String user_id) {
+        _Map.put(MAP_KEY_USER_ID, UserId);
 
-        Map<String, String> obj = new HashMap<String, String>();
-        // temp
+        String _Url = _GET_URL + "/" + UserId;
 
-        obj.put("user_id", user_id);
-
-        String url = _GET_URL + "/" + user_id;
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest _JsonReq = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     Objects.requireNonNull(response, "response is null");
-                    VolleyLog.d(TAG, "Response: " + response.toString());
-                    JSONObject val = response;
-                    drawdata(response);
+                    VolleyLog.d(TAG, "Response : " + response.toString());
+                    JSONObject _Val = response;
+                    DrawData(response);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -83,80 +82,87 @@ public class NaviHeaderView {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
+                VolleyLog.d(TAG, "Error : " + error.getMessage());
+                NetworkResponse _Response = error.networkResponse;
+                if (_Response != null && _Response.data != null) {
+                    Log.d(TAG, "FeedListView onErrorResponse statusCode = " + _Response.statusCode + ", data = " + new String(_Response.data));
                 }
             }
         });
-        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_PROFILE);
+        AppController.getInstance().addToRequestQueue(_JsonReq, VOLLEY_REQ_TAG_PROFILE);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void drawdata(JSONObject response) {
-        String imageURL = null;
-        String name = null;
-        String ranking = null;
-        String score = null;
+    private void DrawData(JSONObject response) {
+        String _ImageURL = null;
+        String _Name = null;
+        String _Email = null;
+        String _Ranking = null;
+        String _Score = null;
         try {
-            imageURL = response.getString("profile_img_url");
+            _ImageURL = response.getString("profile_img_url");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
-            Glide.with(mActivity).load(new URL(imageURL)).centerCrop().into(ivUserPic);
+            Glide.with(mActivity).load(new URL(_ImageURL)).centerCrop().into(ivUserPic);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
         try {
-            name = response.getString("user_name");
+            _Name = response.getString("user_name");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        tvUserName.setText(name);
+        tvUserName.setText(_Name);
 
         try {
-            ranking = response.getString("user_ranking");
-            ranking = "null".equals(ranking) ? "" : ranking;
+            _Email = response.getString("user_email");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mRankingView.setText(ranking);
+        tvUserEmail.setText(_Email);
 
         try {
-            score = response.getString("user_score");
-            Objects.requireNonNull(score, "score is null");
+            _Ranking = response.getString("user_ranking");
+            _Ranking = "null".equals(_Ranking) ? "-" : _Ranking;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-            if ("null".equals(score)) {
-                score = "";
+        tvRanking.setText(_Ranking);
+
+        try {
+            _Score = response.getString("user_score");
+            Objects.requireNonNull(_Score, "score is null");
+
+            if ("null".equals(_Score)) {
+                _Score = "-.-";
             } else {
-                double temp = Double.parseDouble(score);
-                score = String.valueOf(Math.round(temp * 10d) / 10d);
+                double temp = Double.parseDouble(_Score);
+                _Score = String.valueOf(Math.round(temp * 10d) / 10d);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            mScoreView.setText(score);
+            tvScore.setText(_Score);
         }
-
-
     }
 
-    public void onDestroy() {
+    public void OnDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_PROFILE);
         mActivity = null;
         ivUserPic = null;
         tvUserName = null;
-        mRankingView = null;
-        mScoreView = null;
-        user_id = null;
+        tvUserEmail = null;
+        tvRanking = null;
+        tvScore = null;
+        UserId = null;
     }
-
 }

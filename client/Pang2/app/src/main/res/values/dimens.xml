@@ -42,15 +42,15 @@
     <dimen name="nav_header_bg_corner_radius">10dp</dimen>
     <dimen name="nav_header_bg_boarder_width">1dp</dimen>
     <dimen name="nav_header_item_margin">10dp</dimen>
-    <dimen name="nav_header_user_profile_width">120dp</dimen>
-    <dimen name="nav_header_user_profile_margin_left">10dp</dimen>
+    <dimen name="nav_header_user_profile_margin_left">20dp</dimen>
     <dimen name="nav_header_user_picture_size">80dp</dimen>
     <dimen name="nav_header_user_picture_border_width">2dp</dimen>
     <dimen name="nav_header_user_name_text_size">16sp</dimen>
-    <dimen name="nav_header_user_info_width">90dp</dimen>
+    <dimen name="nav_header_user_email_text_size">13sp</dimen>
+    <dimen name="nav_header_user_info_width">100dp</dimen>
     <dimen name="nav_header_user_info_margin_right">10dp</dimen>
     <dimen name="nav_header_user_info_title_icon_size">24dp</dimen>
-    <dimen name="nav_header_user_info_title_text_size">12sp</dimen>
+    <dimen name="nav_header_user_info_title_text_size">13sp</dimen>
     <dimen name="nav_header_user_info_title_text_margin_left">10dp</dimen>
     <dimen name="nav_header_user_info_item_text_size">38dp</dimen>
 

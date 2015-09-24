@@ -31,7 +31,7 @@
 
     <RelativeLayout
         android:id="@+id/user_profile_group"
-        android:layout_width="@dimen/nav_header_user_profile_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/nav_header_user_profile_margin_left">
@@ -40,7 +40,6 @@
             android:id="@+id/user_picture"
             android:layout_width="@dimen/nav_header_user_picture_size"
             android:layout_height="@dimen/nav_header_user_picture_size"
-            android:layout_centerHorizontal="true"
             android:src="@drawable/person"
             app:border_color="@color/md_orange_A700"
             app:border_width="@dimen/nav_header_user_picture_border_width" />
@@ -51,11 +50,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_picture"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/nav_header_item_margin"
             android:textColor="@color/white_op100"
             android:textSize="@dimen/nav_header_user_name_text_size"
             tools:text="Username" />
+
+        <TextView
+            android:id="@+id/user_email"
+            style="@style/text_drop_shadow_grey_dt2_sz2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_name"
+            android:layout_marginTop="@dimen/nav_header_item_margin"
+            android:textColor="@color/white_op100"
+            android:textSize="@dimen/nav_header_user_email_text_size"
+            tools:text="Email" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -69,14 +78,14 @@
 
         <RelativeLayout
             android:id="@+id/score_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/score_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
                 <RelativeLayout
                     android:id="@+id/score_title_iv"
@@ -114,24 +123,23 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:paddingTop="5dp"
                 android:textColor="@color/white_op100"
                 android:textSize="@dimen/nav_header_user_info_item_text_size"
-                tools:text="5" />
+                tools:text="7.7" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/ranking_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/score_layout"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/nav_header_item_margin">
 
             <RelativeLayout
                 android:id="@+id/ranking_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
                 <RelativeLayout
                     android:id="@+id/ranking_title_iv"

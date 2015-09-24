@@ -60,9 +60,9 @@ import com.macmoim.pang.login.SocialProfile;
  * TODO
  */
 public class MainActivity extends AppCompatActivity implements Auth.OnAuthListener {
-    private final String TAG = "MainActivity";
-    private DrawerLayout mDrawerLayout;
+    private final String TAG = getClass().getName();
 
+    private DrawerLayout mDrawerLayout;
     private ViewPager mViewPager;
     NaviHeaderView mNHview;
     // CircleFlatingMenu mCf;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         }
 
         mNHview = new NaviHeaderView(this);
-        mNHview.onDraw();
+        mNHview.OnDraw();
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
 //                    mCf.menuClose(true);
 //                }
                 mNHview = new NaviHeaderView(this);
-                mNHview.onDraw();
+                mNHview.OnDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
             mViewPager = null;
         }
         if (mNHview != null) {
-            mNHview.onDestroy();
+            mNHview.OnDestroy();
             mNHview = null;
         }
         mRegistrationBroadcastReceiver = null;

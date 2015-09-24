@@ -66,7 +66,7 @@
     <string name="delete_fail">삭제에 실패 하였습니다. </string>
 
     <string name="score">SCORE</string>
-    <string name="ranking">RANKING</string>
+    <string name="ranking">RANK.</string>
 
     <string name="share">Share</string>
     <string name="content_share">Content to share</string>
