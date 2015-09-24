@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodRecyclerViewAdapter;
 import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.data.LoginPreferences;

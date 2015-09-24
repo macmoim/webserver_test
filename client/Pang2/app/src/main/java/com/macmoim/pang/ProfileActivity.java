@@ -25,7 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
-import com.macmoim.pang.Layout.CircleFlatingMenu;
+import com.macmoim.pang.layout.CircleFlatingMenu;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;

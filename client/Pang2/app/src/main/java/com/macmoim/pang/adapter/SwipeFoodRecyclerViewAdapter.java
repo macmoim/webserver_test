@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.macmoim.pang.Layout.swipe.SimpleSwipeListener;
-import com.macmoim.pang.Layout.swipe.SwipeLayout;
-import com.macmoim.pang.Layout.swipe.adapters.RecyclerSwipeAdapter;
+import com.macmoim.pang.layout.swipe.SimpleSwipeListener;
+import com.macmoim.pang.layout.swipe.SwipeLayout;
+import com.macmoim.pang.layout.swipe.adapters.RecyclerSwipeAdapter;
 import com.macmoim.pang.LikeActivity;
 import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;

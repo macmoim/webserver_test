@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"/>-->
 
-    <com.macmoim.pang.Layout.swipe.SwipeLayout xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    <com.macmoim.pang.layout.swipe.SwipeLayout xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipe"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
@@ -149,6 +149,6 @@
 
         </LinearLayout>
 
-    </com.macmoim.pang.Layout.swipe.SwipeLayout>
+    </com.macmoim.pang.layout.swipe.SwipeLayout>
     >
 </LinearLayout>

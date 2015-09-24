@@ -37,6 +37,23 @@
 
     <dimen name="circle_inset_padding">7dp</dimen>
 
+    <!-- nav header -->
+    <dimen name="nav_header_height">200dp</dimen>
+    <dimen name="nav_header_bg_corner_radius">10dp</dimen>
+    <dimen name="nav_header_bg_boarder_width">1dp</dimen>
+    <dimen name="nav_header_item_margin">10dp</dimen>
+    <dimen name="nav_header_user_profile_width">120dp</dimen>
+    <dimen name="nav_header_user_profile_margin_left">10dp</dimen>
+    <dimen name="nav_header_user_picture_size">80dp</dimen>
+    <dimen name="nav_header_user_picture_border_width">2dp</dimen>
+    <dimen name="nav_header_user_name_text_size">16sp</dimen>
+    <dimen name="nav_header_user_info_width">90dp</dimen>
+    <dimen name="nav_header_user_info_margin_right">10dp</dimen>
+    <dimen name="nav_header_user_info_title_icon_size">24dp</dimen>
+    <dimen name="nav_header_user_info_title_text_size">12sp</dimen>
+    <dimen name="nav_header_user_info_title_text_margin_left">10dp</dimen>
+    <dimen name="nav_header_user_info_item_text_size">38dp</dimen>
+
     <!--Login Activity -->
     <dimen name="logo_title_width">300dp</dimen>
     <dimen name="logo_title_height">52dp</dimen>

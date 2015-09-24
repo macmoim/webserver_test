@@ -43,7 +43,7 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.macmoim.pang.Layout.naviHeaderView;
+import com.macmoim.pang.layout.NaviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.AppPreferences;
 import com.macmoim.pang.data.LoginPreferences;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
     private DrawerLayout mDrawerLayout;
 
     private ViewPager mViewPager;
-    naviHeaderView mNHview;
+    NaviHeaderView mNHview;
     // CircleFlatingMenu mCf;
     com.github.clans.fab.FloatingActionMenu mStraightFloatingMenu;
     private ExtDialog mDialog;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
             setupDrawerContent(navigationView);
         }
 
-        mNHview = new naviHeaderView(this);
+        mNHview = new NaviHeaderView(this);
         mNHview.onDraw();
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
 //                if (mCf != null) {
 //                    mCf.menuClose(true);
 //                }
-                mNHview = new naviHeaderView(this);
+                mNHview = new NaviHeaderView(this);
                 mNHview.onDraw();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;

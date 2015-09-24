@@ -1,93 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
+    android:layout_height="@dimen/nav_header_height"
     android:background="?attr/colorPrimary"
-    android:gravity="bottom"
-    android:orientation="horizontal"
-    android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    <!--
+        <com.macmoim.pang.roundedimageview.RoundedImageView
+            android:id="@+id/nav_header_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/header_bg"
+            app:riv_border_color="@color/mustard_op100"
+            app:riv_border_width="@dimen/nav_header_bg_boarder_width"
+            app:riv_corner_radius="@dimen/nav_header_bg_corner_radius"
+            app:riv_mutate_background="true"
+            app:riv_tile_mode="repeat" />
+    -->
 
-    <LinearLayout
-        android:id="@+id/layout1"
-        android:layout_width="wrap_content"
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description_empty"
+        android:orientation="vertical"
+        android:scaleType="centerCrop"
+        android:src="@drawable/header_bg" />
+
+    <RelativeLayout
+        android:id="@+id/user_profile_group"
+        android:layout_width="@dimen/nav_header_user_profile_width"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/nav_header_user_profile_margin_left">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cpimage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/user_picture"
+            android:layout_width="@dimen/nav_header_user_picture_size"
+            android:layout_height="@dimen/nav_header_user_picture_size"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/person"
-            app:border_color="@color/white_op100"
-            app:border_width="2dp" />
+            app:border_color="@color/md_orange_A700"
+            app:border_width="@dimen/nav_header_user_picture_border_width" />
 
         <TextView
-            android:id="@+id/header_name"
-            android:layout_width="120dp"
+            android:id="@+id/user_name"
+            style="@style/text_drop_shadow_grey_dt2_sz2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            android:text="Username"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="24sp" />
+            android:layout_below="@+id/user_picture"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/nav_header_item_margin"
+            android:textColor="@color/white_op100"
+            android:textSize="@dimen/nav_header_user_name_text_size"
+            tools:text="Username" />
+    </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout2"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <RelativeLayout
+        android:id="@+id/user_info_group"
+        android:layout_width="@dimen/nav_header_user_info_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/layout1"
-        android:orientation="vertical">
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/nav_header_user_info_margin_right">
 
-        <TextView
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            android:text="@string/score"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/score_text"
+        <RelativeLayout
+            android:id="@+id/score_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:background="@drawable/star_sel"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="24sp" />
+            android:layout_centerHorizontal="true">
 
-        <TextView
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            android:text="@string/ranking"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textSize="20sp" />
+            <RelativeLayout
+                android:id="@+id/score_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/ranking_text"
+                <RelativeLayout
+                    android:id="@+id/score_title_iv"
+                    android:layout_width="@dimen/nav_header_user_info_title_icon_size"
+                    android:layout_height="@dimen/nav_header_user_info_title_icon_size"
+                    android:background="@drawable/icon_circle_bg_orange">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/star_sel" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/score_title_tv"
+                    style="@style/text_drop_shadow_grey_dt2_sz2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/nav_header_user_info_title_text_margin_left"
+                    android:layout_toRightOf="@+id/score_title_iv"
+                    android:gravity="center"
+                    android:text="@string/score"
+                    android:textColor="@color/white_op100"
+                    android:textSize="@dimen/nav_header_user_info_title_text_size" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/score_text"
+                style="@style/text_drop_shadow_grey_dt2_sz2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/score_title"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:textColor="@color/white_op100"
+                android:textSize="@dimen/nav_header_user_info_item_text_size"
+                tools:text="5" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ranking_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:background="@drawable/ic_cup"
-            android:gravity="top|center_horizontal"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="24sp" />
-    </LinearLayout>
+            android:layout_below="@+id/score_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/nav_header_item_margin">
+
+            <RelativeLayout
+                android:id="@+id/ranking_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/ranking_title_iv"
+                    android:layout_width="@dimen/nav_header_user_info_title_icon_size"
+                    android:layout_height="@dimen/nav_header_user_info_title_icon_size"
+                    android:background="@drawable/icon_circle_bg_orange">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cup" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ranking_title_tv"
+                    style="@style/text_drop_shadow_grey_dt2_sz2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/nav_header_user_info_title_text_margin_left"
+                    android:layout_toRightOf="@+id/ranking_title_iv"
+                    android:gravity="center"
+                    android:text="@string/ranking"
+                    android:textColor="@color/white_op100"
+                    android:textSize="@dimen/nav_header_user_info_title_text_size" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/ranking_text"
+                style="@style/text_drop_shadow_grey_dt2_sz2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ranking_title"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:gravity="top|center_horizontal"
+                android:textColor="@color/white_op100"
+                android:textSize="@dimen/nav_header_user_info_item_text_size"
+                tools:text="7" />
+        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

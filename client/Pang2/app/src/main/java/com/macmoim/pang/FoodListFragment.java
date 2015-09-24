@@ -34,7 +34,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.macmoim.pang.Layout.SimpleDividerItemDecoration;
+import com.macmoim.pang.layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodLargeRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
