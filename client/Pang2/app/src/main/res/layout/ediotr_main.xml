@@ -271,7 +271,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
 
-        <EditText
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -279,7 +279,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="5"
             android:singleLine="true"
-            android:hint="@string/editor_title_hint" />
+            android:hint="@string/editor_title_hint"/>
 
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
             android:id="@+id/food_spinner"

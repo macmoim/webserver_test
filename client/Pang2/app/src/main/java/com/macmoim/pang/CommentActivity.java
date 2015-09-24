@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,6 +20,7 @@ import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.util.Util;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ import java.util.Map;
  */
 public class CommentActivity extends AppCompatActivity {
     private static final String TAG = "CommentActivity";
-    private EditText mCommentEdit;
+    private MaterialEditText mCommentEdit;
     private ExtDialog mDialog;
 
     private static final String URL_COMMENT = Util.SERVER_ROOT+"/comment";
@@ -49,8 +50,8 @@ public class CommentActivity extends AppCompatActivity {
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mCommentEdit = (EditText) findViewById(R.id.comment_edit);
-
+        mCommentEdit = (MaterialEditText) findViewById(R.id.comment_edit);
+        mCommentEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(getResources().getInteger(R.integer.server_define_comment))});
     }
 
     @Override

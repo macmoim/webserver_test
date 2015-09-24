@@ -38,13 +38,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/comment_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:hint="Add comment" />
+        android:hint="Add comment"
+        app:met_maxCharacters="@integer/server_define_comment"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

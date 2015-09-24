@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,6 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -46,6 +46,7 @@ import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.util.Util;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONArray;
@@ -78,7 +79,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private RichEditor mEditor = null;
     private MaterialBetterSpinner mSpinner;
     private String mSelectedFood;
-    private EditText mTitleEdit;
+    private MaterialEditText mTitleEdit;
     private LinearLayout edit_manubar;
 
     private ArrayList<String> mImageUrlArr;
@@ -345,7 +346,7 @@ public class PangEditorActivity extends AppCompatActivity {
         });
 
 
-        mTitleEdit = (EditText) findViewById(R.id.title);
+        mTitleEdit = (MaterialEditText) findViewById(R.id.title);
         mTitleEdit.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -356,6 +357,8 @@ public class PangEditorActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        mTitleEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(getResources().getInteger(R.integer.server_define_title))});
 
         final String[] spinnerArr = getResources().getStringArray(R.array.food_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArr);

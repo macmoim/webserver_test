@@ -77,7 +77,7 @@
                             android:textColor="@color/md_grey_500"
                             android:textSize="@dimen/profile_item_text_size" />
 
-                        <EditText
+                        <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/textViewNameValue"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -87,7 +87,8 @@
                             android:gravity="center_vertical"
                             android:hint="@string/editor_hint"
                             android:singleLine="true"
-                            android:textSize="@dimen/profile_item_edit_text_size" />
+                            android:textSize="@dimen/profile_item_edit_text_size"
+                            app:met_maxCharacters="@integer/server_define_user_name"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -101,7 +102,7 @@
                     android:textColor="@color/md_grey_500"
                     android:textSize="@dimen/profile_item_text_size" />
 
-                <EditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/textViewEmailValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -112,7 +113,8 @@
                     android:hint="@string/editor_hint"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
-                    android:textSize="@dimen/profile_item_edit_text_size" />
+                    android:textSize="@dimen/profile_item_edit_text_size"
+                    app:met_maxCharacters="@integer/server_define_user_email"/>
 
 
                 <LinearLayout
@@ -156,7 +158,7 @@
                         android:textColor="@color/md_grey_500"
                         android:textSize="@dimen/profile_item_text_size" />
 
-                    <EditText
+                    <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/textViewScoreLabelValue"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
@@ -168,7 +170,7 @@
                         android:inputType="none"
                         android:singleLine="true"
                         android:text="0점"
-                        android:textSize="@dimen/profile_item_edit_text_size" />
+                        android:textSize="@dimen/profile_item_edit_text_size"/>
                 </LinearLayout>
 
                 <TextView
@@ -181,7 +183,7 @@
                     android:textColor="@color/md_grey_500"
                     android:textSize="@dimen/profile_item_text_size" />
 
-                <EditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/textviewIntroLabelValue"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
@@ -194,7 +196,8 @@
                     android:gravity="top"
                     android:hint="@string/profile_intro_text_hint"
                     android:singleLine="false"
-                    android:textSize="@dimen/profile_item_edit_text_size" />
+                    android:textSize="@dimen/profile_item_edit_text_size"
+                    app:met_maxCharacters="@integer/server_define_user_intro"/>
             </LinearLayout>
         </FrameLayout>
     </android.support.v4.widget.NestedScrollView>

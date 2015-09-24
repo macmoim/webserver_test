@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="server_define_user_id">30</integer>
+    <integer name="server_define_title">100</integer>
+    <integer name="server_define_filename">100</integer>
+    <integer name="server_define_category">20</integer>
+    <integer name="server_define_user_name">30</integer>
+    <integer name="server_define_user_email">30</integer>
+    <integer name="server_define_user_gender">10</integer>
+    <integer name="server_define_user_score">10</integer>
+    <integer name="server_define_user_intro">500</integer>
+    <integer name="server_define_comment">100</integer>
+</resources>

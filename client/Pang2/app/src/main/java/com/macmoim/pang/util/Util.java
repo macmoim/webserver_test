@@ -20,17 +20,6 @@ public class Util {
     public static final String IMAGE_FOLDER_URL = SERVER_ROOT + "/image_test/upload_image/";
     public static final String IMAGE_THUMBNAIL_FOLDER_URL = SERVER_ROOT + "/image_test/thumbnails/";
 
-    public static final int SERVER_DEFINE_USER_ID = 30;
-    public static final int SERVER_DEFINE_TITLE = 100;
-    public static final int SERVER_DEFINE_FILENAME = 100;
-    public static final int SERVER_DEFINE_CATEGORY = 20;
-    public static final int SERVER_DEFINE_USER_NAME = 30;
-    public static final int SERVER_DEFINE_USER_EMAIL = 30;
-    public static final int SERVER_DEFINE_USER_GENDER = 10;
-    public static final int SERVER_DEFINE_USER_SCORE = 10;
-    public static final int SERVER_DEFINE_USER_INTRO = 500;
-    public static final int SERVER_DEFINE_COMMENT = 100;
-
     public static String MakeStringBuilder(final String... str) {
         String _Str = null;
         StringBuilder _StrBui = null;
