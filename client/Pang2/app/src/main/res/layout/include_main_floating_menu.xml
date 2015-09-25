@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +13,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <com.github.clans.fab.FloatingActionMenu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_fab_menu"
@@ -24,7 +21,7 @@
     android:layout_gravity="right|bottom"
     fab:menu_backgroundColor="#bb000000"
     fab:menu_colorNormal="@color/basePrimaryBackgroundColour"
-    fab:menu_colorPressed="@color/baseSecondaryBackgroundColour"
+    fab:menu_colorPressed="@color/mustard_spot_op100"
     fab:menu_labels_style="@style/MenuLabelsStyle"
     fab:menu_shadowColor="#66000000"
     fab:menu_shadowRadius="4dp"

@@ -16,8 +16,6 @@ import java.util.List;
  * Created by P14983 on 2015-07-27.
  */
 public class FoodLargeRecyclerViewAdapter extends FoodRecyclerViewAdapter {
-
-
     public FoodLargeRecyclerViewAdapter(Activity activity, List<FoodItem> items) {
         super(activity, items);
     }
@@ -44,8 +42,8 @@ public class FoodLargeRecyclerViewAdapter extends FoodRecyclerViewAdapter {
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         FoodItem item = mValues.get(position);
-        ((ViewHolderLarge)holder).mLikeSumTv.setText("  " + item.getLikeSum());
-        ((ViewHolderLarge)holder).mScoreTv.setText("  " + item.getScore());
+        ((ViewHolderLarge) holder).mLikeSumTv.setText("  " + item.getLikeSum());
+        ((ViewHolderLarge) holder).mScoreTv.setText("  " + item.getScore());
     }
 
     @Override

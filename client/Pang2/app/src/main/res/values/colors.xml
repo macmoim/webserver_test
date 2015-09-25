@@ -55,6 +55,12 @@
     <color name="selected_gray">#ffdbdbdb</color>
     <color name="black_op">#dd000000</color>
 
+    <color name="mm_grey">#ffbabbbf</color>
+    <color name="mm_red">#ffa72428</color>
+    <color name="mm_green">#ffa4ca3a</color>
+    <color name="mm_blueberry">#ff573d82</color>
+    <color name="mm_violet">#ff4d394b</color>
+
     <!--Login Activity -->
     <color name="facebook_bg">#4c4b6cad</color>
     <color name="facebook_bg_stroke">#4b6cad</color>

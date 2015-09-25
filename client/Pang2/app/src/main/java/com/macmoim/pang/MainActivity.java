@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
 
         mFaceBookAuth = new FacebookAuth(this, this);
         mGoogleAuth = new GoogleAuth(this, this);
+
         if (SocialProfile.GOOGLE.equals(LoginPreferences.GetInstance().getString(getApplicationContext(), LoginPreferences.USER_SOCIAL))) {
             // use this only when GooglePlusLogin. login again to check user connected to google.
             new Thread(new Runnable() {
@@ -259,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         fab_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPangEditorActivity();
+                StartPangEditorActivity();
             }
         });
 
@@ -283,10 +284,6 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
                 startActivity(new Intent(MainActivity.this, SearchActivity.class));
             }
         });
-    }
-
-    private String getNetworkInfo() {
-        return LoginPreferences.GetInstance().getString(this, LoginPreferences.USER_SOCIAL);
     }
 
     @Override
@@ -344,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
                 });
     }
 
-    private void startPangEditorActivity() {
+    private void StartPangEditorActivity() {
         Intent i = new Intent(getApplicationContext(), PangEditorActivity.class);
         startActivity(i);
     }
