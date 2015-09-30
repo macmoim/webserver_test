@@ -33,8 +33,7 @@ public class FoodLargeRecyclerViewAdapter extends FoodRecyclerViewAdapter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_large, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item_large, parent, false);
         return new ViewHolderLarge(view);
     }
 

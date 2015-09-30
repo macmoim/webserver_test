@@ -58,7 +58,7 @@ public class FoodListFragment extends Fragment {
     private List<FoodItem> feedItems;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private RecyclerView rv;
+    private RecyclerView mRecyclerView;
 
     private String mLatestTimestamp;
 
@@ -86,10 +86,10 @@ public class FoodListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_cheese_list, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_feed_list, container, false);
 
-        rv = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.recyclerview);
-        SetupRecyclerView(rv);
+        mRecyclerView = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.feed_item_recycler_view);
+        SetupRecyclerView(mRecyclerView);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -108,11 +108,11 @@ public class FoodListFragment extends Fragment {
             mSwipeRefreshLayout.setOnRefreshListener(null);
             mSwipeRefreshLayout.removeAllViews();
         }
-        if (rv != null) {
-            rv.removeAllViews();
-            rv.setLayoutManager(null);
-            rv.setAdapter(null);
-            rv = null;
+        if (mRecyclerView != null) {
+            mRecyclerView.removeAllViews();
+            mRecyclerView.setLayoutManager(null);
+            mRecyclerView.setAdapter(null);
+            mRecyclerView = null;
         }
         super.onDestroyView();
     }
@@ -287,7 +287,7 @@ public class FoodListFragment extends Fragment {
      * Parsing json reponse and passing the data to feed view list adapter
      */
     private void ParseJsonFeed(JSONObject response, boolean toClearArray) {
-        if (rv == null) {
+        if (mRecyclerView == null) {
             return;
         }
         if (toClearArray) {
@@ -323,7 +323,7 @@ public class FoodListFragment extends Fragment {
                 }
 
                 // notify data changes to list adapater
-                rv.getAdapter().notifyDataSetChanged();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
             } else {
                 Log.e(TAG, "return fail : " + response.getString("ret_detail"));
             }

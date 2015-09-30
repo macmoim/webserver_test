@@ -510,7 +510,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
 
             final String[] spinnerArr = getResources().getStringArray(R.array.gender_spinner);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, spinnerArr);
-            adapter.setDropDownViewResource(R.layout.food_spinner_item);
 
             mSpinner = (MaterialBetterSpinner) findViewById(R.id.textViewGenderValue);
             mSpinner.setAdapter(adapter);
@@ -524,7 +523,6 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
             mNameView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(getResources().getInteger(R.integer.server_define_user_name))});
             mEmailView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(getResources().getInteger(R.integer.server_define_user_email))});
             mIntroView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(getResources().getInteger(R.integer.server_define_user_intro))});
-
         }
 
         public void setviewAllFocus(boolean state) {
