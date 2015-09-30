@@ -32,15 +32,13 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
         //Initialising the strings array of tabs
         mContext = context;
         tabText = mContext.getResources().getStringArray(R.array.tabs);
-
     }
 
     @Override
     public Fragment getItem(int position) {
-
         //Initialising Fragment
         //Passing in the position so that position of the fragment is returned
-        FoodListFragment myFragment = FoodListFragment.getInstance(position);
+        FoodListFragment myFragment = FoodListFragment.GetInstance(position);
 
         return myFragment;
     }
@@ -56,7 +54,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public CharSequence getPageTitle(int position){
+    public CharSequence getPageTitle(int position) {
 
 //        //Constructing drawable object from the icon position
 //        Drawable drawable = mContext.getResources().getDrawable(icons[position]);

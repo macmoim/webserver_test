@@ -10,4 +10,5 @@
     <color name="tabIndicatorColour">@color/md_blue_500</color>
     <color name="colourHighlight">@color/md_blue_grey_400</color>
 
+    <color name="ViewBackGroundColor">@color/mustard_op10</color>
 </resources>

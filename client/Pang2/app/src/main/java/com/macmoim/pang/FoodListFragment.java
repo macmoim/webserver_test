@@ -64,7 +64,7 @@ public class FoodListFragment extends Fragment {
 
     private static String REQ_TAG = "FOOD-REQ";
 
-    public static FoodListFragment getInstance(int position) {
+    public static FoodListFragment GetInstance(int position) {
         //Construct the fragment
         FoodListFragment myFragment = new FoodListFragment();
 
@@ -89,12 +89,12 @@ public class FoodListFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_cheese_list, container, false);
 
         rv = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.recyclerview);
-        setupRecyclerView(rv);
+        SetupRecyclerView(rv);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                doRefresh();
+                DoRefresh();
             }
         });
 
@@ -102,12 +102,28 @@ public class FoodListFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        showList();
+    public void onDestroyView() {
+//        AppController.getInstance().cancelPendingRequests(REQ_TAG);
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setOnRefreshListener(null);
+            mSwipeRefreshLayout.removeAllViews();
+        }
+        if (rv != null) {
+            rv.removeAllViews();
+            rv.setLayoutManager(null);
+            rv.setAdapter(null);
+            rv = null;
+        }
+        super.onDestroyView();
     }
 
-    private void showList() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        ShowList();
+    }
+
+    private void ShowList() {
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         String ctg = category;
@@ -124,9 +140,9 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response, true);
+                    ParseJsonFeed(response, true);
                     if (feedItems != null && feedItems.size() > 0) {
-                        setLatestTimestamp(feedItems.get(0).getTimeStamp());
+                        SetLatestTimestamp(feedItems.get(0).getTimeStamp());
                     }
                 }
             }
@@ -145,13 +161,13 @@ public class FoodListFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
 
-    private void doRefresh() {
+    private void DoRefresh() {
         if (isAdded()) {
             String category = getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
             if ("Popular".equals(category)) {
-                refreshListWithClearingArray();
+                RefreshListWithClearingArray();
             } else {
-                refreshListByTimeStamp();
+                RefreshListByTimeStamp();
             }
         } else {
             Log.d(TAG, "doRefresh not fragment added");
@@ -159,8 +175,8 @@ public class FoodListFragment extends Fragment {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void refreshListByTimeStamp() {
-        onStartRefresh();
+    private void RefreshListByTimeStamp() {
+        OnStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         String ctg = category;
@@ -174,7 +190,7 @@ public class FoodListFragment extends Fragment {
             Objects.requireNonNull(mLatestTimestamp, "mLatestTimestamp is null");
         } catch (Exception e) {
             e.printStackTrace();
-            onFinishRefresh();
+            OnFinishRefresh();
             return;
         }
 
@@ -185,9 +201,9 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response, false);
+                    ParseJsonFeed(response, false);
                 }
-                onFinishRefresh();
+                OnFinishRefresh();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -197,7 +213,7 @@ public class FoodListFragment extends Fragment {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-                onFinishRefresh();
+                OnFinishRefresh();
             }
         });
 
@@ -205,8 +221,8 @@ public class FoodListFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
 
-    private void refreshListWithClearingArray() {
-        onStartRefresh();
+    private void RefreshListWithClearingArray() {
+        OnStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         String ctg = category;
@@ -214,7 +230,7 @@ public class FoodListFragment extends Fragment {
             ctg = URLEncoder.encode(category, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            onFinishRefresh();
+            OnFinishRefresh();
         }
 
         String url = URL + "/" + ctg;
@@ -224,9 +240,9 @@ public class FoodListFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    parseJsonFeed(response, true);
+                    ParseJsonFeed(response, true);
                 }
-                onFinishRefresh();
+                OnFinishRefresh();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -236,7 +252,7 @@ public class FoodListFragment extends Fragment {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-                onFinishRefresh();
+                OnFinishRefresh();
             }
         });
 
@@ -245,32 +261,32 @@ public class FoodListFragment extends Fragment {
     }
 
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void SetupRecyclerView(RecyclerView recyclerView) {
         feedItems = new ArrayList<FoodItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setAdapter(new FoodLargeRecyclerViewAdapter(getActivity(), feedItems));
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
     }
 
-    private void onStartRefresh() {
+    private void OnStartRefresh() {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(true);
         }
     }
 
-    private void onFinishRefresh() {
+    private void OnFinishRefresh() {
         if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
         if (feedItems != null && feedItems.size() > 0) {
-            setLatestTimestamp(feedItems.get(0).getTimeStamp());
+            SetLatestTimestamp(feedItems.get(0).getTimeStamp());
         }
     }
 
     /**
      * Parsing json reponse and passing the data to feed view list adapter
      */
-    private void parseJsonFeed(JSONObject response, boolean toClearArray) {
+    private void ParseJsonFeed(JSONObject response, boolean toClearArray) {
         if (rv == null) {
             return;
         }
@@ -316,23 +332,7 @@ public class FoodListFragment extends Fragment {
         }
     }
 
-    private void setLatestTimestamp(String time) {
+    private void SetLatestTimestamp(String time) {
         mLatestTimestamp = time;
-    }
-
-    @Override
-    public void onDestroyView() {
-//        AppController.getInstance().cancelPendingRequests(REQ_TAG);
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setOnRefreshListener(null);
-            mSwipeRefreshLayout.removeAllViews();
-        }
-        if (rv != null) {
-            rv.removeAllViews();
-            rv.setLayoutManager(null);
-            rv.setAdapter(null);
-            rv = null;
-        }
-        super.onDestroyView();
     }
 }
