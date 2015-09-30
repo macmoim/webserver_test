@@ -52,19 +52,19 @@ import java.util.List;
 import java.util.Objects;
 
 public class FoodListFragment extends Fragment {
-    private static final String TAG = "FoodListFragment";
+    private final String TAG = getClass().getName();
 
     private String URL = Util.SERVER_ROOT + "/thumbImageList";
     private List<FoodItem> feedItems;
-    RecyclerView rv;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    String mLatestTimestamp;
+    private RecyclerView rv;
+
+    private String mLatestTimestamp;
 
     private static String REQ_TAG = "FOOD-REQ";
 
     public static FoodListFragment getInstance(int position) {
-
         //Construct the fragment
         FoodListFragment myFragment = new FoodListFragment();
 
@@ -86,9 +86,7 @@ public class FoodListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(
-                R.layout.fragment_cheese_list, container, false);
-
+        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_cheese_list, container, false);
 
         rv = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.recyclerview);
         setupRecyclerView(rv);
@@ -98,8 +96,6 @@ public class FoodListFragment extends Fragment {
             public void onRefresh() {
                 doRefresh();
             }
-
-
         });
 
         return mSwipeRefreshLayout;
@@ -123,10 +119,7 @@ public class FoodListFragment extends Fragment {
 
         String url = URL + "/" + ctg;
 
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -147,7 +140,7 @@ public class FoodListFragment extends Fragment {
                 }
             }
         });
-//	}
+
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
@@ -163,7 +156,6 @@ public class FoodListFragment extends Fragment {
         } else {
             Log.d(TAG, "doRefresh not fragment added");
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -178,7 +170,6 @@ public class FoodListFragment extends Fragment {
             e.printStackTrace();
         }
 
-
         try {
             Objects.requireNonNull(mLatestTimestamp, "mLatestTimestamp is null");
         } catch (Exception e) {
@@ -189,9 +180,7 @@ public class FoodListFragment extends Fragment {
 
         String url = URL + "/" + ctg + "/" + mLatestTimestamp.replaceAll(" ", "%20");
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -211,7 +200,7 @@ public class FoodListFragment extends Fragment {
                 onFinishRefresh();
             }
         });
-//	}
+
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
@@ -230,9 +219,7 @@ public class FoodListFragment extends Fragment {
 
         String url = URL + "/" + ctg;
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -252,7 +239,7 @@ public class FoodListFragment extends Fragment {
                 onFinishRefresh();
             }
         });
-//	}
+
         // Adding request to volley request queue
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
@@ -315,10 +302,8 @@ public class FoodListFragment extends Fragment {
                     item.setScore("null".equals(score) ? "0" : score);
 
 
-                    Log.d(TAG, "parseJsonFeed dbname " + feedObj
-                            .getString("img_path"));
+                    Log.d(TAG, "parseJsonFeed dbname " + feedObj.getString("img_path"));
                     feedItems.add(0, item);
-
                 }
 
                 // notify data changes to list adapater

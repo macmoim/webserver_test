@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +31,6 @@
     <dimen name="feed_item_timestamp">13dp</dimen>
     <dimen name="feed_item_status_pad_left_right">15dp</dimen>
     <dimen name="feed_item_status_pad_top">13dp</dimen>
-    <dimen name="feed_item_corner_radius">3dp</dimen>
-    <dimen name="feed_item_border_width">1dp</dimen>
-    <dimen name="login_horizontal_margin">16dp</dimen>
-    <dimen name="login_vertical_margin">16dp</dimen>
     <dimen name="feed_item_comment_profile_pic">50dp</dimen>
 
     <dimen name="circle_inset_padding">7dp</dimen>

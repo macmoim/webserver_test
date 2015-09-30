@@ -17,6 +17,7 @@
 <resources>
     <color name="window_background">#FFF5F5F5</color>
 
+    <color name="mustard_op10">#19ffcc00</color>
     <color name="mustard_op20">#33ffcc00</color>
     <color name="mustard_op30">#4cffcc00</color>
     <color name="mustard_op60">#99ffcc00</color>
@@ -39,9 +40,6 @@
     <color name="black_op30">#4c000000</color>
     <color name="black_op100">#000000</color>
 
-    <color name="feed_bg">#d3d6db</color>
-    <color name="feed_item_bg">#ffffff</color>
-    <color name="feed_item_border">#c2c3c8</color>
     <color name="link">#0a80d1</color>
     <color name="timestamp">#a0a3a7</color>
     <color name="myPrimaryColor">#3F51B5</color>
