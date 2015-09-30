@@ -97,9 +97,9 @@
         <!-- true for circular imageview -->
         <attr name="isCircular" format="boolean" />
         <!-- radius for circular edges of imageview -->
-        <attr name="radius" format="integer" />
+        <attr name="radius" format="dimension" />
         <!-- margin for imageview -->
-        <attr name="margin" format="integer" />
+        <attr name="margin" format="dimension" />
         <!-- true for drawing shadow on imageview -->
         <attr name="isShadowPresent" format="boolean" />
         <!-- specify color for the circular border -->
