@@ -3,10 +3,12 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -67,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
     protected String user_name = null;
     protected Uri mCropImagedUri;
     static final int REQ_CODE_PICK_PICTURE = 1;
+    static final int REQ_CODE_TAKE_PHOTO = 2;
+    static final int REQ_CODE_CROP = 3;
     protected String mImageURL;
 
     ImageView ivProfileCircle = null;
@@ -255,13 +259,82 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
         return file;
     }
 
+    protected void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File f = createNewFile("CROP_");
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Log.e("io", ex.getMessage());
+            }
+
+            if (f != null) {
+                mCropImagedUri = Uri.fromFile(f);
+                // Continue only if the File was successfully created
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        mCropImagedUri);
+
+                startActivityForResult(takePictureIntent, REQ_CODE_TAKE_PHOTO);
+            }
+
+        }
+    }
+
+    protected void dispatchCropIntent(Uri imageCaptureUri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        Point screenSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(screenSize);
+        intent.setDataAndType(imageCaptureUri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
+        intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
+        intent.putExtra("outputX", 640);
+        intent.putExtra("outputY", 480);
+        intent.putExtra("scale", true);
+        //retrieve data on return
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
+
+        startActivityForResult(intent, REQ_CODE_CROP);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_CODE_PICK_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
+                Uri selectedImageUri = data.getData();
 
+                File f = createNewFile("CROP_");
+                try {
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Log.e("io", ex.getMessage());
+                }
+
+                mCropImagedUri = Uri.fromFile(f);
+
+                dispatchCropIntent(selectedImageUri);
+            }
+        } else if (requestCode == REQ_CODE_TAKE_PHOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (mCropImagedUri == null) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.capture_error), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                dispatchCropIntent(mCropImagedUri);
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.capture_error), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if (requestCode == REQ_CODE_CROP) {
+            if (resultCode == Activity.RESULT_OK) {
+                mCropImagedUri = data.getData();
                 Log.d(TAG, "cropresult " + mCropImagedUri + " string " + mCropImagedUri.toString());
 
                 File mFile = new File(mCropImagedUri.getPath());
@@ -270,6 +343,10 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
                 } else {
                     requestThumbImage(mFile);
                 }
+
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.crop_error), Toast.LENGTH_SHORT).show();
+                return;
             }
         }
     }
@@ -357,7 +434,7 @@ public class ProfileActivity extends AppCompatActivity implements Auth.OnAuthLis
             e.printStackTrace();
         }
 
-        Toast.makeText(getApplicationContext(), "upload success width " + width + " height " + height, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "upload success width " + width + " height " + height, Toast.LENGTH_SHORT).show();
 
         loadBackdrop();
 

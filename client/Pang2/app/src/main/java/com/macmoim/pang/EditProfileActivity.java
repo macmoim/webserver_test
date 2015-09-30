@@ -2,7 +2,6 @@ package com.macmoim.pang;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -27,8 +26,6 @@ import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -55,29 +52,8 @@ public class EditProfileActivity extends ProfileActivity {
         ivProfileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
-                intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
-                intent.putExtra("aspectY", PROFILE_IMAGE_ASPECT_Y);
-                intent.putExtra("outputX", 640);
-                intent.putExtra("outputY", 480);
-                intent.putExtra("scale", true);
-                //retrieve data on return
-                intent.putExtra("return-data", false);
+                ShowChangeImageActionDialog();
 
-                File f = createNewFile("CROP_");
-                try {
-                    f.createNewFile();
-                } catch (IOException ex) {
-                    Log.e("io", ex.getMessage());
-                }
-
-                mCropImagedUri = Uri.fromFile(f);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropImagedUri);
-
-                startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
             }
         });
     }
@@ -110,6 +86,31 @@ public class EditProfileActivity extends ProfileActivity {
     @Override
     public void onBackPressed() {
         ShowExitEditorDialog();
+    }
+
+    private void ShowChangeImageActionDialog() {
+        String[] dialogItems = {getResources().getString(R.string.capture_image), getResources().getString(R.string.select_image)};
+        ExtDialog.Builder dialogBuilder = new ExtDialog.Builder(this);
+        ExtDialog dialog = dialogBuilder.ListItems(dialogItems).ListItemsCallback(new ExtDialog.ListCallback() {
+            @Override
+            public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
+                if (which == 0) {
+                    dispatchTakePictureIntent();
+                } else if (which == 1) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                    intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // images on the SD card.
+                    //retrieve data on return
+                    intent.putExtra("return-data", true);
+
+                    startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
+                }
+            }
+        }).SetTitle(getResources().getString(R.string.change_image_action)).BackgroundColor(getResources().getColor(R.color.mustard_op70))
+                .ListItemColor(getResources().getColor(R.color.white_op100))
+                .TitleColor(getResources().getColor(R.color.white_op100))
+                .Build();
+        dialog.show();
     }
 
     private void ShowExitEditorDialog() {
