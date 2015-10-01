@@ -213,6 +213,12 @@ public class EditProfileActivity extends ProfileActivity {
                         Toast.makeText(getApplicationContext(), getText(R.string.save), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
+                        if (!response.isNull("ret_detail")) {
+                            if (response.getString("ret_detail").contains("duplicated")) {
+                                Toast.makeText(getApplicationContext(), getText(R.string.no_changes), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
                         //Toast.makeText(getApplicationContext(), getText(R.string.failsave), Toast.LENGTH_SHORT).show();
                     }
 
