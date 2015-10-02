@@ -124,7 +124,7 @@ public class ViewerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.viewer_main);
+        setContentView(R.layout.activity_viewer);
 
         mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 

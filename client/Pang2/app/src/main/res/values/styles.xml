@@ -16,6 +16,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+
     <style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo"></style>
 
     <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
@@ -25,12 +26,24 @@
         <item name="android:windowBackground">@color/window_background</item>
     </style>
 
-    <style name="Widget.CardContent" parent="android:Widget">
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">24dp</item>
-        <item name="android:orientation">vertical</item>
+    <!-- card view -->
+    <style name="card_view_style">
+        <item name="cardCornerRadius">@dimen/card_view_radius</item>
+        <item name="contentPadding">@dimen/card_view_padding</item>
+        <item name="cardElevation">@dimen/card_view_elevation</item>
+        <item name="cardMaxElevation">@dimen/card_view_elevation</item>
+        <item name="cardUseCompatPadding">false</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <style name="white_op100.card_view_style" parent="card_view_style">
+        <item name="cardBackgroundColor">@color/white_op100</item>
+    </style>
+
+    <style name="violet_op20.card_view_style" parent="card_view_style">
+        <item name="cardBackgroundColor">@color/violet_op20</item>
+        <item name="cardElevation">@dimen/card_view_elevation_zero</item>
+        <item name="cardMaxElevation">@dimen/card_view_elevation_zero</item>
     </style>
 
     <!-- text drop shadow -->

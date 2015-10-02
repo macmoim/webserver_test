@@ -57,8 +57,10 @@
     <color name="mm_grey">#ffbabbbf</color>
     <color name="mm_red">#ffa72428</color>
     <color name="mm_green">#ffa4ca3a</color>
-    <color name="mm_blueberry">#ff573d82</color>
-    <color name="mm_violet">#ff4d394b</color>
+    <color name="blueberry_op20">#33573d82</color>
+    <color name="blueberry_op100">#ff573d82</color>
+    <color name="violet_op20">#334d394b</color>
+    <color name="violet_op100">#ff4d394b</color>
 
     <!--Login Activity -->
     <color name="facebook_bg">#4c4b6cad</color>
