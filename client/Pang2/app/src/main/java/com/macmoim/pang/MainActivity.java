@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
                 !AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE)) {
             showGcmSetUplDialog();
         }
-
     }
 
     /*protected void setFloationAction() {

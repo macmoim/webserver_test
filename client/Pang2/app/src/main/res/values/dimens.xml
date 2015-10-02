@@ -66,6 +66,10 @@
     <dimen name="nav_header_user_info_title_text_margin_left">10dp</dimen>
     <dimen name="nav_header_user_info_item_text_size">38dp</dimen>
 
+    <!-- viewer activity -->
+    <dimen name="viewer_nest_view_padding_tb">16dp</dimen>
+    <dimen name="viewer_nest_view_padding_lr">7dp</dimen>
+
     <!--Login Activity -->
     <dimen name="logo_title_width">300dp</dimen>
     <dimen name="logo_title_height">52dp</dimen>

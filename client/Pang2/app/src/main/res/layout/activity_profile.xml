@@ -3,6 +3,7 @@
     android:id="@+id/profile_main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ViewBackGroundColor"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -30,7 +31,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ViewBackGroundColor"
             android:minHeight="@dimen/profile_nested_scroll_view_min_height"
             android:paddingBottom="@dimen/profile_nest_view_padding_bottom"
             android:paddingLeft="@dimen/profile_nest_view_padding_left"

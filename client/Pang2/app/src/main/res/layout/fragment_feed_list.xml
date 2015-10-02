@@ -22,7 +22,6 @@
         android:id="@+id/feed_item_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ViewBackGroundColor"
         android:paddingLeft="@dimen/feed_item_recycler_view_padding"
         android:paddingRight="@dimen/feed_item_recycler_view_padding" />
 
