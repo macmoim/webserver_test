@@ -51,8 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|bottom"
-                android:layout_marginBottom="30dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginBottom="@dimen/viewer_user_info_area_margin_b"
+                android:layout_marginRight="@dimen/viewer_user_info_area_margin_r"
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
@@ -71,17 +71,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp" />
+                    android:textSize="@dimen/viewer_user_info_text_size" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/viewer_user_info_area_divider_height"
                     android:layout_gravity="right">
 
                     <ImageView
                         android:id="@+id/like_imageview"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/viewer_user_info_icon_size"
+                        android:layout_height="@dimen/viewer_user_info_icon_size"
                         android:background="@drawable/like_nor_white" />
 
                     <TextView
@@ -91,7 +92,7 @@
                         android:layout_toRightOf="@id/like_imageview"
                         android:gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:textSize="15dp" />
+                        android:textSize="@dimen/viewer_user_info_text_size" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -101,8 +102,8 @@
 
                     <ImageView
                         android:id="@+id/score_imageview"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/viewer_user_info_icon_size"
+                        android:layout_height="@dimen/viewer_user_info_icon_size"
                         android:background="@drawable/star_nor_white" />
 
                     <TextView
@@ -112,7 +113,7 @@
                         android:layout_toRightOf="@id/score_imageview"
                         android:gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:textSize="15dp" />
+                        android:textSize="@dimen/viewer_user_info_text_size" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -177,18 +178,18 @@
                 style="@style/violet_op20.card_view_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginBottom="@dimen/viewer_card_view_control_bar_height"
+                android:layout_marginTop="@dimen/viewer_card_view_comments_margin_t">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:minHeight="100dp">
+                    android:minHeight="@dimen/viewer_card_view_comments_min_height">
 
                     <RelativeLayout
                         android:id="@+id/no_comments_l"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="@dimen/viewer_no_comments_icon_size"
+                        android:layout_height="@dimen/viewer_no_comments_icon_size"
                         android:layout_centerInParent="true">
 
                         <ImageView
@@ -219,7 +220,7 @@
         <LinearLayout
             android:id="@+id/star_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/viewer_card_view_control_bar_height"
             android:background="@color/orange_op20"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal"
@@ -227,92 +228,91 @@
 
             <ImageView
                 android:id="@+id/star01"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star02"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star03"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star04"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star05"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/viewer_card_view_control_bar_height"
             android:layout_gravity="bottom"
             android:background="@color/basePrimaryBackgroundColour"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/like_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/like_nor_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/ranking_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/star_nor_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/comment_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/ic_discuss" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/share_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/ic_share_white" />
             </RelativeLayout>
@@ -330,7 +330,9 @@
         <com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView
             android:id="@+id/zoomin_imageview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView>
+            android:layout_height="match_parent">
+
+        </com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView>
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

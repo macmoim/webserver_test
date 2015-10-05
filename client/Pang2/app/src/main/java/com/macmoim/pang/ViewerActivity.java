@@ -47,6 +47,7 @@ import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.layout.CircleFlatingMenu;
 import com.macmoim.pang.layout.CircleFlatingMenuWithActionView;
+import com.macmoim.pang.layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
@@ -207,7 +208,6 @@ public class ViewerActivity extends AppCompatActivity {
                 hideZoomImage();
             }
         });
-
     }
 
     @Override
@@ -380,6 +380,7 @@ public class ViewerActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(_LayoutManager);
         recyclerView.setAdapter(new FoodCommentRecyclerViewAdapter(ViewerActivity.this, arFoodCommentItems));
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext(), getResources().getDrawable(R.drawable.line_divider_violet)));
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
