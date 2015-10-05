@@ -4,16 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.macmoim.pang.MyPostActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
@@ -26,25 +23,19 @@ import java.util.List;
  * Created by P14983 on 2015-07-27.
  */
 public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerViewAdapter.ViewHolder> {
-
-    private Activity activity;
-    private LayoutInflater inflater;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
-    private final TypedValue mTypedValue = new TypedValue();
-    private int mBackground;
+    private ImageLoader mImageLoader = AppController.getInstance().getImageLoader();
     protected List<FoodItem> mValues;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public String mBoundString;
+    // private Activity activity;
+    // private final TypedValue mTypedValue = new TypedValue();
+    // private int mBackground;
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final NetworkImageView mImageView;
         public final TextView mNameTv;
         public final TextView mUserIdTv;
         public final TextView mTimeStampTv;
-
-
 
         public ViewHolder(View view) {
             super(view);
@@ -52,9 +43,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
             mImageView = (NetworkImageView) view.findViewById(R.id.profilePic);
             mNameTv = (TextView) view.findViewById(R.id.name);
             mUserIdTv = (TextView) view.findViewById(R.id.user_id);
-            mTimeStampTv = (TextView) view
-                    .findViewById(R.id.timestamp);
-
+            mTimeStampTv = (TextView) view.findViewById(R.id.timestamp);
         }
 
         @Override
@@ -71,21 +60,16 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 //        activity.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
 //        mBackground = mTypedValue.resourceId;
         mValues = items;
-        this.activity = activity;
-
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item, parent, false);
-//        view.setBackgroundResource(mBackground);
-        return new ViewHolder(view);
+        View _V = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        return new ViewHolder(_V);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,14 +97,12 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
 //                    .into(holder.mImageView);
 //        } else {
         // user profile pic
-        holder.mImageView.setImageUrl(getImageFolderURL()+item.getImge(), imageLoader);
+        holder.mImageView.setImageUrl(getImageFolderURL() + item.getImge(), mImageLoader);
 //        }
 
         holder.mNameTv.setText(item.getName());
         holder.mUserIdTv.setText(item.getUserName());
-
         holder.mTimeStampTv.setText(item.getTimeStamp());
-
     }
 
     @Override
@@ -128,7 +110,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
         return mValues.size();
     }
 
-    public String getImageFolderURL () {
+    public String getImageFolderURL() {
         return Util.IMAGE_THUMBNAIL_FOLDER_URL;
     }
 }

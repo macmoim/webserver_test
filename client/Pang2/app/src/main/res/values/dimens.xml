@@ -71,6 +71,8 @@
     <dimen name="viewer_user_picture_border_width">1.5dp</dimen>
     <dimen name="viewer_nest_view_padding_tb">16dp</dimen>
     <dimen name="viewer_nest_view_padding_lr">7dp</dimen>
+    <dimen name="viewer_card_view_contents_min_height">400dp</dimen>
+    <dimen name="viewer_no_contents_icon_size">200dp</dimen>
 
     <!-- card view attribute -->
     <dimen name="card_view_stroke_width">1.5dp</dimen>

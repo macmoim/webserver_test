@@ -37,8 +37,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
-import com.macmoim.pang.layout.CircleFlatingMenu;
-import com.macmoim.pang.layout.CircleFlatingMenuWithActionView;
 import com.macmoim.pang.adapter.FoodCommentRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
@@ -47,10 +45,11 @@ import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
+import com.macmoim.pang.layout.CircleFlatingMenu;
+import com.macmoim.pang.layout.CircleFlatingMenuWithActionView;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
-import com.macmoim.pang.login.KakaoAuth;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
@@ -88,7 +87,12 @@ public class ViewerActivity extends AppCompatActivity {
     private static final String URL_SHARE = Util.SERVER_ROOT + "/post/share";
 
     private RichViewer mViewer;
-    private Toolbar mToolbar;
+    private RelativeLayout lNoContents = null;
+
+    private RecyclerView mCommentRv;
+    private ArrayList<FoodCommentItem> arFoodCommentItems = null;
+    private RelativeLayout lNoComments = null;
+
     private Button mLikeBtn;
     private boolean isLikeCheck;
     private ArrayList<ImageView> mRankingStartArr;
@@ -109,12 +113,9 @@ public class ViewerActivity extends AppCompatActivity {
     private Rect mRankingViewRect;
 
     private static final int REQ_ADD_COMMENT = 1;
-    private String postUserId;
+    private String sPostUserId;
     private String postUserName;
     private String mUserId;
-
-    private RecyclerView mCommentRv;
-    private ArrayList<FoodCommentItem> foodCommentItems;
 
     private static final String VOLLEY_REQ_TAG_STAR = "get-star";
     private static final String VOLLEY_REQ_TAG_HTML = "get-html";
@@ -129,11 +130,12 @@ public class ViewerActivity extends AppCompatActivity {
 
         mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        final Toolbar _Toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(_Toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mViewer = (RichViewer) findViewById(R.id.richviewer);
+        lNoContents = (RelativeLayout) findViewById(R.id.no_contents_l);
+        mViewer = (RichViewer) findViewById(R.id.richviewer_contents);
         mViewer.setVerticalScrollBarEnabled(false);
         mViewer.getSettings().setJavaScriptEnabled(true);
         mViewer.getSettings().setDefaultTextEncodingName("UTF-8");
@@ -147,14 +149,15 @@ public class ViewerActivity extends AppCompatActivity {
             public void onAfterInitialLoad(boolean isReady) {
                 if (isReady) {
                     int id = getIntent().getIntExtra("id", 0);
-                    showHTML(id);
+                    ShowHTML(id);
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.network_problem), Toast.LENGTH_LONG).show();
-                    removeDialog();
+                    RemoveDialog();
                 }
             }
         });
-        showDialog();
+
+        ShowDialog();
 
         // get like from server
         isLikeCheck = false;
@@ -166,7 +169,7 @@ public class ViewerActivity extends AppCompatActivity {
                                         public void onClick(View v) {
                                             Log.d(TAG, "like onclick");
                                             isLikeCheck = !isLikeCheck;
-                                            putLike(isLikeCheck);
+                                            PutLike(isLikeCheck);
                                         }
                                     }
         );
@@ -178,16 +181,15 @@ public class ViewerActivity extends AppCompatActivity {
             }
         });
 
-
         mRankingView = (LinearLayout) findViewById(R.id.star_view);
         mRankingBtn = (Button) findViewById(R.id.ranking_btn);
         setupRankingStarView();
 
-
         setShareFloationAction((Button) findViewById(R.id.share_btn));
 
+        lNoComments = (RelativeLayout) findViewById(R.id.no_comments_l);
         mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
-        setupRecyclerView(mCommentRv);
+        SetUpRecyclerView(mCommentRv);
 
         profilePic = (CircleImageView) findViewById(R.id.profilePic);
         profilePic.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +219,7 @@ public class ViewerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQ_ADD_COMMENT) {
             if (resultCode == Activity.RESULT_OK) {
-                getComment();
+                GetComment();
             }
         }
     }
@@ -226,27 +228,23 @@ public class ViewerActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
         intent.putExtra("comment_user_id", mUserId);
         intent.putExtra("post_id", getIntent().getIntExtra("id", 0));
-        intent.putExtra("post_user_id", postUserId);
+        intent.putExtra("post_user_id", sPostUserId);
         startActivityForResult(intent, REQ_ADD_COMMENT);
     }
 
-    private void showHTML(int id) {
+    private void ShowHTML(int id) {
+        String _Url = URL_POST + "/" + String.valueOf(id);
 
-        String url = URL_POST + "/" + String.valueOf(id);
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest _Req = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
-                    onResponseHTML(response);
-                    removeDialog();
+                    OnResponseHTML(response);
+                    RemoveDialog();
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -254,12 +252,13 @@ public class ViewerActivity extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_HTML);
+        AppController.getInstance().addToRequestQueue(_Req, VOLLEY_REQ_TAG_HTML);
     }
 
-    private void onResponseHTML(JSONObject response) {
-        String htmlPath = "";
-        String thumbImgPath = "";
+    private void OnResponseHTML(JSONObject response) {
+        String _HtmlPath = "";
+        String _ThumbImgPath = "";
+
         try {
             if ("success".equals(response.getString("ret_val"))) {
 
@@ -268,19 +267,18 @@ public class ViewerActivity extends AppCompatActivity {
                 return;
             }
 
-            Log.d(TAG, "onResponseHTML");
+            Log.d(TAG, "start fun OnResponseHTML()");
 
-            htmlPath = response.getString("filepath");
-            htmlPath += response.getString("db_filename");
-            thumbImgPath = response.getString("thumb_img_path");
-            thumbImgPath = Util.splitFilename(thumbImgPath);
-            mThumbFileName = thumbImgPath;
-            mHtmlFileName = Util.splitFilename(htmlPath);
+            _HtmlPath = response.getString("filepath");
+            _HtmlPath += response.getString("db_filename");
+            _ThumbImgPath = response.getString("thumb_img_path");
+            _ThumbImgPath = Util.splitFilename(_ThumbImgPath);
+            mThumbFileName = _ThumbImgPath;
+            mHtmlFileName = Util.splitFilename(_HtmlPath);
 
             mTitle = response.getString("title");
-            CollapsingToolbarLayout collapsingToolbar =
-                    (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-            collapsingToolbar.setTitle(mTitle);
+            CollapsingToolbarLayout _CollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            _CollapsingToolbar.setTitle(mTitle);
 
             ((TextView) findViewById(R.id.like_text)).setText("  " + response.getString("like_sum"));
             String score = response.getString("rank");
@@ -301,27 +299,22 @@ public class ViewerActivity extends AppCompatActivity {
                         .into(profilePic);
             }
 
-            postUserId = response.getString("user_id");
+            sPostUserId = response.getString("user_id");
 
-            Log.d(TAG, "showHTML path " + htmlPath);
-//                        ((TextView)findViewById(R.id.post_category)).setText(response.getString("category"));
-//                        ((TextView)findViewById(R.id.post_title)).setText(response.getString("title"));
-//                        mViewer.loadUrl(htmlPath);
-            new ReadHtmlTask().execute(htmlPath);
+            Log.d(TAG, "html path is = " + _HtmlPath);
 
+            new ReadHtmlTask().execute(_HtmlPath);
+            LoadBackdrop(Util.IMAGE_FOLDER_URL + _ThumbImgPath);
 
-            loadBackdrop(Util.IMAGE_FOLDER_URL + thumbImgPath);
-            getComment();
-            getLike();
-            getStar();
-
+            GetComment();
+            GetLike();
+            GetStar();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    class ReadHtmlTask extends AsyncTask<String, Void, String> {
-
+    private class ReadHtmlTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -329,33 +322,33 @@ public class ViewerActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            StringBuffer contents = new StringBuffer("");
-            try {
-                URL url = new URL(params[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            StringBuffer _Contents = new StringBuffer("");
 
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
+            try {
+                URL _Url = new URL(params[0]);
+                HttpURLConnection _UrlConnection = (HttpURLConnection) _Url.openConnection();
+
+                _UrlConnection.setRequestMethod("GET");
+                _UrlConnection.setDoOutput(true);
 
                 //connect
-                urlConnection.connect();
+                _UrlConnection.connect();
 
-                InputStream inputStream = urlConnection.getInputStream();
+                InputStream _InputStream = _UrlConnection.getInputStream();
 
                 //create a buffer...
-                byte[] buffer = new byte[1024];
-                int bufferLength = 0;
+                byte[] _Buffer = new byte[1024];
+                int _BufferLength = 0;
 
-                while ((bufferLength = inputStream.read(buffer)) > 0) {
-                    contents.append(new String(buffer, 0, bufferLength));
+                while ((_BufferLength = _InputStream.read(_Buffer)) > 0) {
+                    _Contents.append(new String(_Buffer, 0, _BufferLength));
                 }
-
             } catch (final MalformedURLException e) {
                 e.printStackTrace();
             } catch (final IOException e) {
                 e.printStackTrace();
             }
-            return contents.toString();
+            return _Contents.toString();
         }
 
         @Override
@@ -365,24 +358,27 @@ public class ViewerActivity extends AppCompatActivity {
         }
     }
 
-    private void loadBackdrop(String url) {
-        final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-//        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
+    private void LoadBackdrop(String url) {
+        final ImageView _Iv = (ImageView) findViewById(R.id.backdrop);
+
         try {
-            Glide.with(this).load(new URL(url)).centerCrop().into(imageView);
+            Glide.with(this).load(new URL(url)).centerCrop().into(_Iv);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void SetUpRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        foodCommentItems = new ArrayList<FoodCommentItem>();
-        MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView.getContext(), OrientationHelper.VERTICAL, false);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new FoodCommentRecyclerViewAdapter(ViewerActivity.this,
-                foodCommentItems));
+
+        if (arFoodCommentItems == null) {
+            arFoodCommentItems = new ArrayList<FoodCommentItem>();
+        }
+
+        MyLinearLayoutManager _LayoutManager = new MyLinearLayoutManager(recyclerView.getContext(), OrientationHelper.VERTICAL, false);
+        _LayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(_LayoutManager);
+        recyclerView.setAdapter(new FoodCommentRecyclerViewAdapter(ViewerActivity.this, arFoodCommentItems));
         recyclerView.setNestedScrollingEnabled(false);
     }
 
@@ -410,51 +406,59 @@ public class ViewerActivity extends AppCompatActivity {
         }
     }
 
-    private void getComment() {
-        final int post_id = getIntent().getIntExtra("id", 0);
+    private void GetComment() {
+        final int _PostId = getIntent().getIntExtra("id", 0);
 
-        String url = URL_COMMENT + "/" + String.valueOf(post_id);
+        String _Url = URL_COMMENT + "/" + String.valueOf(_PostId);
 
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null && mCommentRv != null) {
                     try {
-                        JSONArray feedArray = response.getJSONArray("comment_info");
+                        JSONArray _FeedArray = response.getJSONArray("comment_info");
 
-                        if (foodCommentItems != null) {
-                            foodCommentItems.clear();
+                        if (arFoodCommentItems != null) {
+                            arFoodCommentItems.clear();
                         }
-                        int length = feedArray.length();
-                        for (int i = 0; i < length; i++) {
-                            JSONObject feedObj = (JSONObject) feedArray.get(i);
 
-                            FoodCommentItem item = new FoodCommentItem();
-                            item.setPostId(post_id);
-                            item.setPostUserId(postUserId);
-                            item.setCommentUserId(feedObj.getString("comment_user_id"));
-                            item.setCommentUserName(feedObj.getString("comment_user_name"));
-                            item.setComment(feedObj.getString("comment"));
-                            item.setTimeStamp(feedObj.getString("upload_date"));
-                            item.setProfileImgUrl(feedObj.getString("user_profile_img_url"));
+                        int _Length = _FeedArray.length();
 
-                            Log.d(TAG, "getcomment comment " + feedObj.getString("comment"));
+                        for (int i = 0; i < _Length; i++) {
+                            JSONObject _Obj = (JSONObject) _FeedArray.get(i);
 
-                            foodCommentItems.add(0, item);
+                            FoodCommentItem _Item = new FoodCommentItem();
+
+                            _Item.setPostId(_PostId);
+                            _Item.setPostUserId(sPostUserId);
+                            _Item.setCommentUserId(_Obj.getString("comment_user_id"));
+                            _Item.setCommentUserName(_Obj.getString("comment_user_name"));
+                            _Item.setComment(_Obj.getString("comment"));
+                            _Item.setTimeStamp(_Obj.getString("upload_date"));
+                            _Item.setProfileImgUrl(_Obj.getString("user_profile_img_url"));
+
+                            Log.d(TAG, "comment = " + _Obj.getString("comment"));
+
+                            if (!arFoodCommentItems.contains(_Item)) {
+                                arFoodCommentItems.add(_Item);
+                            }
                         }
 
                         // notify data changes to list adapater
                         mCommentRv.getAdapter().notifyDataSetChanged();
+
+                        if (arFoodCommentItems.isEmpty()) {
+                            lNoComments.setVisibility(View.VISIBLE);
+                        } else {
+                            lNoComments.setVisibility(View.GONE);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -465,16 +469,11 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_COMMENT);
     }
 
+    private void GetLike() {
+        int _PostId = getIntent().getIntExtra("id", 0);
+        String _Url = URL_LIKE + "/" + mUserId + "/" + String.valueOf(_PostId);
 
-    private void getLike() {
-        int post_id = getIntent().getIntExtra("id", 0);
-        String like_user_id = mUserId;
-
-        String url = URL_LIKE + "/" + like_user_id + "/" + String.valueOf(post_id);
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -491,7 +490,6 @@ public class ViewerActivity extends AppCompatActivity {
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -502,10 +500,9 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
     }
 
-    private void putLike(boolean like) {
-
-        String url = URL_LIKE;
-        int method = Request.Method.POST;
+    private void PutLike(boolean like) {
+        String _Url = URL_LIKE;
+        int _Method = Request.Method.POST;
 
         Map<String, String> obj = new HashMap<String, String>();
         int post_id = getIntent().getIntExtra("id", 0);
@@ -513,20 +510,18 @@ public class ViewerActivity extends AppCompatActivity {
         obj.put("user_id", like_user_id);
         obj.put("like", like ? "1" : "0");
         obj.put("post_id", String.valueOf(post_id));
-        obj.put("post_user_id", postUserId);
+        obj.put("post_user_id", sPostUserId);
 
         // check insert or update
         if (mLikeDbId == -1) {
 
         } else {
-            method = Request.Method.PUT;
+            _Method = Request.Method.PUT;
             obj.put("id", String.valueOf(mLikeDbId));
-            url += "/" + mLikeDbId + "/" + (like ? "1" : "0");
+            _Url += "/" + mLikeDbId + "/" + (like ? "1" : "0");
         }
 
-        Request jsonReq = new CustomRequest(method,
-                url, obj, new Response.Listener<JSONObject>() {
-
+        Request jsonReq = new CustomRequest(_Method, _Url, obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -546,7 +541,6 @@ public class ViewerActivity extends AppCompatActivity {
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -557,16 +551,11 @@ public class ViewerActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_LIKE);
     }
 
-    private void getStar() {
+    private void GetStar() {
+        int _PostId = getIntent().getIntExtra("id", 0);
+        String _Url = URL_STAR + "/" + mUserId + "/" + String.valueOf(_PostId);
 
-        int post_id = getIntent().getIntExtra("id", 0);
-        String star_user_id = mUserId;
-
-        String url = URL_STAR + "/" + star_user_id + "/" + String.valueOf(post_id);
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
+        CustomRequest jsonReq = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
@@ -582,7 +571,6 @@ public class ViewerActivity extends AppCompatActivity {
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error on getStar: " + error.getMessage());
@@ -602,7 +590,7 @@ public class ViewerActivity extends AppCompatActivity {
         obj.put("user_id", like_user_id);
         obj.put("star", String.valueOf(star));
         obj.put("post_id", String.valueOf(post_id));
-        obj.put("post_user_id", postUserId);
+        obj.put("post_user_id", sPostUserId);
 
         if (mStarDbId != -1) {
             method = Request.Method.PUT;
@@ -649,7 +637,7 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     private void setShareFloationAction(View actionView) {
-        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil, R.drawable.kakaostory_icon};
+        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil};
 
         mShareCf = new CircleFlatingMenuWithActionView(this, actionView);
         mShareCf.setListener(new CircleFlatingMenu.Listener() {
@@ -665,10 +653,6 @@ public class ViewerActivity extends AppCompatActivity {
                     } else if ((int) v.getTag() == R.drawable.ic_pencil) {
                         new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
                         mShareCf.menuClose(false);
-                    } else if ((int) v.getTag() == R.drawable.kakaostory_icon) {
-                        new ShareKakaoStroyTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
-                        mShareCf.menuClose(false);
-
                     }
 
                 }
@@ -789,10 +773,6 @@ public class ViewerActivity extends AppCompatActivity {
         auth.share(url, contentUri);
 
     }
-    private void shareContentKakaoStroy(Uri contentUri) {
-        Auth auth = new KakaoAuth(this, null);
-        auth.share(null, contentUri);
-    }
 
     private void setRankStar(int starIndexInArray) {
         mStar = starIndexInArray + 1;
@@ -821,24 +801,6 @@ public class ViewerActivity extends AppCompatActivity {
             shareContent(uri);
         }
     }
-
-
-    private class ShareKakaoStroyTask extends AsyncTask<String, Void, File> {
-        @Override
-        protected File doInBackground(String... params) {
-
-            return getLocalBitmapFile(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(File file) {
-            super.onPostExecute(file);
-            Uri contentUri = Util.getImageContentUri(getApplicationContext(), file);
-            shareContentKakaoStroy(contentUri);
-        }
-    }
-
-
 
     private class ShareFacebookTask extends AsyncTask<String, Void, File> {
         @Override
@@ -912,11 +874,11 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     private void startOtherProfileActivity() {
-        if (postUserId == null || postUserName == null) {
+        if (sPostUserId == null || postUserName == null) {
             return;
         }
         Intent intent = new Intent(ViewerActivity.this, OtherUserProfileActivity.class);
-        intent.putExtra("other-user-id", postUserId);
+        intent.putExtra("other-user-id", sPostUserId);
         intent.putExtra("other-user-name", postUserName);
         startActivity(intent);
     }
@@ -936,7 +898,7 @@ public class ViewerActivity extends AppCompatActivity {
         return false;
     }
 
-    private void showDialog() {
+    private void ShowDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
@@ -947,10 +909,9 @@ public class ViewerActivity extends AppCompatActivity {
         }
 
         mDialog.show();
-
     }
 
-    private void removeDialog() {
+    private void RemoveDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }
@@ -1011,6 +972,10 @@ public class ViewerActivity extends AppCompatActivity {
             }
             mRankingStartArr.clear();
             mRankingStartArr = null;
+        }
+        if (arFoodCommentItems != null) {
+            arFoodCommentItems.clear();
+            arFoodCommentItems = null;
         }
         if (mCommentRv != null) {
             mCommentRv.removeAllViews();

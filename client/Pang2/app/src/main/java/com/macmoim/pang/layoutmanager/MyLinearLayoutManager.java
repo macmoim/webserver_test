@@ -10,8 +10,6 @@ import android.view.ViewGroup;
  * Created by P14983 on 2015-08-10.
  */
 public class MyLinearLayoutManager extends LinearLayoutManager {
-
-
     public MyLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
@@ -19,8 +17,7 @@ public class MyLinearLayoutManager extends LinearLayoutManager {
     private int[] mMeasuredDimension = new int[2];
 
     @Override
-    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state,
-                          int widthSpec, int heightSpec) {
+    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
         final int widthMode = View.MeasureSpec.getMode(widthSpec);
         final int heightMode = View.MeasureSpec.getMode(heightSpec);
         final int widthSize = View.MeasureSpec.getSize(widthSpec);
@@ -28,10 +25,7 @@ public class MyLinearLayoutManager extends LinearLayoutManager {
         int width = 0;
         int height = 0;
         for (int i = 0; i < getItemCount(); i++) {
-
-
             if (getOrientation() == HORIZONTAL) {
-
                 measureScrapChild(recycler, i,
                         View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
                         heightSpec,
@@ -84,6 +78,5 @@ public class MyLinearLayoutManager extends LinearLayoutManager {
             measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;
             recycler.recycleView(view);
         }
-
     }
 }
