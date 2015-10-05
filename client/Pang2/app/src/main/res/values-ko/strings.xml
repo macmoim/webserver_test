@@ -115,6 +115,9 @@
     <!--loading progress dialog-->
     <string name="loading">잠시만 기다려주세요.</string>
 
+    <!--카카오톡-->
+    <string name="move">이동</string>
+    <string name="post_upload_comment">바로 확인하겠습니까?</string>
     <!--change profile image dialog-->
     <string name="change_image_action">프로필 이미지 변경</string>
     <string name="capture_image">사진 찍기</string>

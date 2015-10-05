@@ -163,6 +163,15 @@
                 android:value="com.macmoim.pang.MainActivity" />
         </activity>
 
+        <activity
+            android:name="com.macmoim.pang.KakaoPostActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:parentActivityName="com.macmoim.pang.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.MainActivity" />
+        </activity>
+
 
         <!-- [START gcm_receiver] -->
         <receiver
@@ -198,6 +207,10 @@
             android:name="com.macmoim.pang.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>

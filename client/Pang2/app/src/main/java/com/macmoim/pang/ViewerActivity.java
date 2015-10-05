@@ -50,6 +50,7 @@ import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.login.KakaoAuth;
 import com.macmoim.pang.richeditor.RichEditor;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
@@ -648,7 +649,7 @@ public class ViewerActivity extends AppCompatActivity {
     }
 
     private void setShareFloationAction(View actionView) {
-        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil};
+        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil, R.drawable.kakaostory_icon};
 
         mShareCf = new CircleFlatingMenuWithActionView(this, actionView);
         mShareCf.setListener(new CircleFlatingMenu.Listener() {
@@ -664,6 +665,10 @@ public class ViewerActivity extends AppCompatActivity {
                     } else if ((int) v.getTag() == R.drawable.ic_pencil) {
                         new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
                         mShareCf.menuClose(false);
+                    } else if ((int) v.getTag() == R.drawable.kakaostory_icon) {
+                        new ShareKakaoStroyTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                        mShareCf.menuClose(false);
+
                     }
 
                 }
@@ -784,6 +789,10 @@ public class ViewerActivity extends AppCompatActivity {
         auth.share(url, contentUri);
 
     }
+    private void shareContentKakaoStroy(Uri contentUri) {
+        Auth auth = new KakaoAuth(this, null);
+        auth.share(null, contentUri);
+    }
 
     private void setRankStar(int starIndexInArray) {
         mStar = starIndexInArray + 1;
@@ -812,6 +821,24 @@ public class ViewerActivity extends AppCompatActivity {
             shareContent(uri);
         }
     }
+
+
+    private class ShareKakaoStroyTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+
+            return getLocalBitmapFile(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
+            Uri contentUri = Util.getImageContentUri(getApplicationContext(), file);
+            shareContentKakaoStroy(contentUri);
+        }
+    }
+
+
 
     private class ShareFacebookTask extends AsyncTask<String, Void, File> {
         @Override

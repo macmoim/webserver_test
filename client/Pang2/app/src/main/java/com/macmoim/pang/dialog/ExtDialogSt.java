@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.macmoim.pang.R;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
+import com.macmoim.pang.dialog.typedef.ListDialogAttr;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 
 /**
@@ -78,5 +79,16 @@ public class ExtDialogSt {
                 .BackgroudDrawble(R.drawable.ext_dialog_bg)
                 .DividerColorRes(R.color.mustard_op100)
                 .Build();
+    }
+
+    public void AlertListDialog(Context Con, ListDialogAttr Attr) {
+        ExtDialog.Builder _Builder = new ExtDialog.Builder(Con);
+
+        _Builder.BackgroudDrawble(R.drawable.ext_dialog_bg)
+                .DividerColorRes(R.color.black_op100)
+                .ListItemColorRes(Attr.ListItemColor)
+                .ListItems(Attr.Items)
+                .ListItemsCallback(Attr.ListCB)
+                .Show();
     }
 }

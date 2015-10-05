@@ -21,6 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.kakao.auth.Session;
 import com.macmoim.pang.adapter.PagerViewAdapter;
 import com.macmoim.pang.adapter.PagerViewTransform;
 import com.macmoim.pang.app.AppController;
@@ -29,6 +30,7 @@ import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
+import com.macmoim.pang.login.KakaoAuth;
 import com.macmoim.pang.login.SocialProfile;
 import com.macmoim.pang.util.Util;
 
@@ -81,14 +83,16 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
         } else if (_Id == R.id.google_plus_area) {
             mGoogleAuth.login();
         } else if (_Id == R.id.kakao_area) {
-            // TODO : KAKAO
-        } else {
+            mKakaoAuth.login();
+        }
+        else {
             // none
         }
     }
 
     GoogleAuth mGoogleAuth;
     FacebookAuth mFacebookAuth;
+    KakaoAuth mKakaoAuth;
 
     Context mContext;
 
@@ -117,6 +121,7 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
 
         mGoogleAuth = new GoogleAuth(this, this);
         mFacebookAuth = new FacebookAuth(this, this);
+        mKakaoAuth = new KakaoAuth(this, this);
 
         if ((mFacebookAuth.isCurrentState())) {
             tvFaceBook.setText(getResources().getString(R.string.logout));
@@ -146,6 +151,7 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
 
         //disconnect google client api
         mGoogleAuth.logout();
+        mKakaoAuth.logout();
     }
 
     @Override
@@ -159,9 +165,12 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
             } else {
                 onLoginCancel();
             }
+        } else {
+            mFacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
+            if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+                return;
+            }
         }
-
-        mFacebookAuth.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.macmoim.pang.app;
 
+import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
 
@@ -13,6 +14,7 @@ import com.macmoim.pang.volley.LruBitmapCache;
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
+    private static Activity currentActivity;
 
     private RequestQueue mRequestQueue;
     private RequestQueue mHttpRequestQueue = null;
@@ -92,5 +94,13 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+    public static Activity getCurrentActivity() {
+        
+        return currentActivity;
+    }
+
+    public static void setCurrentActivity(Activity currentActivity) {
+        mInstance.currentActivity = currentActivity;
     }
 }
