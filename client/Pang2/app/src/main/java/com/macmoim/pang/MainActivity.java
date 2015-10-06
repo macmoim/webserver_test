@@ -17,10 +17,8 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -43,14 +41,15 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.macmoim.pang.layout.NaviHeaderView;
 import com.macmoim.pang.adapter.MyPagerAdapter;
 import com.macmoim.pang.data.AppPreferences;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.gcm.RegistrationIntentService;
+import com.macmoim.pang.layout.NaviHeaderView;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
@@ -202,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
 
         if (!AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN) ||
                 !AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE)) {
-            showGcmSetUplDialog();
+            ShowGcmSetUplDialog();
         }
     }
 
@@ -345,31 +344,37 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         startActivity(i);
     }
 
-    private void showGcmSetUplDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void ShowGcmSetUplDialog() {
+        AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Cancelable = false;
+        _Attr.Title = getString(R.string.push_agree_title);
+        _Attr.TitleColor = R.color.ExtDialogTitleColor;
+        _Attr.TitleIcon = R.drawable.ic_pencil;
+        _Attr.Message = getString(R.string.push_agree);
+        _Attr.MessageColor = R.color.ExtDialogMessageColor;
+        _Attr.NegativeButton = getString(R.string.disagree);
+        _Attr.NegativeButtonColor = R.color.ExtDialogNegativeButtonTextColor;
+        _Attr.PositiveButton = getString(R.string.agree);
+        _Attr.PositiveButtonColor = R.color.ExtDialogPositiveButtonTextColor;
+        _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
+            @Override
+            public void OnPositive(ExtDialog dialog) {
+                registerGCM();
+                AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
+                AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, true);
+                super.OnPositive(dialog);
+            }
 
-        builder.setTitle(getString(R.string.push_agree_title))
-                .setMessage(getString(R.string.push_agree))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.agree), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        registerGCM();
-                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
-                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, true);
+            @Override
+            public void OnNegative(ExtDialog dialog) {
+                dialog.cancel();
+                AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
+                AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, false);
+                super.OnNegative(dialog);
+            }
+        };
 
-                    }
-                })
-                .setNegativeButton(getString(R.string.disagree), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE_POPUP_SHOWN, true);
-                        AppPreferences.GetInstance().putBoolean(getApplicationContext(), AppPreferences.PUSH_AGREE, false);
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+        ExtDialogSt.Get().AlertExtDialog(this, _Attr);
     }
 
     @Override

@@ -108,7 +108,6 @@ public class KakaoAuth extends Auth{
 
         final Item[] items = itemList.toArray(new Item[itemList.size()]);
 
-
         /*final ListAdapter adapter = new ArrayAdapter<Item>(
                 hostActivity,
                 android.R.layout.select_dialog_item,
@@ -135,10 +134,9 @@ public class KakaoAuth extends Auth{
             }
         };*/
         ListDialogAttr _Attr = new ListDialogAttr();
-        _Attr.ListItemColor = R.color.white_op100;
-        _Attr.Items = new CharSequence[]{hostActivity.getString(items[0].textId), hostActivity.getString(items[1].textId)};
+        _Attr.ListItems = new CharSequence[]{hostActivity.getString(items[0].textId), hostActivity.getString(items[1].textId)};
+        _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
         _Attr.ListCB = new ExtDialog.ListCallback() {
-
             @Override
             public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
                 dialog.dismiss();
@@ -150,9 +148,7 @@ public class KakaoAuth extends Auth{
             }
         };
         ExtDialogSt.Get().AlertListDialog(hostActivity, _Attr);
-
     }
-
 
     @Override
     public void logout() {

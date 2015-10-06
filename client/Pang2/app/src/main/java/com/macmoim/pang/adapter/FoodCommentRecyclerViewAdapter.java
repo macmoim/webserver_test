@@ -15,6 +15,8 @@ import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.dialog.ExtDialog;
+import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.ListDialogAttr;
 
 import java.util.List;
 
@@ -22,7 +24,6 @@ import java.util.List;
  * Created by P14983 on 2015-07-27.
  */
 public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCommentRecyclerViewAdapter.ViewHolder> {
-
     private Activity activity;
 
     private List<FoodCommentItem> mValues;
@@ -73,8 +74,6 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-
-
         FoodCommentItem item = mValues.get(position);
 
         if (item.getProfileImgUrl() != null) {
@@ -94,7 +93,7 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         holder.mCommentTv.setText(item.getComment());
 
 //        setFloationAction(holder.mProfilePic, item);
-        setProfileViewAction(holder.mProfilePic, item);
+        SetProfileViewAction(holder.mProfilePic, item);
     }
 
     @Override
@@ -102,13 +101,16 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
         return mValues.size();
     }
 
-    private void setProfileViewAction(View actionView, final FoodCommentItem item) {
+    private void SetProfileViewAction(View actionView, final FoodCommentItem item) {
         actionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] dialogItems = {activity.getResources().getString(R.string.goto_user_profile), activity.getResources().getString(R.string.goto_user_post)};
-                ExtDialog.Builder dialogBuilder = new ExtDialog.Builder(activity);
-                ExtDialog dialog = dialogBuilder.ListItems(dialogItems).ListItemsCallback(new ExtDialog.ListCallback() {
+                ListDialogAttr _Attr = new ListDialogAttr();
+                _Attr.Title = activity.getResources().getString(R.string.user_info);
+                _Attr.TitleColor = R.color.ExtDialogTitleColor;
+                _Attr.ListItems = new CharSequence[]{activity.getResources().getString(R.string.goto_user_profile),
+                        activity.getResources().getString(R.string.goto_user_post)};
+                _Attr.ListCB = new ExtDialog.ListCallback() {
                     @Override
                     public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
                         if (which == 0) {
@@ -121,14 +123,12 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
                             intent.putExtra("other-user-id", item.getCommentUserId());
                             intent.putExtra("other-user-name", item.getCommentUserName());
                             activity.startActivity(intent);
-
                         }
                     }
-                }).SetTitle(activity.getResources().getString(R.string.user_info)).BackgroundColor(activity.getResources().getColor(R.color.mustard_op70))
-                        .ListItemColor(activity.getResources().getColor(R.color.white_op100))
-                        .TitleColor(activity.getResources().getColor(R.color.white_op100))
-                        .Build();
-                dialog.show();
+                };
+                _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
+
+                ExtDialogSt.Get().AlertListDialog(activity, _Attr);
             }
         });
 

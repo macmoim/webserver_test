@@ -27,6 +27,8 @@ public class ExtDialogSt {
     public void AlertExtDialog(Context Con, AlertDialogAttr Attr) {
         ExtDialog.Builder _Builder = new ExtDialog.Builder(Con);
 
+        _Builder.SetCancelable(Attr.Cancelable);
+
         _Builder.SetTitle(Attr.Title)
                 .TitleColorRes(Attr.TitleColor)
                 .TitleIconRes(Attr.TitleIcon)
@@ -37,8 +39,6 @@ public class ExtDialogSt {
                 .SetPositiveButton(Attr.PositiveButton)
                 .PositiveColorRes(Attr.PositiveButtonColor)
                 .CallBack(Attr.ButtonCB)
-                .BackgroudDrawble(R.drawable.ext_dialog_bg)
-                .DividerColorRes(R.color.mustard_op100)
                 .Show();
     }
 
@@ -51,8 +51,7 @@ public class ExtDialogSt {
                 .SetMessage(Attr.Message)
                 .MessageColorRes(Attr.MessageColor)
                 .Progress(true, 0)
-                .BackgroudDrawble(R.drawable.ext_dialog_bg)
-                .DividerColorRes(R.color.mustard_op100)
+                .DividerColorRes(R.color.ExtDialogDividerColor)
                 .Show();
     }
 
@@ -76,18 +75,19 @@ public class ExtDialogSt {
 
         return _Builder
                 .Progress(true, 0)
-                .BackgroudDrawble(R.drawable.ext_dialog_bg)
-                .DividerColorRes(R.color.mustard_op100)
+                .DividerColorRes(R.color.ExtDialogDividerColor)
                 .Build();
     }
 
     public void AlertListDialog(Context Con, ListDialogAttr Attr) {
         ExtDialog.Builder _Builder = new ExtDialog.Builder(Con);
 
-        _Builder.BackgroudDrawble(R.drawable.ext_dialog_bg)
-                .DividerColorRes(R.color.black_op100)
+        _Builder.SetCancelable(Attr.Cancelable);
+
+        _Builder.SetTitle(Attr.Title)
+                .TitleColorRes(Attr.TitleColor)
                 .ListItemColorRes(Attr.ListItemColor)
-                .ListItems(Attr.Items)
+                .ListItems(Attr.ListItems)
                 .ListItemsCallback(Attr.ListCB)
                 .Show();
     }

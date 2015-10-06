@@ -7,13 +7,17 @@ import android.support.annotation.StringRes;
 import com.macmoim.pang.dialog.ExtDialog;
 
 public class AlertDialogAttr {
-    public AlertDialogAttr() {}
+    public AlertDialogAttr() {
+
+    }
 
     public AlertDialogAttr(@StringRes String title, @ColorRes int titleColor, @DrawableRes int titleIcon,
                            @StringRes String message, @ColorRes int messageColor,
                            @StringRes String negative, @ColorRes int negativeColor,
                            @StringRes String positive, @ColorRes int positiveColor,
-                           ExtDialog.ButtonCallback buttonCB) {
+                           ExtDialog.ButtonCallback buttonCB,
+                           boolean cancelable,
+                           int bgColor, int dividerColor) {
         this.Title = title;
         this.TitleColor = titleColor;
         this.TitleIcon = titleIcon;
@@ -24,6 +28,10 @@ public class AlertDialogAttr {
         this.PositiveButton = positive;
         this.PositiveButtonColor = positiveColor;
         this.ButtonCB = buttonCB;
+
+        this.Cancelable = cancelable;
+        this.DialogBgColor = bgColor;
+        this.DividerColor = dividerColor;
     }
 
     @StringRes
@@ -46,4 +54,10 @@ public class AlertDialogAttr {
     public int PositiveButtonColor = -1;
 
     public ExtDialog.ButtonCallback ButtonCB = null;
+
+    public boolean Cancelable = true;
+
+    public int DialogBgColor = -1;
+
+    public int DividerColor = -1;
 }

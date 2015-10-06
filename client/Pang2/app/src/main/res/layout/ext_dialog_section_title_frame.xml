@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/ext_dialog_title_frame_margin_bottom"
-    android:paddingLeft="@dimen/ext_dialog_margin"
+    android:paddingBottom="@dimen/ext_dialog_title_frame_margin_b"
+    android:paddingLeft="@dimen/ext_dialog_title_frame_margin_t"
     android:paddingRight="@dimen/ext_dialog_margin"
     android:paddingTop="@dimen/ext_dialog_margin">
 

@@ -64,6 +64,7 @@ public class DialogInit {
         Dialog.TitleTv = (TextView) Dialog.vExtDialog.findViewById(R.id.title);
         Dialog.TitleIconView = (ImageView) Dialog.vExtDialog.findViewById(R.id.icon);
         Dialog.TitleFrameView = Dialog.vExtDialog.findViewById(R.id.titleFrame);
+        Dialog.ContentSv = (ScrollView) Dialog.vExtDialog.findViewById(R.id.contentScrollView);
         Dialog.ContentTv = (TextView) Dialog.vExtDialog.findViewById(R.id.content);
         Dialog.ListItemView = (ListView) Dialog.vExtDialog.findViewById(R.id.contentListView);
         Dialog.PositiveButton = (DialogButton) Dialog.vExtDialog.findViewById(R.id.positive);
@@ -74,19 +75,17 @@ public class DialogInit {
         Dialog.setCancelable(_Builder.Cancelable);
         Dialog.setCanceledOnTouchOutside(_Builder.Cancelable);
 
-        if (_Builder.BackgroundDrawble != 0) {
-            Dialog.vExtDialog.setBackgroundResource(_Builder.BackgroundDrawble);
-        } else {
-            if (_Builder.BackgroundColor == 0) {
-                _Builder.BackgroundColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_background_color);
-            }
-            if (_Builder.BackgroundColor != 0) {
-                GradientDrawable drawable = new GradientDrawable();
-                drawable.setCornerRadius(_Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius));
-                drawable.setColor(_Builder.BackgroundColor);
-                Utils.SetBackground(Dialog.vExtDialog, drawable);
-            }
+        // dialog background color
+        GradientDrawable _GradientDrawble = new GradientDrawable();
+
+        if (_Builder.DialogBgColor == -1) {
+            final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_background_color);
+            _Builder.DialogBgColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_background_color, _FB);
         }
+
+        _GradientDrawble.setColor(_Builder.DialogBgColor);
+        _GradientDrawble.setCornerRadius(_Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius));
+        Utils.SetBackground(Dialog.vExtDialog, _GradientDrawble);
 
         if (!_Builder.TitleColorSet) {
             final int _TitleColorFallback = Utils.ResolveColor(Dialog.getContext(), android.R.attr.textColorPrimary);
@@ -113,6 +112,7 @@ public class DialogInit {
         if (_Builder.InputCallback != null && _Builder.PositiveText == null) {
             _Builder.PositiveText = _Builder.BuilderContext.getText(android.R.string.ok);
         }
+
         if (_Builder.TitleIcon != null) {
             Dialog.TitleIconView.setVisibility(View.VISIBLE);
             Dialog.TitleIconView.setImageDrawable(_Builder.TitleIcon);
@@ -140,12 +140,6 @@ public class DialogInit {
             Dialog.TitleIconView.requestLayout();
         }
 
-        if (!_Builder.DividerColorSet) {
-            final int dividerFallback = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_divider);
-            _Builder.DividerColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_divider_color, dividerFallback);
-        }
-        Dialog.vExtDialog.SetDividerColor(_Builder.DividerColor);
-
         if (Dialog.TitleTv != null) {
             Dialog.SetTypeFace(Dialog.TitleTv, _Builder.MediumFont);
             Dialog.TitleTv.setTextColor(_Builder.TitleColor);
@@ -160,8 +154,27 @@ public class DialogInit {
             } else {
                 Dialog.TitleTv.setText(_Builder.Title);
                 Dialog.TitleFrameView.setVisibility(View.VISIBLE);
+
+                if (_Builder.TitleFrameColor == -1) {
+                    final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_title_frame_color);
+                    _Builder.TitleFrameColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_title_frame_color, _FB);
+                }
+                if (_Builder.TitleFrameColor != -1) {
+                    GradientDrawable drawable = new GradientDrawable();
+                    final float _Radius = _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius);
+                    float[] _Radii = {_Radius, _Radius, _Radius, _Radius, 0, 0, 0, 0};
+                    drawable.setCornerRadii(_Radii);
+                    drawable.setColor(_Builder.TitleFrameColor);
+                    Utils.SetBackground(Dialog.TitleFrameView, drawable);
+                }
             }
         }
+
+        if (!_Builder.DividerColorSet) {
+            final int dividerFallback = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_divider);
+            _Builder.DividerColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_divider_color, dividerFallback);
+        }
+        Dialog.vExtDialog.SetDividerColor(_Builder.DividerColor);
 
         if (Dialog.ContentTv != null) {
             Dialog.ContentTv.setMovementMethod(new LinkMovementMethod());
@@ -182,8 +195,14 @@ public class DialogInit {
             if (_Builder.Content != null) {
                 Dialog.ContentTv.setText(_Builder.Content);
                 Dialog.ContentTv.setVisibility(View.VISIBLE);
+                if (Dialog.ContentSv != null) {
+                    Dialog.ContentSv.setVisibility(View.VISIBLE);
+                }
             } else {
                 Dialog.ContentTv.setVisibility(View.GONE);
+                if (Dialog.ContentSv != null) {
+                    Dialog.ContentSv.setVisibility(View.GONE);
+                }
             }
         }
 

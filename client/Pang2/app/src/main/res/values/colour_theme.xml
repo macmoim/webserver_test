@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="basePrimaryBackgroundColour">@color/md_orange_500</color> &lt;!&ndash;Main Toolbar colour&ndash;&gt;
-    <color name="baseSecondaryBackgroundColour">@color/md_orange_700</color> &lt;!&ndash;Status bar above toolbar&ndash;&gt;-->
-    <color name="basePrimaryBackgroundColour">@color/mustard_op100</color> <!--Main Toolbar colour-->
-    <color name="baseSecondaryBackgroundColour">@color/mustard_op100</color> <!--Status bar above toolbar-->
-    <color name="baseBackgroundColour">@color/md_white_1000</color> <!--General forms and general background colour-->
-    <color name="basePrimaryTextColour">@color/md_white_1000</color> <!--Major colour for main Text (Header, Titles etc)-->
-    <color name="baseSecondaryTextColour">@color/md_white_1000</color> <!--Secondary colour for the Text (Options, Settings etc)-->
+    <!--
+       <color name="basePrimaryBackgroundColour">@color/md_orange_500</color> &lt;!&ndash;Main Toolbar colour&ndash;&gt;
+        <color name="baseSecondaryBackgroundColour">@color/md_orange_700</color> &lt;!&ndash;Status bar above toolbar&ndash;&gt;
+        -->
+    <color name="basePrimaryBackgroundColour">@color/mustard_op100</color>
+    <!--Main Toolbar colour-->
+    <color name="baseSecondaryBackgroundColour">@color/mustard_op100</color>
+    <!--Status bar above toolbar-->
+    <color name="baseBackgroundColour">@color/md_white_1000</color>
+    <!--General forms and general background colour-->
+    <color name="basePrimaryTextColour">@color/md_white_1000</color>
+    <!--Major colour for main Text (Header, Titles etc)-->
+    <color name="baseSecondaryTextColour">@color/md_white_1000</color>
+    <!--Secondary colour for the Text (Options, Settings etc)-->
     <color name="tabIndicatorColour">@color/md_blue_500</color>
     <color name="colourHighlight">@color/md_blue_grey_400</color>
 
     <color name="ViewBackGroundColor">@color/mustard_op10</color>
+    <color name="ExtDialogBackgroundColor">@color/white_op100</color>
+    <color name="ExtDialogDividerColor">@color/mustard_op100</color>
+    <color name="ExtDialogDividerSelectedColor">@color/mustard_op100</color>
+    <color name="ExtDialogTitleFrmaeColor">@color/mustard_op100</color>
+    <color name="ExtDialogTitleColor">@color/md_grey_700</color>
+    <color name="ExtDialogMessageColor">@color/md_grey_700</color>
+    <color name="ExtDialogNegativeButtonTextColor">@color/md_grey_700</color>
+    <color name="ExtDialogPositiveButtonTextColor">@color/md_grey_700</color>
+    <color name="ExtDialogListItemTextColor">@color/md_grey_700</color>
+    <color name="ExtDialogListItemSelectedColor">@color/mustard_op100</color>
 </resources>

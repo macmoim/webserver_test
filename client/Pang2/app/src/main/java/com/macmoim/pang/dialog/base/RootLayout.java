@@ -190,7 +190,7 @@ public class RootLayout extends ViewGroup {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int _Padding = getResources().getDimensionPixelSize(R.dimen.ext_dialog_bg_stroke_width);
+        int _Padding = getResources().getDimensionPixelSize(R.dimen.ext_dialog_divider_stroke_width);
 
         if (mContent != null) {
             if (mDrawTopDivider) {

@@ -22,6 +22,7 @@ import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
+import com.macmoim.pang.dialog.typedef.ListDialogAttr;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,9 +90,11 @@ public class EditProfileActivity extends ProfileActivity {
     }
 
     private void ShowChangeImageActionDialog() {
-        String[] dialogItems = {getResources().getString(R.string.capture_image), getResources().getString(R.string.select_image)};
-        ExtDialog.Builder dialogBuilder = new ExtDialog.Builder(this);
-        ExtDialog dialog = dialogBuilder.ListItems(dialogItems).ListItemsCallback(new ExtDialog.ListCallback() {
+        ListDialogAttr _Attr = new ListDialogAttr();
+        _Attr.Title = getResources().getString(R.string.change_image_action);
+        _Attr.TitleColor = R.color.ExtDialogTitleColor;
+        _Attr.ListItems = new CharSequence[]{getResources().getString(R.string.capture_image), getResources().getString(R.string.select_image)};
+        _Attr.ListCB = new ExtDialog.ListCallback() {
             @Override
             public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
                 if (which == 0) {
@@ -106,24 +109,23 @@ public class EditProfileActivity extends ProfileActivity {
                     startActivityForResult(intent, REQ_CODE_PICK_PICTURE);
                 }
             }
-        }).SetTitle(getResources().getString(R.string.change_image_action)).BackgroundColor(getResources().getColor(R.color.mustard_op70))
-                .ListItemColor(getResources().getColor(R.color.white_op100))
-                .TitleColor(getResources().getColor(R.color.white_op100))
-                .Build();
-        dialog.show();
+        };
+        _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
+
+        ExtDialogSt.Get().AlertListDialog(this, _Attr);
     }
 
     private void ShowExitEditorDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.editor_exit_title);
-        _Attr.TitleColor = R.color.white_op100;
+        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
-        _Attr.MessageColor = R.color.white_op100;
+        _Attr.MessageColor = R.color.ExtDialogMessageColor;
         _Attr.NegativeButton = getString(R.string.no);
-        _Attr.NegativeButtonColor = R.color.white_op100;
+        _Attr.NegativeButtonColor = R.color.ExtDialogNegativeButtonTextColor;
         _Attr.PositiveButton = getString(R.string.yes);
-        _Attr.PositiveButtonColor = R.color.white_op100;
+        _Attr.PositiveButtonColor = R.color.ExtDialogPositiveButtonTextColor;
         _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
             @Override
             public void OnPositive(ExtDialog dialog) {

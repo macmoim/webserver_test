@@ -63,16 +63,18 @@
     </style>
 
     <style name="ExtDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="ext_dialog_divider">@color/ext_dialog_divider_black</item>
-        <item name="ext_dialog_list_selector">@drawable/ext_dialog_item_selector</item>
-        <item name="ext_dialog_btn_stacked_selector">@drawable/ext_dialog_item_selector</item>
-        <item name="ext_dialog_btn_positive_selector">@drawable/ext_dialog_btn_right_selector</item>
-        <item name="ext_dialog_btn_negative_selector">@drawable/ext_dialog_btn_left_selector</item>
-
         <item name="android:windowAnimationStyle">@style/ExtDialogAnimation</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.5</item>
+
+        <item name="ext_dialog_background_color">@color/ExtDialogBackgroundColor</item>
+        <item name="ext_dialog_title_frame_color">@color/ExtDialogTitleFrmaeColor</item>
+        <item name="ext_dialog_divider">@color/ExtDialogDividerColor</item>
+        <item name="ext_dialog_list_selector">@drawable/ext_dialog_item_selector</item>
+        <item name="ext_dialog_btn_stacked_selector">@drawable/ext_dialog_item_selector</item>
+        <item name="ext_dialog_btn_positive_selector">@drawable/ext_dialog_btn_right_selector</item>
+        <item name="ext_dialog_btn_negative_selector">@drawable/ext_dialog_btn_left_selector</item>
     </style>
 
     <style name="ExtDialogButton">

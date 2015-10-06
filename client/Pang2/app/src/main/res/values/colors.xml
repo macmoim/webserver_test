@@ -38,7 +38,9 @@
     <color name="red_op100">#F44336</color>
     <color name="white_op30">#4cffffff</color>
     <color name="white_op100">#ffffff</color>
+    <color name="black_op20">#33000000</color>
     <color name="black_op30">#4c000000</color>
+    <color name="black_op40">#66000000</color>
     <color name="black_op100">#000000</color>
 
     <color name="link">#0a80d1</color>
@@ -73,16 +75,7 @@
     <color name="kakao_bg_stroke">#ffea00</color>
 
     <!-- Ext Dialog -->
-    <color name="ext_bg_facebook">#b24b6cad</color>
-    <color name="ext_facebook_color">#4b6cad</color>
-    <color name="ext_bg_google_plus">#b2c94438</color>
-    <color name="ext_google_plus_color">#c94438</color>
-    <color name="ext_bg_kakao">#b2ffea00</color>
-    <color name="ext_kakao_color">#ffea00</color>
-    <color name="ext_dialog_divider_black">#66000000</color>
-    <color name="ext_dialog_item_selected">#33000000</color>
     <color name="ext_dialog_edit_text_error">#DD2C00</color>
-
 
     <color name="color1">#404040</color>
     <color name="color2">#B2B2B2</color>

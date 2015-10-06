@@ -38,6 +38,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.macmoim.pang.R;
@@ -68,6 +69,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     protected ProgressBar mProgress;
     protected TextView mProgressLabel;
     protected TextView mProgressMinMax;
+    protected ScrollView ContentSv;
     protected TextView ContentTv;
     protected EditText InputEdText;
     protected TextView InputMinMaxTv;
@@ -377,6 +379,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected GravityEnum BtnStackedGravity = GravityEnum.END;
         protected GravityEnum ListItemsGravity = GravityEnum.START;
         protected GravityEnum ButtonsGravity = GravityEnum.START;
+        protected int TitleFrameColor = -1;
         protected int TitleColor = -1;
         protected int ContentColor = -1;
         protected CharSequence Content;
@@ -412,8 +415,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected boolean ForceStacking;
         protected boolean WrapCustomViewInScroll;
         protected int DividerColor;
-        protected int BackgroundDrawble;
-        protected int BackgroundColor;
+        protected int DialogBgColor = -1;
         protected int ListItemColor;
         protected boolean ProgressCircleType;
         protected boolean ShowMinMax;
@@ -431,6 +433,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected String ProgressNumberFormat;
         protected NumberFormat ProgressPercentFormat;
 
+        protected boolean DialogBgColorSet = false;
         protected boolean TitleColorSet = false;
         protected boolean ContentColorSet = false;
         protected boolean ListItemColorSet = false;
@@ -494,6 +497,43 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
                 }
             }
+        }
+
+        public Builder DialogBgColor(@ColorInt int color) {
+            this.DialogBgColor = color;
+            this.DialogBgColorSet = true;
+            return this;
+        }
+
+        public Builder DialogBgColorRes(@ColorRes int colorRes) {
+            return DialogBgColor(this.BuilderContext.getResources().getColor(colorRes));
+        }
+
+        public Builder DialogBgColorAttr(@AttrRes int colorAttr) {
+            return DialogBgColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
+        }
+
+        public Builder DividerColor(@ColorInt int color) {
+            this.DividerColor = color;
+            this.DividerColorSet = true;
+            return this;
+        }
+
+        public Builder DividerColorRes(@ColorRes int colorRes) {
+            return DividerColor(this.BuilderContext.getResources().getColor(colorRes));
+        }
+
+        public Builder DividerColorAttr(@AttrRes int colorAttr) {
+            return DividerColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
+        }
+
+        public Builder SetTitleFrameColor(@ColorInt int color) {
+            this.TitleFrameColor = color;
+            return this;
+        }
+
+        public Builder SetTitleFrameColorRes(@ColorRes int colorRes) {
+            return SetTitleFrameColor(this.BuilderContext.getResources().getColor(colorRes));
         }
 
         public Builder SetTitle(@StringRes int titleRes) {
@@ -830,38 +870,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
         public Builder widgetColorAttr(@AttrRes int colorAttr) {
             return WidgetColorRes(Utils.ResolveColor(this.BuilderContext, colorAttr));
-        }
-
-        public Builder DividerColor(@ColorInt int color) {
-            this.DividerColor = color;
-            this.DividerColorSet = true;
-            return this;
-        }
-
-        public Builder DividerColorRes(@ColorRes int colorRes) {
-            return DividerColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder DividerColorAttr(@AttrRes int colorAttr) {
-            return DividerColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
-        }
-
-        public Builder BackgroudDrawble(@DrawableRes int Drawable) {
-            this.BackgroundDrawble = Drawable;
-            return this;
-        }
-
-        public Builder BackgroundColor(@ColorInt int color) {
-            this.BackgroundColor = color;
-            return this;
-        }
-
-        public Builder BackgroundColorRes(@ColorRes int colorRes) {
-            return BackgroundColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder BackgroundColorAttr(@AttrRes int colorAttr) {
-            return BackgroundColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
         }
 
         public Builder CallBack(@NonNull ButtonCallback callback) {
