@@ -79,7 +79,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by P14983 on 2015-07-24.
  */
 public class ViewerActivity extends AppCompatActivity {
-    private static final String TAG = "ViewerActivity";
+    private final String TAG = getClass().getName();
 
     private static final String URL_LIKE = Util.SERVER_ROOT + "/like";
     private static final String URL_STAR = Util.SERVER_ROOT + "/star";
@@ -764,7 +764,6 @@ public class ViewerActivity extends AppCompatActivity {
         shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
         startActivity(Intent.createChooser(shareIntent, "Share Food"));
-
     }
 
     private void shareContentFacebook(Uri contentUri) {
@@ -772,7 +771,6 @@ public class ViewerActivity extends AppCompatActivity {
 
         Auth auth = new FacebookAuth(this, null);
         auth.share(url, contentUri);
-
     }
 
     private void setRankStar(int starIndexInArray) {
@@ -903,10 +901,12 @@ public class ViewerActivity extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Message = getResources().getString(R.string.loading);
+            _Attr.MessageColor = R.color.ExtDialogMessageColor;
+            _Attr.Cancelable = false;
+
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
@@ -921,7 +921,6 @@ public class ViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if (mRankingViewRect != null && !mRankingViewRect.contains((int) event.getX(), (int) event.getY())) {
             invisibleRankingViewAnim();
         }

@@ -36,7 +36,7 @@ public class CommentActivity extends AppCompatActivity {
     private MaterialEditText mCommentEdit;
     private ExtDialog mDialog;
 
-    private static final String URL_COMMENT = Util.SERVER_ROOT+"/comment";
+    private static final String URL_COMMENT = Util.SERVER_ROOT + "/comment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void putComment() {
-        showDialog();
+        ShowDialog();
         int post_id = getIntent().getIntExtra("post_id", 0);
         String postUserId = getIntent().getStringExtra("post_user_id");
         String comment_user_id = getIntent().getStringExtra("comment_user_id");
@@ -108,7 +108,7 @@ public class CommentActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                removeDialog();
+                RemoveDialog();
                 setResult(Activity.RESULT_OK);
                 finish();
             }
@@ -117,7 +117,7 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                removeDialog();
+                RemoveDialog();
             }
         });
 
@@ -125,21 +125,22 @@ public class CommentActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonReq);
     }
 
-    private void showDialog() {
+    private void ShowDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Message = getResources().getString(R.string.loading);
+            _Attr.MessageColor = R.color.ExtDialogMessageColor;
+            _Attr.Cancelable = false;
+
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
-
     }
 
-    private void removeDialog() {
+    private void RemoveDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }

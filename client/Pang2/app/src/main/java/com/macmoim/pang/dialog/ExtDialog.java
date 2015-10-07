@@ -1014,10 +1014,12 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
     public final View GetActionButton(@NonNull DialogButtonAction which) {
         switch (which) {
-            default:
+            default: {
                 return vExtDialog.findViewById(R.id.positive);
-            case NEGATIVE:
+            }
+            case NEGATIVE: {
                 return vExtDialog.findViewById(R.id.negative);
+            }
         }
     }
 

@@ -447,7 +447,7 @@ public class PangEditorActivity extends AppCompatActivity {
     }
 
     private void sendRequest() {
-        showDialog();
+        ShowDialog();
 
         mWebAppInterface.getCurrentHtml(new HTMLListener() {
             @Override
@@ -499,7 +499,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 if (response != null) {
                     VolleyLog.d(TAG, "Response: " + response.toString());
                     parseJsonHtml(response);
-                    finishWithResult(Activity.RESULT_OK);
+                    FinishWithResult(Activity.RESULT_OK);
                 } else {
                     VolleyLog.d(TAG, "Error: response is null!!!!");
                 }
@@ -515,7 +515,7 @@ public class PangEditorActivity extends AppCompatActivity {
                     Log.d(TAG, "PangEditor insert post onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
 
-                removeDialog();
+                RemoveDialog();
             }
         });
 
@@ -609,12 +609,12 @@ public class PangEditorActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 VolleyLog.d(TAG, "Response: " + response.toString());
-                removeDialog();
+                RemoveDialog();
                 if (response != null) {
                     try {
                         if ("success".equals(response.getString("ret_val"))) {
                             Toast.makeText(getApplicationContext(), "post update 성공", Toast.LENGTH_SHORT).show();
-                            finishWithResult(Activity.RESULT_OK);
+                            FinishWithResult(Activity.RESULT_OK);
                         } else {
                             Toast.makeText(getApplicationContext(), "post update  실패", Toast.LENGTH_SHORT).show();
                         }
@@ -631,7 +631,7 @@ public class PangEditorActivity extends AppCompatActivity {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "PangEditor updatePostDb onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-                removeDialog();
+                RemoveDialog();
             }
         });
 
@@ -808,7 +808,7 @@ public class PangEditorActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        removeDialog();
+        RemoveDialog();
         Toast.makeText(getApplicationContext(), "html upload success " + id, Toast.LENGTH_SHORT).show();
     }
 
@@ -923,7 +923,7 @@ public class PangEditorActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showDialog();
+            ShowDialog();
         }
 
         @Override
@@ -961,7 +961,7 @@ public class PangEditorActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mEditor.setHtml(s);
-            removeDialog();
+            RemoveDialog();
         }
     }
 
@@ -1036,33 +1036,33 @@ public class PangEditorActivity extends AppCompatActivity {
             }
         });
 
-
         // Adding request to volley request queue
         AppController.getInstance().addHttpStackToRequestQueue(jsonReq);
     }
 
-    private void showDialog() {
+    private void ShowDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Message = getResources().getString(R.string.loading);
+            _Attr.MessageColor = R.color.ExtDialogMessageColor;
+            _Attr.Cancelable = false;
+
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
-
     }
 
-    private void removeDialog() {
+    private void RemoveDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }
         mDialog = null;
     }
 
-    private void finishWithResult(int resultCode) {
+    private void FinishWithResult(int resultCode) {
         setResult(resultCode);
         finish();
     }

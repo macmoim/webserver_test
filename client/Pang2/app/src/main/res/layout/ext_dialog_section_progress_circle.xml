@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="end|center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/ext_dialog_content_padding_top"
+    android:paddingBottom="@dimen/ext_dialog_content_padding_bottom"
     android:paddingLeft="@dimen/ext_dialog_margin"
     android:paddingRight="@dimen/ext_dialog_margin"
     android:paddingTop="@dimen/ext_dialog_content_padding_top">
@@ -22,10 +22,10 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="start"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
+        android:paddingLeft="@dimen/ext_dialog_progress_text_padding_lr"
+        android:paddingStart="@dimen/ext_dialog_progress_text_padding_lr"
         android:textAlignment="viewStart"
-        android:textSize="16sp"
+        android:textSize="@dimen/ext_dialog_progress_text_size"
         tools:ignore="NewApi,RtlSymmetry,UnusedAttribute"
         tools:text="Message" />
 

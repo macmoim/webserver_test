@@ -149,6 +149,9 @@
     <dimen name="ext_dialog_divider_bottom_depth">1dp</dimen>
     <dimen name="ext_dialog_list_item_height">64dp</dimen>
     <dimen name="ext_dialog_list_item_control_margin">8dp</dimen>
-    <dimen name="ext_dialog_circular_progress_border">4dp</dimen>
+    <dimen name="ext_dialog_progress_text_padding_lr">16dp</dimen>
+    <dimen name="ext_dialog_progress_circle_size">120dp</dimen>
+    <dimen name="ext_dialog_progress_circle_border">4dp</dimen>
+    <dimen name="ext_dialog_progress_text_size">16sp</dimen>
 
 </resources>

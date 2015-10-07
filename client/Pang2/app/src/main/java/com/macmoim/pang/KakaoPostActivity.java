@@ -127,7 +127,6 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.button_post) {
-
             if (contentUri != null) {
                 ContentResolver contentResolver = getContentResolver();
                 String mimeType = contentResolver.getType(contentUri);
@@ -142,11 +141,14 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
                 final List<File> l = new ArrayList<File>();
                 l.add(file);
                 String storyPostText = editText.getText().toString();
-                ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-                attr.Message = getResources().getString(R.string.loading);
-                attr.MessageColor = R.color.white_op100;
-                final ExtDialog mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+
+                ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+                _Attr.Message = getResources().getString(R.string.loading);
+                _Attr.MessageColor = R.color.ExtDialogMessageColor;
+                _Attr.Cancelable = false;
+                final ExtDialog mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
                 mDialog.show();
+
                 KakaoStoryService.requestPostPhoto(new StoryResponseCallback<MyStoryInfo>() {
                     @Override
                     public void onFailure(ErrorResult errorResult) {
@@ -159,8 +161,7 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
                         Toast.makeText(KakaoPostActivity.this, "upload success", Toast.LENGTH_LONG).show();
                         file.delete();
                         mDialog.dismiss();
-                        createDialog();
-
+                        CreateDialog();
                     }
 
                     @Override
@@ -184,7 +185,7 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void createDialog() {
+    private void CreateDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.move);
         _Attr.TitleColor = R.color.ExtDialogTitleColor;

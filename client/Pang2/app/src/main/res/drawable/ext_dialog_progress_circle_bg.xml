@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="1080"> <!--1080 is 3 loops instead of 1 in same amt of time-->
+
+    <!-- android:thicknessRatio="8"-->
+    <shape
+        android:innerRadiusRatio="3"
+        android:shape="ring"
+        android:thickness="@dimen/ext_dialog_progress_circle_border"
+        android:useLevel="false">
+        <size
+            android:width="@dimen/ext_dialog_progress_circle_size"
+            android:height="@dimen/ext_dialog_progress_circle_size" />
+        <gradient
+            android:angle="0"
+            android:endColor="@color/ExtDialogWidgetColor"
+            android:startColor="@android:color/transparent"
+            android:type="sweep"
+            android:useLevel="false" />
+    </shape>
+</rotate>

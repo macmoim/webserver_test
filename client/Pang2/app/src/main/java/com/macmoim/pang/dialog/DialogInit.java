@@ -107,7 +107,8 @@ public class DialogInit {
             _Builder.NegativeColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_negative_color, _Builder.NegativeColor);
         }
         if (!_Builder.WidgetColorSet) {
-            _Builder.WidgetColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_btn_widget_color, _Builder.WidgetColor);
+            final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_btn_widget_color);
+            _Builder.WidgetColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_btn_widget_color, _FB);
         }
         if (_Builder.InputCallback != null && _Builder.PositiveText == null) {
             _Builder.PositiveText = _Builder.BuilderContext.getText(android.R.string.ok);
@@ -333,7 +334,8 @@ public class DialogInit {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 Dialog.mProgress.setIndeterminateDrawable(new CircularProgressDrawable(
-                        _Builder.WidgetColor, _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_circular_progress_border)));
+                        _Builder.WidgetColor, _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_progress_circle_border)));
+                // Dialog.mProgress.setIndeterminateDrawable(_Builder.BuilderContext.getResources().getDrawable(R.drawable.ext_dialog_progress_circle_bg));
                 TintHelper.SetTint(Dialog.mProgress, _Builder.WidgetColor, true);
             } else {
                 TintHelper.SetTint(Dialog.mProgress, _Builder.WidgetColor);

@@ -422,12 +422,12 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         public void onReceive(Context context, Intent intent) {
             boolean sentToken = AppPreferences.GetInstance().getBoolean(getApplicationContext(), AppPreferences.SENT_TOKEN_TO_SERVER);
             LocalBroadcastManager.getInstance(MainActivity.this).unregisterReceiver(mRegistrationBroadcastReceiver);
-            removeDialog();
+            RemoveDialog();
         }
     }
 
     private void registerGCM() {
-        showDialog();
+        ShowDialog();
         mRegistrationBroadcastReceiver = new GCMBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(AppPreferences.REGISTRATION_COMPLETE));
@@ -453,20 +453,22 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         return true;
     }
 
-    private void showDialog() {
+    private void ShowDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Message = getResources().getString(R.string.loading);
+            _Attr.MessageColor = R.color.ExtDialogMessageColor;
+            _Attr.Cancelable = false;
+
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
     }
 
-    private void removeDialog() {
+    private void RemoveDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }

@@ -82,7 +82,7 @@ public class SearchActivity extends RequestFeedListActivity {
             return;
         }
 
-        showDialog();
+        ShowDialog();
 
         String keyword = mSearchEdit.getText().toString();
         try {
@@ -102,7 +102,7 @@ public class SearchActivity extends RequestFeedListActivity {
                 if (response != null) {
                     parseJsonFeed(response);
                 }
-                removeDialog();
+                RemoveDialog();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -112,7 +112,7 @@ public class SearchActivity extends RequestFeedListActivity {
                 if (response != null && response.data != null) {
                     Log.d(TAG, "FeedListView onErrorResponse statusCode = " + response.statusCode + ", data=" + new String(response.data));
                 }
-                removeDialog();
+                RemoveDialog();
             }
         });
 //	}
@@ -175,22 +175,22 @@ public class SearchActivity extends RequestFeedListActivity {
         }
     }
 
-
-    private void showDialog() {
+    private void ShowDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Message = getResources().getString(R.string.loading);
+            _Attr.MessageColor = R.color.ExtDialogMessageColor;
+            _Attr.Cancelable = false;
+
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
-
     }
 
-    private void removeDialog() {
+    private void RemoveDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }
@@ -207,7 +207,7 @@ public class SearchActivity extends RequestFeedListActivity {
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_SEARCH);
         mSearchEdit = null;
-        removeDialog();
+        RemoveDialog();
         super.onDestroy();
     }
 }

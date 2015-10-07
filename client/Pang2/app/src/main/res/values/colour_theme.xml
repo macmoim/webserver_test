@@ -28,4 +28,5 @@
     <color name="ExtDialogPositiveButtonTextColor">@color/md_grey_700</color>
     <color name="ExtDialogListItemTextColor">@color/md_grey_700</color>
     <color name="ExtDialogListItemSelectedColor">@color/mustard_op100</color>
+    <color name="ExtDialogWidgetColor">@color/mustard_op100</color>
 </resources>
