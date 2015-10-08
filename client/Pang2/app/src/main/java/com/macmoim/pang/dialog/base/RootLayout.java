@@ -39,6 +39,7 @@ public class RootLayout extends ViewGroup {
     private boolean mForceStack = false;
     private boolean mIsStacked = false;
     private int mButtonBarHeight;
+    private int mStackedBottomPadding;
 
     private boolean mDrawTopDivider = false;
     private boolean mDrawBottomDivider = false;
@@ -77,6 +78,7 @@ public class RootLayout extends ViewGroup {
         Resources _Res = context.getResources();
 
         mButtonBarHeight = _Res.getDimensionPixelSize(R.dimen.ext_dialog_button_frame_height);
+        mStackedBottomPadding = _Res.getDimensionPixelSize(R.dimen.ext_dialog_bg_corner_radius);
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Utils.ResolveColor(context, R.attr.ext_dialog_divider_color));
@@ -152,7 +154,7 @@ public class RootLayout extends ViewGroup {
 
         if (_HasButtons) {
             if (mIsStacked) {
-                _AvailableHeight -= _StackedHeight;
+                _AvailableHeight -= (_StackedHeight + mStackedBottomPadding);
             } else {
                 _AvailableHeight -= mButtonBarHeight;
             }
@@ -230,6 +232,7 @@ public class RootLayout extends ViewGroup {
         }
 
         if (mIsStacked) {
+            b -= mStackedBottomPadding;
             for (DialogButton mButton : mButtons) {
                 if (IsVisible(mButton)) {
                     mButton.layout(l, b - mButton.getMeasuredHeight(), r, b);
@@ -255,20 +258,20 @@ public class RootLayout extends ViewGroup {
         SetDividersVisibility(mContent, true, true);
     }
 
-    public void SetForceStack(boolean forceStack) {
-        mForceStack = forceStack;
-        invalidate();
-    }
-
     public void SetDividerColor(int color) {
         mDividerPaint.setColor(color);
         invalidate();
     }
 
-    public void SetButtonStackedGravity(GravityEnum gravity) {
+    public void SetForceStack(boolean ForceStack) {
+        mForceStack = ForceStack;
+        invalidate();
+    }
+
+    public void SetButtonStackedGravity(GravityEnum Gravity) {
         for (DialogButton mButton : mButtons) {
             if (mButton != null) {
-                mButton.SetStackedGravity(gravity);
+                mButton.SetStackedGravity(Gravity);
             }
         }
     }

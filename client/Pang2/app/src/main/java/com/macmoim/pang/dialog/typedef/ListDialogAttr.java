@@ -15,7 +15,7 @@ public class ListDialogAttr {
                           @StringRes String message, @ColorRes int messageColor,
                           CharSequence[] listItems, @ColorRes int listItemColor, ExtDialog.ListCallback listCB,
                           boolean cancelable,
-                          int bgColor, int dividerColor) {
+                          @ColorRes int bgColor, @ColorRes int dividerColor, @ColorRes int titleFrameColor) {
         this.Title = title;
         this.TitleColor = titleColor;
         this.TitleIcon = titleIcon;
@@ -28,6 +28,7 @@ public class ListDialogAttr {
         this.Cancelable = cancelable;
         this.DialogBgColor = bgColor;
         this.DividerColor = dividerColor;
+        this.TitleFrameColor = titleFrameColor;
     }
 
     @StringRes
@@ -48,8 +49,10 @@ public class ListDialogAttr {
     public ExtDialog.ListCallback ListCB = null;
 
     public boolean Cancelable = true;
-
+    @ColorRes
     public int DialogBgColor = -1;
-
+    @ColorRes
     public int DividerColor = -1;
+    @ColorRes
+    public int TitleFrameColor = -1;
 }

@@ -60,6 +60,8 @@ public class ExtDialogSt {
             }
         }
 
+        _Builder.ForceStacked(Attr.ForceStacked);
+
         if (Attr.NegativeButton != null) {
             _Builder.SetNegativeButton(Attr.NegativeButton);
 
@@ -134,11 +136,42 @@ public class ExtDialogSt {
 
         _Builder.SetCancelable(Attr.Cancelable);
 
-        _Builder.SetTitle(Attr.Title)
-                .TitleColorRes(Attr.TitleColor)
-                .ListItemColorRes(Attr.ListItemColor)
-                .ListItems(Attr.ListItems)
-                .ListItemsCallback(Attr.ListCB)
-                .Show();
+        if (Attr.DialogBgColor != -1) {
+            _Builder.DividerColorRes(Attr.DialogBgColor);
+        }
+
+        if (Attr.DividerColor != -1) {
+            _Builder.DividerColorRes(Attr.DividerColor);
+        }
+
+        if (Attr.Title != null) {
+            _Builder.SetTitle(Attr.Title);
+
+            if (Attr.TitleFrameColor != -1) {
+                _Builder.TitleFrameColorRes(Attr.TitleFrameColor);
+            }
+
+            if (Attr.TitleColor != -1) {
+                _Builder.TitleColorRes(Attr.TitleColor);
+            }
+
+            if (Attr.TitleIcon != -1) {
+                _Builder.TitleIconRes(Attr.TitleIcon);
+            }
+        }
+
+        if (Attr.ListItems != null) {
+            _Builder.ListItems(Attr.ListItems);
+
+            if (Attr.ListItemColor != -1) {
+                _Builder.ListItemColorRes(Attr.ListItemColor);
+            }
+
+            if (Attr.ListCB != null) {
+                _Builder.ListItemsCallback(Attr.ListCB);
+            }
+        }
+
+        _Builder.Show();
     }
 }

@@ -13,6 +13,7 @@ public class AlertDialogAttr {
 
     public AlertDialogAttr(@StringRes String title, @ColorRes int titleColor, @DrawableRes int titleIcon,
                            @StringRes String message, @ColorRes int messageColor,
+                           boolean forceStacked,
                            @StringRes String negative, @ColorRes int negativeColor,
                            @StringRes String positive, @ColorRes int positiveColor,
                            ExtDialog.ButtonCallback buttonCB,
@@ -23,6 +24,7 @@ public class AlertDialogAttr {
         this.TitleIcon = titleIcon;
         this.Message = message;
         this.MessageColor = messageColor;
+        this.ForceStacked = forceStacked;
         this.NegativeButton = negative;
         this.NegativeButtonColor = negativeColor;
         this.PositiveButton = positive;
@@ -45,6 +47,8 @@ public class AlertDialogAttr {
     public String Message = null;
     @ColorRes
     public int MessageColor = -1;
+
+    public boolean ForceStacked = false;
     @StringRes
     public String NegativeButton = null;
     @ColorRes

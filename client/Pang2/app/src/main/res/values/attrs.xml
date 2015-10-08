@@ -28,23 +28,14 @@
     <attr name="ext_dialog_message_color" format="color" />
     <attr name="ext_dialog_btn_positive_color" format="color" />
     <attr name="ext_dialog_btn_negative_color" format="color" />
-
-
     <attr name="ext_dialog_btn_stacked_selector" format="reference" />
-    <attr name="ext_dialog_btn_stacked_gravity" format="enum">
-        <enum name="start" value="0" />
-        <enum name="center" value="1" />
-        <enum name="end" value="2" />
-    </attr>
     <attr name="ext_dialog_btn_positive_selector" format="reference" />
     <attr name="ext_dialog_btn_negative_selector" format="reference" />
-
-
     <attr name="ext_dialog_widget_color" format="color" />
-
+    <attr name="ext_dialog_list_item_color" format="color" />
 
     <attr name="ext_dialog_list_selector" format="reference" />
-    <attr name="ext_dialog_item_color" format="color" />
+
     <attr name="ext_dialog_items_gravity" format="enum">
         <enum name="start" value="0" />
         <enum name="center" value="1" />

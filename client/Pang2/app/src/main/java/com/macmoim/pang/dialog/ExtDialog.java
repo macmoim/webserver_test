@@ -282,9 +282,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         return Utils.ResolveDrawable(getContext(), R.attr.ext_dialog_list_selector);
     }
 
-    /* package */ Drawable GetButtonSelector(DialogButtonAction which, boolean isStacked) {
-        if (isStacked) {
-            if (mBuilder.BtnSelectorStacked != 0) {
+    protected Drawable GetButtonSelector(DialogButtonAction which) {
+        if (mBuilder.ForceStacking) {
+            if (mBuilder.BtnSelectorStacked != -1) {
                 return ResourcesCompat.getDrawable(mBuilder.BuilderContext.getResources(), mBuilder.BtnSelectorStacked, null);
             }
             final Drawable d = Utils.ResolveDrawable(mBuilder.BuilderContext, R.attr.ext_dialog_btn_stacked_selector);
@@ -295,7 +295,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         } else {
             switch (which) {
                 default: {
-                    if (mBuilder.BtnSelectorPositive != 0) {
+                    if (mBuilder.BtnSelectorPositive != -1) {
                         return ResourcesCompat.getDrawable(mBuilder.BuilderContext.getResources(), mBuilder.BtnSelectorPositive, null);
                     }
                     final Drawable d = Utils.ResolveDrawable(mBuilder.BuilderContext, R.attr.ext_dialog_btn_positive_selector);
@@ -305,7 +305,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
                     return Utils.ResolveDrawable(getContext(), R.attr.ext_dialog_btn_positive_selector);
                 }
                 case NEGATIVE: {
-                    if (mBuilder.BtnSelectorNegative != 0) {
+                    if (mBuilder.BtnSelectorNegative != -1) {
                         return ResourcesCompat.getDrawable(mBuilder.BuilderContext.getResources(), mBuilder.BtnSelectorNegative, null);
                     }
                     final Drawable d = Utils.ResolveDrawable(mBuilder.BuilderContext, R.attr.ext_dialog_btn_negative_selector);
@@ -378,26 +378,38 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         // set font
         protected Typeface MediumFont = null;
         protected Typeface RegularFont = null;
-
+        // set dialog bg, divider
         protected int DialogBgColor = -1;
         protected int DividerColor = -1;
+        // title area : top
         protected CharSequence Title = null;
         protected int TitleFrameColor = -1;
         protected Drawable TitleIcon = null;
         protected int TitleColor = -1;
         protected GravityEnum TitleGravity = GravityEnum.START;
+        // message area : middle
         protected CharSequence MessageText = null;
         protected int MessageColor = -1;
         protected float MessageLineSpacing = 1.2f;
         protected GravityEnum MessageGravity = GravityEnum.START;
+        // button area :down
+        protected boolean ForceStacking = false;
+        protected GravityEnum BtnStackedGravity = GravityEnum.END;
         protected CharSequence PositiveText = null;
         protected ColorStateList PositiveColor = null;
         protected CharSequence NegativeText = null;
         protected ColorStateList NegativeColor = null;
-
+        @DrawableRes
+        protected int BtnSelectorStacked = -1;
+        @DrawableRes
+        protected int BtnSelectorPositive = -1;
+        @DrawableRes
+        protected int BtnSelectorNegative = -1;
+        // etc area : list, custom view, input, progress
         protected int WidgetColor = -1;
+        // list view
+        protected int ListItemColor = -1;
 
-        protected GravityEnum BtnStackedGravity = GravityEnum.END;
         protected GravityEnum ListItemsGravity = GravityEnum.START;
 
 
@@ -425,10 +437,10 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected DialogInterface.OnCancelListener CancelListener;
         protected DialogInterface.OnKeyListener KeyListener;
         protected DialogInterface.OnShowListener ShowListener;
-        protected boolean ForceStacking;
+
         protected boolean WrapCustomViewInScroll;
 
-        protected int ListItemColor;
+
         protected boolean ProgressCircleType;
         protected boolean ShowMinMax;
         protected int ProgressBarType = -2;
@@ -445,18 +457,10 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected String ProgressNumberFormat;
         protected NumberFormat ProgressPercentFormat;
 
-        protected boolean ListItemColorSet = false;
-
-
 
         @DrawableRes
         protected int ListSelector;
-        @DrawableRes
-        protected int BtnSelectorStacked;
-        @DrawableRes
-        protected int BtnSelectorPositive;
-        @DrawableRes
-        protected int BtnSelectorNegative;
+
 
         public final Context GetContext() {
             return BuilderContext;
@@ -492,7 +496,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             this.ProgressPercentFormat = NumberFormat.getPercentInstance();
             this.ProgressNumberFormat = "%1d/%2d";
 
-            this.BtnStackedGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_btn_stacked_gravity, this.BtnStackedGravity);
             this.ListItemsGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_items_gravity, this.ListItemsGravity);
         }
 
@@ -630,6 +633,11 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
+        public Builder ForceStacked(boolean Stacked) {
+            this.ForceStacking = Stacked;
+            return this;
+        }
+
         public Builder SetNegativeButton(@StringRes int StringRes) {
             return SetNegativeButton(this.BuilderContext.getText(StringRes));
         }
@@ -688,43 +696,62 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder ListItems(@ArrayRes int itemsRes) {
-            ListItems(this.BuilderContext.getResources().getTextArray(itemsRes));
+        public Builder BtnSelectorStacked(@DrawableRes int SelectorRes) {
+            this.BtnSelectorStacked = SelectorRes;
             return this;
         }
 
-        public Builder ListItems(@NonNull CharSequence[] items) {
-            if (this.CustomViewType != null)
-                throw new IllegalStateException("You cannot set ListItems() when you're using a custom view.");
-            this.ListItems = items;
+        public Builder BtnSelector(@DrawableRes int SelectorRes, @NonNull DialogButtonAction Which) {
+            switch (Which) {
+                case POSITIVE: {
+                    this.BtnSelectorPositive = SelectorRes;
+                    break;
+                }
+                case NEGATIVE: {
+                    this.BtnSelectorNegative = SelectorRes;
+                    break;
+                }
+            }
             return this;
         }
 
-        public Builder ListItemsCallback(@NonNull ListCallback callback) {
-            this.ListCallBack = callback;
+        public Builder ListItems(@ArrayRes int ItemsRes) {
+            ListItems(this.BuilderContext.getResources().getTextArray(ItemsRes));
+            return this;
+        }
+
+        public Builder ListItems(@NonNull CharSequence[] Items) {
+            if (this.CustomViewType != null) {
+                throw new IllegalStateException("cannot set ListItems() when you're using a custom view.");
+            }
+            this.ListItems = Items;
+            return this;
+        }
+
+        public Builder ListItemColor(@ColorInt int Color) {
+            this.ListItemColor = Color;
+            return this;
+        }
+
+        public Builder ListItemColorRes(@ColorRes int ColorRes) {
+            return ListItemColor(this.BuilderContext.getResources().getColor(ColorRes));
+        }
+
+        public Builder ListItemColorAttr(@AttrRes int ColorAttr) {
+            return ListItemColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
+        }
+
+        public Builder ListItemsCallback(@NonNull ListCallback CB) {
+            this.ListCallBack = CB;
             this.ListCallBackSingleChoice = null;
             this.ListCallBackMultiChoice = null;
             return this;
         }
 
-        public Builder ListItemColor(@ColorInt int color) {
-            this.ListItemColor = color;
-            this.ListItemColorSet = true;
-            return this;
-        }
-
-        public Builder ListItemColorRes(@ColorRes int colorRes) {
-            return ListItemColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder ListItemColorAttr(@AttrRes int colorAttr) {
-            return ListItemColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
-        }
-
-        public Builder ListItemsCallbackSingleChoice(int selectedIndex, @NonNull ListCallbackSingleChoice callback) {
-            this.SelectedIndex = selectedIndex;
+        public Builder ListItemsCallbackSingleChoice(int SelectedIdx, @NonNull ListCallbackSingleChoice CB) {
+            this.SelectedIndex = SelectedIdx;
             this.ListCallBack = null;
-            this.ListCallBackSingleChoice = callback;
+            this.ListCallBackSingleChoice = CB;
             this.ListCallBackMultiChoice = null;
             return this;
         }
@@ -734,11 +761,11 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder ListItemsCallbackMultiChoice(@Nullable Integer[] selectedIndices, @NonNull ListCallbackMultiChoice callback) {
-            this.SelectedIndices = selectedIndices;
+        public Builder ListItemsCallbackMultiChoice(@Nullable Integer[] SelectedIdxes, @NonNull ListCallbackMultiChoice CB) {
+            this.SelectedIndices = SelectedIdxes;
             this.ListCallBack = null;
             this.ListCallBackSingleChoice = null;
-            this.ListCallBackMultiChoice = callback;
+            this.ListCallBackMultiChoice = CB;
             return this;
         }
 
@@ -747,31 +774,8 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder ListSelector(@DrawableRes int selectorRes) {
-            this.ListSelector = selectorRes;
-            return this;
-        }
-
-        public Builder BtnSelectorStacked(@DrawableRes int selectorRes) {
-            this.BtnSelectorStacked = selectorRes;
-            return this;
-        }
-
-        public Builder BtnSelector(@DrawableRes int selectorRes) {
-            this.BtnSelectorPositive = selectorRes;
-            this.BtnSelectorNegative = selectorRes;
-            return this;
-        }
-
-        public Builder BtnSelector(@DrawableRes int selectorRes, @NonNull DialogButtonAction which) {
-            switch (which) {
-                default:
-                    this.BtnSelectorPositive = selectorRes;
-                    break;
-                case NEGATIVE:
-                    this.BtnSelectorNegative = selectorRes;
-                    break;
-            }
+        public Builder ListSelector(@DrawableRes int SelectorRes) {
+            this.ListSelector = SelectorRes;
             return this;
         }
 
@@ -874,11 +878,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
         public Builder KeyListener(@NonNull DialogInterface.OnKeyListener listener) {
             this.KeyListener = listener;
-            return this;
-        }
-
-        public Builder ForceStacking(boolean stacked) {
-            this.ForceStacking = stacked;
             return this;
         }
 

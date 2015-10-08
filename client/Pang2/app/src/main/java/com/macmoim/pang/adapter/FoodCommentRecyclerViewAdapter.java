@@ -107,7 +107,6 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
             public void onClick(View v) {
                 ListDialogAttr _Attr = new ListDialogAttr();
                 _Attr.Title = activity.getResources().getString(R.string.user_info);
-                _Attr.TitleColor = R.color.ExtDialogTitleColor;
                 _Attr.ListItems = new CharSequence[]{activity.getResources().getString(R.string.goto_user_profile),
                         activity.getResources().getString(R.string.goto_user_post)};
                 _Attr.ListCB = new ExtDialog.ListCallback() {
@@ -126,7 +125,6 @@ public class FoodCommentRecyclerViewAdapter extends RecyclerView.Adapter<FoodCom
                         }
                     }
                 };
-                _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
 
                 ExtDialogSt.Get().AlertListDialog(activity, _Attr);
             }

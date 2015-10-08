@@ -92,7 +92,6 @@ public class EditProfileActivity extends ProfileActivity {
     private void ShowChangeImageActionDialog() {
         ListDialogAttr _Attr = new ListDialogAttr();
         _Attr.Title = getResources().getString(R.string.change_image_action);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.ListItems = new CharSequence[]{getResources().getString(R.string.capture_image), getResources().getString(R.string.select_image)};
         _Attr.ListCB = new ExtDialog.ListCallback() {
             @Override
@@ -110,7 +109,6 @@ public class EditProfileActivity extends ProfileActivity {
                 }
             }
         };
-        _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
 
         ExtDialogSt.Get().AlertListDialog(this, _Attr);
     }

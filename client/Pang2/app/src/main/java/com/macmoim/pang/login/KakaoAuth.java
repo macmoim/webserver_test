@@ -135,7 +135,6 @@ public class KakaoAuth extends Auth{
         };*/
         ListDialogAttr _Attr = new ListDialogAttr();
         _Attr.ListItems = new CharSequence[]{hostActivity.getString(items[0].textId), hostActivity.getString(items[1].textId)};
-        _Attr.ListItemColor = R.color.ExtDialogListItemTextColor;
         _Attr.ListCB = new ExtDialog.ListCallback() {
             @Override
             public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {

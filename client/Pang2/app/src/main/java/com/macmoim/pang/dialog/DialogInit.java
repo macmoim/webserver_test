@@ -193,6 +193,9 @@ public class DialogInit {
         // }
 
         // button area : bottom
+        Dialog.vExtDialog.SetButtonStackedGravity(_Builder.BtnStackedGravity);
+        Dialog.vExtDialog.SetForceStack(_Builder.ForceStacking);
+
         if (_Builder.PositiveText != null) {
             DialogButton _PositiveTextView = Dialog.PositiveButton;
             Dialog.SetTypeFace(_PositiveTextView, _Builder.MediumFont);
@@ -205,8 +208,8 @@ public class DialogInit {
                 _Builder.PositiveColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_positive_color, _FB);
             }
             _PositiveTextView.setTextColor(_Builder.PositiveColor);
-            Dialog.PositiveButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, true));
-            Dialog.PositiveButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, false));
+            Dialog.PositiveButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE));
+            Dialog.PositiveButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE));
             Dialog.PositiveButton.setTag(DialogButtonAction.POSITIVE);
             Dialog.PositiveButton.setOnClickListener(Dialog);
             Dialog.PositiveButton.setVisibility(View.VISIBLE);
@@ -224,8 +227,8 @@ public class DialogInit {
                 _Builder.NegativeColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_negative_color, _FB);
             }
             _NnegativeTextView.setTextColor(_Builder.NegativeColor);
-            Dialog.NegativeButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, true));
-            Dialog.NegativeButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, false));
+            Dialog.NegativeButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE));
+            Dialog.NegativeButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE));
             Dialog.NegativeButton.setTag(DialogButtonAction.NEGATIVE);
             Dialog.NegativeButton.setOnClickListener(Dialog);
             Dialog.NegativeButton.setVisibility(View.VISIBLE);
@@ -240,12 +243,10 @@ public class DialogInit {
             _Builder.WidgetColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_widget_color, _FB);
         }
 
-        Dialog.vExtDialog.SetButtonStackedGravity(_Builder.BtnStackedGravity);
-        Dialog.vExtDialog.SetForceStack(_Builder.ForceStacking);
-
         // list dialog
-        if (!_Builder.ListItemColorSet) {
-            _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_item_color, _Builder.MessageColor);
+        if (_Builder.ListItemColor == -1) {
+            final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_list_item_color);
+            _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_list_item_color, _FB);
         }
 
         if (_Builder.ListCallBackMultiChoice != null) {
