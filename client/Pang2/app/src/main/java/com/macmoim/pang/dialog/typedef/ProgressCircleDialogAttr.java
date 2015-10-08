@@ -6,12 +6,14 @@ import android.support.annotation.StringRes;
 
 public class ProgressCircleDialogAttr {
     public ProgressCircleDialogAttr() {
+
     }
 
     public ProgressCircleDialogAttr(@StringRes String title, @ColorRes int titleColor,
                                     @StringRes String message, @ColorRes int messageColor,
                                     @ColorRes int widgetColor,
-                                    boolean cancelable, int bgColor) {
+                                    boolean cancelable,
+                                    int bgColor, @ColorRes int dividerColor, @ColorRes int titleFrameColor) {
         this.Title = title;
         this.TitleColor = titleColor;
         this.Message = message;
@@ -20,6 +22,8 @@ public class ProgressCircleDialogAttr {
 
         this.Cancelable = cancelable;
         this.DialogBgColor = bgColor;
+        this.DividerColor = dividerColor;
+        this.TitleFrameColor = titleFrameColor;
     }
 
     @StringRes
@@ -38,4 +42,8 @@ public class ProgressCircleDialogAttr {
     public boolean Cancelable = true;
 
     public int DialogBgColor = -1;
+    @ColorRes
+    public int DividerColor = -1;
+    @ColorRes
+    public int TitleFrameColor = -1;
 }

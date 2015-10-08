@@ -28,6 +28,10 @@ public class ExtDialogSt {
 
         _Builder.SetCancelable(Attr.Cancelable);
 
+        if (Attr.DialogBgColor != -1) {
+            _Builder.DividerColorRes(Attr.DialogBgColor);
+        }
+
         if (Attr.DividerColor != -1) {
             _Builder.DividerColorRes(Attr.DividerColor);
         }
@@ -84,21 +88,38 @@ public class ExtDialogSt {
 
         _Builder.SetCancelable(Attr.Cancelable);
 
+        if (Attr.DialogBgColor != -1) {
+            _Builder.DividerColorRes(Attr.DialogBgColor);
+        }
+
+        if (Attr.DividerColor != -1) {
+            _Builder.DividerColorRes(Attr.DividerColor);
+        }
+
         if (Attr.Title != null) {
             _Builder.SetTitle(Attr.Title);
+
+            if (Attr.TitleFrameColor != -1) {
+                _Builder.TitleFrameColorRes(Attr.TitleFrameColor);
+            }
+
+            if (Attr.TitleColor != -1) {
+                _Builder.TitleColorRes(Attr.TitleColor);
+            }
+
+            if (Attr.TitleIcon != -1) {
+                _Builder.TitleIconRes(Attr.TitleIcon);
+            }
         }
-        if (Attr.TitleColor != -1) {
-            _Builder.TitleColorRes(Attr.TitleColor);
-        }
-        if (Attr.TitleIcon != -1) {
-            _Builder.TitleIconRes(Attr.TitleIcon);
-        }
+
         if (Attr.Message != null) {
             _Builder.SetMessage(Attr.Message);
+
+            if (Attr.MessageColor != -1) {
+                _Builder.MessageColorRes(Attr.MessageColor);
+            }
         }
-        if (Attr.MessageColor != -1) {
-            _Builder.MessageColorRes(Attr.MessageColor);
-        }
+
         if (Attr.WidgetColor != -1) {
             _Builder.WidgetColorRes(Attr.WidgetColor);
         }

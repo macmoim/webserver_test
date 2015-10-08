@@ -21,8 +21,8 @@ import com.macmoim.pang.dialog.typedef.GravityEnum;
  * Created by P10452 on 2015-09-05.
  */
 public class Utils {
-    public static int AdjustAlpha(int color, @SuppressWarnings("SameParameterValue") float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
+    public static int AdjustAlpha(int color, @SuppressWarnings("SameParameterValue") float Factor) {
+        int alpha = Math.round(Color.alpha(color) * Factor);
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);
@@ -81,8 +81,8 @@ public class Utils {
         return (String) v.string;
     }
 
-    private static int GravityEnumToAttrInt(GravityEnum value) {
-        switch (value) {
+    private static int GravityEnumToAttrInt(GravityEnum Value) {
+        switch (Value) {
             case CENTER:
                 return 1;
             case END:
@@ -92,10 +92,10 @@ public class Utils {
         }
     }
 
-    public static GravityEnum ResolveGravityEnum(Context context, @AttrRes int attr, GravityEnum defaultGravity) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    public static GravityEnum ResolveGravityEnum(Context Con, @AttrRes int Attr, GravityEnum DefaultGravity) {
+        TypedArray a = Con.getTheme().obtainStyledAttributes(new int[]{Attr});
         try {
-            switch (a.getInt(0, GravityEnumToAttrInt(defaultGravity))) {
+            switch (a.getInt(0, GravityEnumToAttrInt(DefaultGravity))) {
                 case 1:
                     return GravityEnum.CENTER;
                 case 2:
@@ -108,16 +108,16 @@ public class Utils {
         }
     }
 
-    public static Drawable ResolveDrawable(Context context, @AttrRes int attr) {
-        return ResolveDrawable(context, attr, null);
+    public static Drawable ResolveDrawable(Context Con, @AttrRes int Attr) {
+        return ResolveDrawable(Con, Attr, null);
     }
 
-    private static Drawable ResolveDrawable(Context context, @AttrRes int attr, @SuppressWarnings("SameParameterValue") Drawable fallback) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    private static Drawable ResolveDrawable(Context Con, @AttrRes int Attr, @SuppressWarnings("SameParameterValue") Drawable FallBack) {
+        TypedArray a = Con.getTheme().obtainStyledAttributes(new int[]{Attr});
         try {
             Drawable d = a.getDrawable(0);
-            if (d == null && fallback != null)
-                d = fallback;
+            if (d == null && FallBack != null)
+                d = FallBack;
             return d;
         } finally {
             a.recycle();

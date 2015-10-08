@@ -350,11 +350,8 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         _Attr.Title = getString(R.string.push_agree_title);
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.push_agree);
-        _Attr.MessageColor = R.color.ExtDialogMessageColor;
         _Attr.NegativeButton = getString(R.string.disagree);
-        _Attr.NegativeButtonColor = R.color.ExtDialogNegativeButtonTextColor;
         _Attr.PositiveButton = getString(R.string.agree);
-        _Attr.PositiveButtonColor = R.color.ExtDialogPositiveButtonTextColor;
         _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
             @Override
             public void OnPositive(ExtDialog dialog) {

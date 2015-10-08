@@ -230,6 +230,7 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
 
     private void ShowDeleteDialog(final int dbId) {
         AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Cancelable = false;
         _Attr.Title = getString(R.string.delete_post_title);
         _Attr.TitleIcon = R.drawable.ic_trash;
         _Attr.Message = getString(R.string.delete_post);

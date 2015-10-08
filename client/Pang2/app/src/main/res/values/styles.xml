@@ -80,7 +80,7 @@
         <item name="ext_dialog_btn_stacked_selector">@drawable/ext_dialog_item_selector</item>
         <item name="ext_dialog_btn_positive_selector">@drawable/ext_dialog_btn_right_selector</item>
         <item name="ext_dialog_btn_negative_selector">@drawable/ext_dialog_btn_left_selector</item>
-        <item name="ext_dialog_btn_widget_color">@color/ExtDialogWidgetColor</item>
+        <item name="ext_dialog_widget_color">@color/ExtDialogWidgetColor</item>
     </style>
 
     <style name="ExtDialogButton">
