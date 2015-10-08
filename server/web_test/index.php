@@ -186,9 +186,9 @@ $app->post('/profile/image/update', function () use ($app) {
 $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $timeStamp=NULL) {
 	include __DIR__.'/image_test/thumbnailImage.php';
 	if (isset($timeStamp)) {
-		$value = rest_get_image_list_by_timestamp($category, $timeStamp);
+		$value = rest_get_image_list_by_timestamp_new($category, $timeStamp);
 	} else {
-		$value = rest_get_image_list($category);
+		$value = rest_get_image_list_new($category);
 	}
 	
 	exit ( json_encode ( $value ) );
@@ -212,6 +212,27 @@ $app->post('/gcmData', function () {
 	$value = rest_post_instantId();	
 	
 	exit(json_encode ( $value ));
+});
+
+$app->post('/page/image', function () use ($app) {
+	include 'page.php';
+	$value = saveImageFiles();
+	exit ( json_encode ( $value ) );
+
+});
+
+$app->post('/post/post_new', function () use ($app) {
+	include 'post.php';
+	$value = rest_post_new();
+	exit ( json_encode ( $value ) );
+
+});
+
+$app->get('/post/get_new/:id', function ($id) {
+	include 'post.php';
+	$value = rest_get_new($id);
+	exit ( json_encode ( $value ) );
+
 });
 
 $app->run();

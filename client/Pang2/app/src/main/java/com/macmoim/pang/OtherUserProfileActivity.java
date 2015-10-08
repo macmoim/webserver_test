@@ -3,6 +3,7 @@ package com.macmoim.pang;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 
 /**
  * Created by P11872 on 2015-08-06.
@@ -21,4 +22,8 @@ public class OtherUserProfileActivity extends ProfileActivity {
         user_name = getIntent().getStringExtra("other-user-name");
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 }

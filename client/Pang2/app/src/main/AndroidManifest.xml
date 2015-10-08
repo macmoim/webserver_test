@@ -164,7 +164,25 @@
         </activity>
 
         <activity
-            android:name="com.macmoim.pang.KakaoPostActivity"
+            android:name="com.macmoim.pang.pangeditor.PangEditorActivity2"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:parentActivityName="com.macmoim.pang.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".pangeditor.AddPageActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:parentActivityName="com.macmoim.pang.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.macmoim.pang.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".pangeditor.ViewerActivity2"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data

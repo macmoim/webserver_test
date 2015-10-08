@@ -80,14 +80,18 @@ function rest_post( $keys, $values){
 			$sql_query .= ", ";
 		}
 	}
-	$sql_query .= ") ON DUPLICATE KEY UPDATE ";
-	$arr_size = count($keys);
-	for ($count=0; $count<$arr_size; $count++) {
-		$sql_query .=" $keys[$count] = VALUES($keys[$count])";
-		if ($count != $arr_size-1) {
-			$sql_query .= ", ";
-		}
-	}
+
+	$sql_query .= ")";
+
+	// duplicate key update
+	// $sql_query .= ") ON DUPLICATE KEY UPDATE ";
+	// $arr_size = count($keys);
+	// for ($count=0; $count<$arr_size; $count++) {
+	// 	$sql_query .=" $keys[$count] = VALUES($keys[$count])";
+	// 	if ($count != $arr_size-1) {
+	// 		$sql_query .= ", ";
+	// 	}
+	// }
 	
 	$mysqli->query ( $create_table );
 
@@ -97,7 +101,11 @@ function rest_post( $keys, $values){
 	if ($mysqli->error) {
 		$debug_msg = $sql_query."///";
 		$debug_msg .= "Failed to insert profiles db: (" . $mysqli->error . ") ";
-		$ret['ret_val'] = "fail";
+		if (strpos(strtolower ($mysqli->error),'duplicate') !== false) {
+		    $ret['ret_val'] = "duplicate";
+		} else {
+			$ret['ret_val'] = "fail";
+		}
 		$ret['ret_detail'] = $debug_msg;
 		
 	} else {
@@ -223,6 +231,7 @@ function rest_put($id, $keys, $values){
 	$ret = array();
 	if ($mysqli->affected_rows == 0) {
 		$ret['ret_val'] = "fail";
+		$ret['ret_detail'] = "duplicated row";
 		$value = $ret;
 		
 		

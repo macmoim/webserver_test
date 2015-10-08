@@ -9,6 +9,9 @@ import android.provider.MediaStore;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by P10452 on 2015-07-29.
@@ -53,6 +56,16 @@ public class Util {
             return filename_arr[last_index - 1];
         } else {
             return imageUrl;
+        }
+    }
+
+    public static ArrayList<String> splitString(String value, String separator) {
+        if (value != null) {
+            String[] result = value.split(separator);
+            ArrayList<String> stringList = new ArrayList<String>(Arrays.asList(result));
+            return stringList;
+        } else {
+            return null;
         }
     }
 

@@ -853,4 +853,139 @@ function rest_post_html_update() {
 		
 	return $ret;
 }
+
+function rest_post_new() {
+	include "serverconfig.php";
+	include "./image_test/dbconfig.php";
+	$debug_msg = '';
+// 	echo "saveHTMLFile filename: ".$_FILES ['html_file'] ['name'];
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	$create_table = "CREATE TABLE if not exists posts (
+					id int auto_increment,
+					user_id varchar(30),
+					title varchar(100),
+					upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+					thumb_img_path varchar(100),
+					category varchar(20),
+					rank float,
+					PRIMARY KEY (id)
+					);";
+	
+	$mysqli->query ( $create_table );
+	
+	// set time to Seoul.
+	date_default_timezone_set("Asia/Seoul");
+	$upload_date = date ( "Y-m-d H:i:s" );
+	
+	// create and save thumbnail
+	// $thumbPath = $thumbnailFolderForClient;//'http://localhost:8080/web_test/image_test/thumbnails/';
+	// $thumb_url = isset($_POST['thumb_img_url']) ? $_POST['thumb_img_url'] : null;
+	// $thumbimagename = save_thumbnail($thumb_url);
+
+	$mysqli->autocommit ( false );
+	
+	$query = sprintf ( "INSERT INTO posts
+		(user_id, title, upload_date,category)
+		VALUES ('%s', '%s', '%s','%s')", $_POST ["user_id"], $_POST ["title"], $upload_date, $_POST ["category"]);
+	
+	$mysqli->query ( $query );
+	
+	if ($mysqli->error) {
+		echo "Failed to insert posts db: (" . $mysqli->error . ") ";
+	}
+	$insert_id = $mysqli->insert_id;
+	
+	
+	
+	if ($mysqli->affected_rows > 0) {
+		// 9. 업로드 파일을 새로 만든 파일명으로 변경 및 이동
+		include 'page.php';
+		$page_ret_val = saveImageFiles($insert_id);
+		if ($page_ret_val['ret_val'] == "success") {
+			// $mysqli->commit ();
+			$query = sprintf ("UPDATE posts SET thumb_img_path = '%s' WHERE id = %s", $page_ret_val['thumbnail_path'], $insert_id);
+			$mysqli->query($query);
+			$mysqli->commit ();
+			
+		} else {
+			$mysqli->rollback ();
+			$debug_msg = "업로드 실패";
+			return $debug_msg;
+		} // if
+	}
+	$html_saving_info = array (
+			"id" => $insert_id
+	);
+	$mysqli->close ();
+
+	$html_saving_info['ret_val'] = "success";
+	return $html_saving_info;
+}
+
+function rest_get_new($id) {
+	$post_info = array ();
+	
+	// normally this info would be pulled from a database.
+	// build JSON array.
+	
+	include "./image_test/dbconfig.php";
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+
+
+	$sql_query = "SELECT posts.user_id as p_user_id, title, upload_date, category, thumb_img_path, rank,
+					count(like_bool) as likes_sum, profiles.user_name, profiles.profile_img_url, 
+					GROUP_CONCAT(pages.content SEPARATOR '\\|') as content, GROUP_CONCAT(pages.img_path SEPARATOR '\\|') as img_path
+					FROM posts 
+					LEFT JOIN likes
+					ON likes.post_id = posts.id AND likes.like_bool = '1'
+					LEFT JOIN profiles 
+                    			ON profiles.user_id = posts.user_id
+                    LEFT JOIN pages
+                    			ON posts.id = pages.post_id
+					WHERE posts.id = '$id'";
+
+	if ($result = $mysqli->query ( $sql_query )) {
+		$row = $result->fetch_array ();
+		if (isset ( $row ['title'] )) {
+			$post_info = array (
+					"user_id" => $row ['p_user_id'],
+					"user_name" => $row ['user_name'],
+					"title" => $row ['title'],
+					"upload_date" => $row ['upload_date'],
+					"category" => $row ['category'],
+					"thumb_img_path" => $row['thumb_img_path'],
+					"rank" => $row['rank'],
+					"like_sum" => $row['likes_sum'],
+					"profile_img_url" => $row['profile_img_url'],
+					"page_content" => $row['content'],
+					"img_path" => $row['img_path'],
+					"ret_val" => "success"
+			);
+		} else {
+			// echo 'fail to get user info';
+			$post_info = array (
+					'ret_val' => "fail",
+					'ret_detail' => "fail to get post info"
+			);
+		}
+	} else {
+		$post_info = array (
+					'ret_val' => "fail",
+					'ret_detail' => "no post data in db"
+		);
+	}
+	
+	$mysqli->close ();
+	
+	return $post_info;
+}
 ?>

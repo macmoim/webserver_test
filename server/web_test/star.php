@@ -182,7 +182,7 @@ function rest_put($id, $star, $post_id, $post_user_id, $user_id) {
 
 function requestGCMmsg($post_user_id, $user_id) {
 	include 'gcmPush.php';
-	$push_msg = "ÆòÁ¡À» Ãß°¡ÇÏ¿´½À´Ï´Ù.";
+	$push_msg = "í‰ì ì„ ì¶”ê°€í•˜ì˜€ìŠµë‹ˆë‹¤.";
 	sendMsgToGcm($post_user_id, $user_id, $push_msg);
 }
 
