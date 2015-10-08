@@ -1070,8 +1070,7 @@ public class PangEditorActivity extends AppCompatActivity {
     private void ShowEditCancelDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.editor_exit_title);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
-        // _Attr.TitleIcon = R.drawable.ic_trash;
+        _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
         _Attr.MessageColor = R.color.ExtDialogMessageColor;
         _Attr.NegativeButton = getString(R.string.no);

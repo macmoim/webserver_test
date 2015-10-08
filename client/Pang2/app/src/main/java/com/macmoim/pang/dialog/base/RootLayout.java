@@ -81,7 +81,8 @@ public class RootLayout extends ViewGroup {
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Utils.ResolveColor(context, R.attr.ext_dialog_divider_color));
         mDividerTopDepth = _Res.getDimensionPixelSize(R.dimen.ext_dialog_divider_top_depth);
-        mDividerBottomDepth = mDividerButtonDepth = _Res.getDimensionPixelSize(R.dimen.ext_dialog_divider_bottom_depth);
+        mDividerBottomDepth = _Res.getDimensionPixelSize(R.dimen.ext_dialog_divider_bottom_depth);
+        mDividerButtonDepth = _Res.getDimensionPixelSize(R.dimen.ext_dialog_divider_botton_depth);
 
         /* must to acted onDraw() */
         setWillNotDraw(false);
@@ -194,11 +195,11 @@ public class RootLayout extends ViewGroup {
 
         if (mContent != null) {
             if (mDrawTopDivider) {
-                canvas.drawRect(_Padding, mContent.getTop() - mDividerTopDepth, getMeasuredWidth() - _Padding, mContent.getTop(), mDividerPaint);
+                canvas.drawRect(_Padding, mContent.getTop(), getMeasuredWidth() - _Padding, mContent.getTop() + mDividerTopDepth, mDividerPaint);
             }
 
             if (mDrawBottomDivider) {
-                canvas.drawRect(_Padding, mContent.getBottom(), getMeasuredWidth() - _Padding, mContent.getBottom() + mDividerBottomDepth, mDividerPaint);
+                canvas.drawRect(_Padding, mContent.getBottom() - mDividerBottomDepth, getMeasuredWidth() - _Padding, mContent.getBottom(), mDividerPaint);
             }
         }
 
@@ -207,8 +208,8 @@ public class RootLayout extends ViewGroup {
 
             } else {
                 if (mDrawButtonDivider) {
-                    canvas.drawRect(mButtons[INDEX_NEGATIVE].getRight() - mDividerButtonDepth, mButtons[INDEX_NEGATIVE].getTop() + mDividerBottomDepth,
-                            mButtons[INDEX_NEGATIVE].getRight(), mButtons[INDEX_NEGATIVE].getBottom() - _Padding, mDividerPaint);
+                    canvas.drawRect(mButtons[INDEX_NEGATIVE].getRight() - (mDividerButtonDepth / 2), mButtons[INDEX_NEGATIVE].getTop(),
+                            mButtons[INDEX_NEGATIVE].getRight() + (mDividerButtonDepth / 2), mButtons[INDEX_NEGATIVE].getBottom() - _Padding, mDividerPaint);
                 }
             }
         }

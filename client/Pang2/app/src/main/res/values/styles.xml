@@ -69,8 +69,13 @@
         <item name="android:backgroundDimAmount">0.5</item>
 
         <item name="ext_dialog_background_color">@color/ExtDialogBackgroundColor</item>
+        <item name="ext_dialog_divider_color">@color/ExtDialogDividerColor</item>
         <item name="ext_dialog_title_frame_color">@color/ExtDialogTitleFrmaeColor</item>
-        <item name="ext_dialog_divider">@color/ExtDialogDividerColor</item>
+        <item name="ext_dialog_title_color">@color/ExtDialogTitleColor</item>
+        <item name="ext_dialog_message_color">@color/ExtDialogMessageColor</item>
+        <item name="ext_dialog_btn_positive_color">@color/ExtDialogPositiveButtonTextColor</item>
+        <item name="ext_dialog_btn_negative_color">@color/ExtDialogNegativeButtonTextColor</item>
+
         <item name="ext_dialog_list_selector">@drawable/ext_dialog_item_selector</item>
         <item name="ext_dialog_btn_stacked_selector">@drawable/ext_dialog_item_selector</item>
         <item name="ext_dialog_btn_positive_selector">@drawable/ext_dialog_btn_right_selector</item>

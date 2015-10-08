@@ -348,7 +348,6 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Cancelable = false;
         _Attr.Title = getString(R.string.push_agree_title);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.push_agree);
         _Attr.MessageColor = R.color.ExtDialogMessageColor;

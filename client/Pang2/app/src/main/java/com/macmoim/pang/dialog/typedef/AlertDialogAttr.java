@@ -17,7 +17,7 @@ public class AlertDialogAttr {
                            @StringRes String positive, @ColorRes int positiveColor,
                            ExtDialog.ButtonCallback buttonCB,
                            boolean cancelable,
-                           int bgColor, int dividerColor) {
+                           @ColorRes int bgColor, @ColorRes int dividerColor, @ColorRes int titleFrameColor) {
         this.Title = title;
         this.TitleColor = titleColor;
         this.TitleIcon = titleIcon;
@@ -32,6 +32,7 @@ public class AlertDialogAttr {
         this.Cancelable = cancelable;
         this.DialogBgColor = bgColor;
         this.DividerColor = dividerColor;
+        this.TitleFrameColor = titleFrameColor;
     }
 
     @StringRes
@@ -56,8 +57,10 @@ public class AlertDialogAttr {
     public ExtDialog.ButtonCallback ButtonCB = null;
 
     public boolean Cancelable = true;
-
+    @ColorRes
     public int DialogBgColor = -1;
-
+    @ColorRes
     public int DividerColor = -1;
+    @ColorRes
+    public int TitleFrameColor = -1;
 }

@@ -208,7 +208,6 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -222,8 +221,6 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -234,14 +231,10 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     private void ShowDeleteDialog(final int dbId) {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.delete_post_title);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.TitleIcon = R.drawable.ic_trash;
         _Attr.Message = getString(R.string.delete_post);
-        _Attr.MessageColor = R.color.ExtDialogMessageColor;
         _Attr.NegativeButton = getString(R.string.no);
-        _Attr.NegativeButtonColor = R.color.ExtDialogNegativeButtonTextColor;
         _Attr.PositiveButton = getString(R.string.yes);
-        _Attr.PositiveButtonColor = R.color.ExtDialogPositiveButtonTextColor;
         _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
             @Override
             public void OnPositive(ExtDialog dialog) {

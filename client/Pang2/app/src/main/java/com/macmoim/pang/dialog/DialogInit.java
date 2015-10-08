@@ -1,7 +1,7 @@
 package com.macmoim.pang.dialog;
 
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
@@ -61,51 +61,164 @@ public class DialogInit {
     public static void Init(final ExtDialog Dialog) {
         final ExtDialog.Builder _Builder = Dialog.mBuilder;
 
-        Dialog.TitleTv = (TextView) Dialog.vExtDialog.findViewById(R.id.title);
-        Dialog.TitleIconView = (ImageView) Dialog.vExtDialog.findViewById(R.id.icon);
+        // declaration view id
+        // title area : top
         Dialog.TitleFrameView = Dialog.vExtDialog.findViewById(R.id.titleFrame);
-        Dialog.ContentSv = (ScrollView) Dialog.vExtDialog.findViewById(R.id.contentScrollView);
-        Dialog.ContentTv = (TextView) Dialog.vExtDialog.findViewById(R.id.content);
-        Dialog.ListItemView = (ListView) Dialog.vExtDialog.findViewById(R.id.contentListView);
+        Dialog.TitleIv = (ImageView) Dialog.vExtDialog.findViewById(R.id.icon);
+        Dialog.TitleTv = (TextView) Dialog.vExtDialog.findViewById(R.id.title);
+        // message area : middle
+        Dialog.MessageSv = (ScrollView) Dialog.vExtDialog.findViewById(R.id.contentScrollView);
+        Dialog.MessageTv = (TextView) Dialog.vExtDialog.findViewById(R.id.content);
+        // button area : bottom
         Dialog.PositiveButton = (DialogButton) Dialog.vExtDialog.findViewById(R.id.positive);
         Dialog.PositiveButton.setVisibility(_Builder.PositiveText != null ? View.VISIBLE : View.GONE);
         Dialog.NegativeButton = (DialogButton) Dialog.vExtDialog.findViewById(R.id.negative);
         Dialog.NegativeButton.setVisibility(_Builder.NegativeText != null ? View.VISIBLE : View.GONE);
+        // etc area : list, custom view, input, progress
+        Dialog.ListItemView = (ListView) Dialog.vExtDialog.findViewById(R.id.contentListView);
 
+        // set ext dialog cancleable / touch set
         Dialog.setCancelable(_Builder.Cancelable);
         Dialog.setCanceledOnTouchOutside(_Builder.Cancelable);
 
         // dialog background color
-        GradientDrawable _GradientDrawble = new GradientDrawable();
-
+        GradientDrawable _DialogBgGradient = new GradientDrawable();
         if (_Builder.DialogBgColor == -1) {
             final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_background_color);
             _Builder.DialogBgColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_background_color, _FB);
         }
+        _DialogBgGradient.setColor(_Builder.DialogBgColor);
+        _DialogBgGradient.setCornerRadius(_Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius));
+        Utils.SetBackground(Dialog.vExtDialog, _DialogBgGradient);
 
-        _GradientDrawble.setColor(_Builder.DialogBgColor);
-        _GradientDrawble.setCornerRadius(_Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius));
-        Utils.SetBackground(Dialog.vExtDialog, _GradientDrawble);
+        // dialog divider color
+        if (_Builder.DividerColor == -1) {
+            final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_divider_color);
+            _Builder.DividerColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_divider_color, _FB);
+        }
+        Dialog.vExtDialog.SetDividerColor(_Builder.DividerColor);
 
-        if (!_Builder.TitleColorSet) {
-            final int _TitleColorFallback = Utils.ResolveColor(Dialog.getContext(), android.R.attr.textColorPrimary);
-            _Builder.TitleColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_title_color, _TitleColorFallback);
+        // title area : top
+        if (Dialog.TitleFrameView != null) {
+            if (_Builder.Title == null) {
+                Dialog.TitleFrameView.setVisibility(View.GONE);
+            } else {
+                Dialog.TitleFrameView.setVisibility(View.VISIBLE);
+
+                // title frame color
+                final float _Radius = _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius);
+                final float[] _Radii = {_Radius, _Radius, _Radius, _Radius, 0, 0, 0, 0};
+                GradientDrawable _TitleFrameGrdient = new GradientDrawable();
+                if (_Builder.TitleFrameColor == -1) {
+                    final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_title_frame_color);
+                    _Builder.TitleFrameColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_title_frame_color, _FB);
+                }
+                _TitleFrameGrdient.setCornerRadii(_Radii);
+                _TitleFrameGrdient.setColor(_Builder.TitleFrameColor);
+                Utils.SetBackground(Dialog.TitleFrameView, _TitleFrameGrdient);
+
+                // title image view
+                if (Dialog.TitleIv != null) {
+                    if (_Builder.TitleIcon != null) {
+                        Dialog.TitleIv.setVisibility(View.VISIBLE);
+                        Dialog.TitleIv.setImageDrawable(_Builder.TitleIcon);
+                    } else {
+                        Dialog.TitleIv.setVisibility(View.GONE);
+                    }
+                }
+
+                // title text view
+                if (Dialog.TitleTv != null) {
+                    Dialog.SetTypeFace(Dialog.TitleTv, _Builder.MediumFont);
+                    // title text color
+                    if (_Builder.TitleColor == -1) {
+                        final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_title_color);
+                        _Builder.TitleColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_title_color, _FB);
+                    }
+                    Dialog.TitleTv.setTextColor(_Builder.TitleColor);
+
+                    Dialog.TitleTv.setGravity(_Builder.TitleGravity.GetGravity());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        //noinspection ResourceType
+                        Dialog.TitleTv.setTextAlignment(_Builder.TitleGravity.GetTextAlignment());
+                    }
+                    Dialog.TitleTv.setText(_Builder.Title);
+                }
+            }
         }
-        if (!_Builder.ContentColorSet) {
-            final int _ContentColorFallback = Utils.ResolveColor(Dialog.getContext(), android.R.attr.textColorSecondary);
-            _Builder.ContentColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_content_color, _ContentColorFallback);
+
+        // message area : medium
+        if (Dialog.MessageSv != null) {
+            if (_Builder.MessageText == null) {
+                Dialog.MessageSv.setVisibility(View.GONE);
+            } else {
+                Dialog.MessageSv.setVisibility(View.VISIBLE);
+
+                if (Dialog.MessageTv != null) {
+                    Dialog.MessageTv.setMovementMethod(new LinkMovementMethod());
+                    Dialog.SetTypeFace(Dialog.MessageTv, _Builder.RegularFont);
+                    Dialog.MessageTv.setLineSpacing(0f, _Builder.MessageLineSpacing);
+
+                    // message text color
+                    if (_Builder.MessageColor == -1) {
+                        final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_message_color);
+                        _Builder.MessageColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_message_color, _FB);
+                    }
+                    Dialog.MessageTv.setTextColor(_Builder.MessageColor);
+
+                    Dialog.MessageTv.setGravity(_Builder.MessageGravity.GetGravity());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        //noinspection ResourceType
+                        Dialog.MessageTv.setTextAlignment(_Builder.MessageGravity.GetTextAlignment());
+                    }
+
+                    Dialog.MessageTv.setText(_Builder.MessageText);
+                }
+            }
         }
+
+        // button area : bottom
+        if (_Builder.PositiveText != null) {
+            DialogButton _PositiveTextView = Dialog.PositiveButton;
+            Dialog.SetTypeFace(_PositiveTextView, _Builder.MediumFont);
+            _PositiveTextView.SetAllCapsCompat(true);
+            _PositiveTextView.setText(_Builder.PositiveText);
+            if (_Builder.PositiveColor == null) {
+                final int _Id = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_btn_positive_color);
+                final ColorStateList _FB = Utils.GetActionTextStateList(_Builder.BuilderContext, _Id);
+                _Builder.PositiveColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_positive_color, _FB);
+            }
+            _PositiveTextView.setTextColor(_Builder.PositiveColor);
+            Dialog.PositiveButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, true));
+            Dialog.PositiveButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, false));
+            Dialog.PositiveButton.setTag(DialogButtonAction.POSITIVE);
+            Dialog.PositiveButton.setOnClickListener(Dialog);
+            Dialog.PositiveButton.setVisibility(View.VISIBLE);
+        }
+
+        if (_Builder.NegativeText != null) {
+            DialogButton _NnegativeTextView = Dialog.NegativeButton;
+            Dialog.SetTypeFace(_NnegativeTextView, _Builder.MediumFont);
+            _NnegativeTextView.SetAllCapsCompat(true);
+            _NnegativeTextView.setText(_Builder.NegativeText);
+            if (_Builder.NegativeColor == null) {
+                final int _Id = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_btn_negative_color);
+                final ColorStateList _FB = Utils.GetActionTextStateList(_Builder.BuilderContext, _Id);
+                _Builder.NegativeColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_negative_color, _FB);
+            }
+            _NnegativeTextView.setTextColor(_Builder.NegativeColor);
+            Dialog.NegativeButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, true));
+            Dialog.NegativeButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, false));
+            Dialog.NegativeButton.setTag(DialogButtonAction.NEGATIVE);
+            Dialog.NegativeButton.setOnClickListener(Dialog);
+            Dialog.NegativeButton.setVisibility(View.VISIBLE);
+        }
+
         if (!_Builder.ListItemColorSet) {
-            _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_item_color, _Builder.ContentColor);
+            _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_item_color, _Builder.MessageColor);
         }
-        if (!_Builder.PositiveColorSet) {
-            _Builder.PositiveColor = Dialog.getContext().getResources().getColorStateList(R.color.black_op100);
-            _Builder.PositiveColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_positive_color, _Builder.PositiveColor);
-        }
-        if (!_Builder.NegativeColorSet) {
-            _Builder.NegativeColor = Dialog.getContext().getResources().getColorStateList(R.color.black_op100);
-            _Builder.NegativeColor = Utils.ResolveActionTextColorStateList(_Builder.BuilderContext, R.attr.ext_dialog_btn_negative_color, _Builder.NegativeColor);
-        }
+
+
         if (!_Builder.WidgetColorSet) {
             final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_btn_widget_color);
             _Builder.WidgetColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_btn_widget_color, _FB);
@@ -114,133 +227,10 @@ public class DialogInit {
             _Builder.PositiveText = _Builder.BuilderContext.getText(android.R.string.ok);
         }
 
-        if (_Builder.TitleIcon != null) {
-            Dialog.TitleIconView.setVisibility(View.VISIBLE);
-            Dialog.TitleIconView.setImageDrawable(_Builder.TitleIcon);
-        } else {
-            Drawable d = Utils.ResolveDrawable(_Builder.BuilderContext, R.attr.ext_dialog_title_icon);
-            if (d != null) {
-                Dialog.TitleIconView.setVisibility(View.VISIBLE);
-                Dialog.TitleIconView.setImageDrawable(d);
-            } else {
-                Dialog.TitleIconView.setVisibility(View.GONE);
-            }
-        }
-
-        int _MaxIconSize = _Builder.MaxIconSize;
-        if (_MaxIconSize == -1) {
-            _MaxIconSize = Utils.ResolveDimension(_Builder.BuilderContext, R.attr.ext_dialog_title_icon_max_size);
-        }
-        if (_Builder.LimitIconToDefaultSize || Utils.ResolveBoolean(_Builder.BuilderContext, R.attr.ext_dialog_title_icon_limit_default_size)) {
-            _MaxIconSize = _Builder.BuilderContext.getResources().getDimensionPixelSize(R.dimen.ext_dialog_title_frame_icon_max_size);
-        }
-        if (_MaxIconSize > -1) {
-            Dialog.TitleIconView.setAdjustViewBounds(true);
-            Dialog.TitleIconView.setMaxHeight(_MaxIconSize);
-            Dialog.TitleIconView.setMaxWidth(_MaxIconSize);
-            Dialog.TitleIconView.requestLayout();
-        }
-
-        if (Dialog.TitleTv != null) {
-            Dialog.SetTypeFace(Dialog.TitleTv, _Builder.MediumFont);
-            Dialog.TitleTv.setTextColor(_Builder.TitleColor);
-            Dialog.TitleTv.setGravity(_Builder.TitleGravity.GetGravity());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                //noinspection ResourceType
-                Dialog.TitleTv.setTextAlignment(_Builder.TitleGravity.GetTextAlignment());
-            }
-
-            if (_Builder.Title == null) {
-                Dialog.TitleFrameView.setVisibility(View.GONE);
-            } else {
-                Dialog.TitleTv.setText(_Builder.Title);
-                Dialog.TitleFrameView.setVisibility(View.VISIBLE);
-
-                if (_Builder.TitleFrameColor == -1) {
-                    final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_title_frame_color);
-                    _Builder.TitleFrameColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_title_frame_color, _FB);
-                }
-                if (_Builder.TitleFrameColor != -1) {
-                    GradientDrawable drawable = new GradientDrawable();
-                    final float _Radius = _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_bg_corner_radius);
-                    float[] _Radii = {_Radius, _Radius, _Radius, _Radius, 0, 0, 0, 0};
-                    drawable.setCornerRadii(_Radii);
-                    drawable.setColor(_Builder.TitleFrameColor);
-                    Utils.SetBackground(Dialog.TitleFrameView, drawable);
-                }
-            }
-        }
-
-        if (!_Builder.DividerColorSet) {
-            final int dividerFallback = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_divider);
-            _Builder.DividerColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_divider_color, dividerFallback);
-        }
-        Dialog.vExtDialog.SetDividerColor(_Builder.DividerColor);
-
-        if (Dialog.ContentTv != null) {
-            Dialog.ContentTv.setMovementMethod(new LinkMovementMethod());
-            Dialog.SetTypeFace(Dialog.ContentTv, _Builder.RegularFont);
-            Dialog.ContentTv.setLineSpacing(0f, _Builder.ContentLineSpacingMultiplier);
-            if (_Builder.PositiveColor == null) {
-                Dialog.ContentTv.setLinkTextColor(Utils.ResolveColor(Dialog.getContext(), android.R.attr.textColorPrimary));
-            } else {
-                Dialog.ContentTv.setLinkTextColor(_Builder.PositiveColor);
-            }
-            Dialog.ContentTv.setTextColor(_Builder.ContentColor);
-            Dialog.ContentTv.setGravity(_Builder.ContentGravity.GetGravity());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                //noinspection ResourceType
-                Dialog.ContentTv.setTextAlignment(_Builder.ContentGravity.GetTextAlignment());
-            }
-
-            if (_Builder.Content != null) {
-                Dialog.ContentTv.setText(_Builder.Content);
-                Dialog.ContentTv.setVisibility(View.VISIBLE);
-                if (Dialog.ContentSv != null) {
-                    Dialog.ContentSv.setVisibility(View.VISIBLE);
-                }
-            } else {
-                Dialog.ContentTv.setVisibility(View.GONE);
-                if (Dialog.ContentSv != null) {
-                    Dialog.ContentSv.setVisibility(View.GONE);
-                }
-            }
-        }
 
         Dialog.vExtDialog.SetButtonStackedGravity(_Builder.BtnStackedGravity);
         Dialog.vExtDialog.SetForceStack(_Builder.ForceStacking);
 
-        boolean _TtextAllCaps;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            _TtextAllCaps = Utils.ResolveBoolean(_Builder.BuilderContext, android.R.attr.textAllCaps, true);
-            if (_TtextAllCaps) {
-                _TtextAllCaps = Utils.ResolveBoolean(_Builder.BuilderContext, R.attr.textAllCaps, true);
-            }
-        } else {
-            _TtextAllCaps = Utils.ResolveBoolean(_Builder.BuilderContext, R.attr.textAllCaps, true);
-        }
-
-        DialogButton _PositiveTextView = Dialog.PositiveButton;
-        Dialog.SetTypeFace(_PositiveTextView, _Builder.MediumFont);
-        _PositiveTextView.SetAllCapsCompat(_TtextAllCaps);
-        _PositiveTextView.setText(_Builder.PositiveText);
-        _PositiveTextView.setTextColor(_Builder.PositiveColor);
-        Dialog.PositiveButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, true));
-        Dialog.PositiveButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.POSITIVE, false));
-        Dialog.PositiveButton.setTag(DialogButtonAction.POSITIVE);
-        Dialog.PositiveButton.setOnClickListener(Dialog);
-        Dialog.PositiveButton.setVisibility(View.VISIBLE);
-
-        DialogButton _NnegativeTextView = Dialog.NegativeButton;
-        Dialog.SetTypeFace(_NnegativeTextView, _Builder.MediumFont);
-        _NnegativeTextView.SetAllCapsCompat(_TtextAllCaps);
-        _NnegativeTextView.setText(_Builder.NegativeText);
-        _NnegativeTextView.setTextColor(_Builder.NegativeColor);
-        Dialog.NegativeButton.SetStackedSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, true));
-        Dialog.NegativeButton.SetDefaultSelector(Dialog.GetButtonSelector(DialogButtonAction.NEGATIVE, false));
-        Dialog.NegativeButton.setTag(DialogButtonAction.NEGATIVE);
-        Dialog.NegativeButton.setOnClickListener(Dialog);
-        Dialog.NegativeButton.setVisibility(View.VISIBLE);
 
         if (_Builder.ListCallBackMultiChoice != null) {
             Dialog.SelectedIndicesList = new ArrayList<>();
@@ -347,13 +337,13 @@ public class DialogInit {
                 Dialog.mProgress.setMax(_Builder.ProgressMax);
                 Dialog.mProgressLabel = (TextView) Dialog.vExtDialog.findViewById(R.id.label);
                 if (Dialog.mProgressLabel != null) {
-                    Dialog.mProgressLabel.setTextColor(_Builder.ContentColor);
+                    Dialog.mProgressLabel.setTextColor(_Builder.MessageColor);
                     Dialog.SetTypeFace(Dialog.mProgressLabel, _Builder.MediumFont);
                     Dialog.mProgressLabel.setText(_Builder.ProgressPercentFormat.format(0));
                 }
                 Dialog.mProgressMinMax = (TextView) Dialog.vExtDialog.findViewById(R.id.minMax);
                 if (Dialog.mProgressMinMax != null) {
-                    Dialog.mProgressMinMax.setTextColor(_Builder.ContentColor);
+                    Dialog.mProgressMinMax.setTextColor(_Builder.MessageColor);
                     Dialog.SetTypeFace(Dialog.mProgressMinMax, _Builder.RegularFont);
 
                     if (_Builder.ShowMinMax) {
@@ -390,8 +380,8 @@ public class DialogInit {
         Dialog.SetInternalInputCallback();
         Dialog.InputEdText.setHint(_Builder.InputHint);
         Dialog.InputEdText.setSingleLine();
-        Dialog.InputEdText.setTextColor(_Builder.ContentColor);
-        Dialog.InputEdText.setHintTextColor(Utils.AdjustAlpha(_Builder.ContentColor, 0.3f));
+        Dialog.InputEdText.setTextColor(_Builder.MessageColor);
+        Dialog.InputEdText.setHintTextColor(Utils.AdjustAlpha(_Builder.MessageColor, 0.3f));
         TintHelper.SetTint(Dialog.InputEdText, Dialog.mBuilder.WidgetColor);
 
         if (_Builder.InputType != -1) {

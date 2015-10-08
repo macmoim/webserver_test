@@ -13,7 +13,6 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
-import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -61,23 +60,26 @@ import java.util.List;
  */
 public class ExtDialog extends DialogBase implements View.OnClickListener, AdapterView.OnItemClickListener {
     protected final Builder mBuilder;
-    protected ListView ListItemView;
-    protected ImageView TitleIconView;
-    protected TextView TitleTv;
-    protected View TitleFrameView;
-    protected FrameLayout CustomViewFrame;
-    protected ProgressBar mProgress;
-    protected TextView mProgressLabel;
-    protected TextView mProgressMinMax;
-    protected ScrollView ContentSv;
-    protected TextView ContentTv;
-    protected EditText InputEdText;
-    protected TextView InputMinMaxTv;
+
+    protected View TitleFrameView = null;
+    protected ImageView TitleIv = null;
+    protected TextView TitleTv = null;
+
+    protected ScrollView MessageSv;
+    protected TextView MessageTv;
 
     protected DialogButton PositiveButton;
     protected DialogButton NegativeButton;
+
+    protected FrameLayout CustomViewFrame;
+    protected ListView ListItemView;
     protected ListType mListType;
     protected List<Integer> SelectedIndicesList;
+    protected ProgressBar mProgress;
+    protected TextView mProgressLabel;
+    protected TextView mProgressMinMax;
+    protected EditText InputEdText;
+    protected TextView InputMinMaxTv;
 
     public final Builder GetBuilder() {
         return mBuilder;
@@ -94,14 +96,14 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         DialogInit.Init(this);
     }
 
-    public final void SetTypeFace(TextView target, Typeface t) {
-        if (t == null) {
+    public final void SetTypeFace(TextView Target, Typeface Type) {
+        if (Type == null) {
             return;
         }
 
-        int _Flags = target.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG;
-        target.setPaintFlags(_Flags);
-        target.setTypeface(t);
+        int _Flags = Target.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG;
+        Target.setPaintFlags(_Flags);
+        Target.setTypeface(Type);
     }
 
     protected final void CheckIfListInitScroll() {
@@ -373,23 +375,37 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
     public static class Builder {
         protected final Context BuilderContext;
-        protected CharSequence Title;
+        // set font
+        protected Typeface MediumFont = null;
+        protected Typeface RegularFont = null;
+
+        protected int DialogBgColor = -1;
+        protected int DividerColor = -1;
+        protected CharSequence Title = null;
+        protected int TitleFrameColor = -1;
+        protected Drawable TitleIcon = null;
+        protected int TitleColor = -1;
         protected GravityEnum TitleGravity = GravityEnum.START;
-        protected GravityEnum ContentGravity = GravityEnum.START;
+        protected CharSequence MessageText = null;
+        protected int MessageColor = -1;
+        protected float MessageLineSpacing = 1.2f;
+        protected GravityEnum MessageGravity = GravityEnum.START;
+        protected CharSequence PositiveText = null;
+        protected ColorStateList PositiveColor = null;
+        protected CharSequence NegativeText = null;
+        protected ColorStateList NegativeColor = null;
+
+
         protected GravityEnum BtnStackedGravity = GravityEnum.END;
         protected GravityEnum ListItemsGravity = GravityEnum.START;
         protected GravityEnum ButtonsGravity = GravityEnum.START;
-        protected int TitleFrameColor = -1;
-        protected int TitleColor = -1;
-        protected int ContentColor = -1;
-        protected CharSequence Content;
+
+
         protected CharSequence[] ListItems;
-        protected CharSequence PositiveText;
-        protected CharSequence NegativeText;
+
         protected View CustomViewType;
         protected int WidgetColor;
-        protected ColorStateList PositiveColor;
-        protected ColorStateList NegativeColor;
+
         protected ButtonCallback CallBack;
         protected ListCallback ListCallBack;
         protected ListCallbackSingleChoice ListCallBackSingleChoice;
@@ -398,15 +414,12 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected boolean AlwaysCallMultiChoiceCallback = false;
         protected boolean AlwaysCallSingleChoiceCallback = false;
         protected boolean Cancelable = true;
-        protected float ContentLineSpacingMultiplier = 1.2f;
+
         protected int SelectedIndex = -1;
         protected Integer[] SelectedIndices = null;
         protected boolean AutoDismiss = true;
-        protected Typeface RegularFont;
-        protected Typeface MediumFont;
-        protected Drawable TitleIcon;
-        protected boolean LimitIconToDefaultSize;
-        protected int MaxIconSize = -1;
+
+
         protected ListAdapter Adapter;
         protected DialogInterface.OnDismissListener DismissListener;
         protected DialogInterface.OnCancelListener CancelListener;
@@ -414,8 +427,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected DialogInterface.OnShowListener ShowListener;
         protected boolean ForceStacking;
         protected boolean WrapCustomViewInScroll;
-        protected int DividerColor;
-        protected int DialogBgColor = -1;
+
         protected int ListItemColor;
         protected boolean ProgressCircleType;
         protected boolean ShowMinMax;
@@ -433,14 +445,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected String ProgressNumberFormat;
         protected NumberFormat ProgressPercentFormat;
 
-        protected boolean DialogBgColorSet = false;
-        protected boolean TitleColorSet = false;
-        protected boolean ContentColorSet = false;
         protected boolean ListItemColorSet = false;
-        protected boolean PositiveColorSet = false;
-        protected boolean NegativeColorSet = false;
         protected boolean WidgetColorSet = false;
-        protected boolean DividerColorSet = false;
+
 
         @DrawableRes
         protected int ListSelector;
@@ -458,34 +465,18 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         public Builder(@NonNull Context context) {
             this.BuilderContext = context;
 
-            final int _Blue = context.getResources().getColor(R.color.md_blue_600);
-            this.WidgetColor = Utils.ResolveColor(context, R.attr.colorAccent, _Blue);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.WidgetColor = Utils.ResolveColor(context, android.R.attr.colorAccent, this.WidgetColor);
-            }
-
-            this.PositiveColor = Utils.GetActionTextStateList(context, this.WidgetColor);
-            this.NegativeColor = Utils.GetActionTextStateList(context, this.WidgetColor);
-
-            this.ProgressPercentFormat = NumberFormat.getPercentInstance();
-            this.ProgressNumberFormat = "%1d/%2d";
-
-            this.TitleGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_title_gravity, this.TitleGravity);
-            this.ContentGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_content_gravity, this.ContentGravity);
-            this.BtnStackedGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_btn_stacked_gravity, this.BtnStackedGravity);
-            this.ListItemsGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_items_gravity, this.ListItemsGravity);
-            this.ButtonsGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_btn_gravity, this.ButtonsGravity);
-
+            // font set
             final String _MediumFont = Utils.ResolveString(context, R.attr.ext_dialog_medium_font);
             final String _RegularFont = Utils.ResolveString(context, R.attr.ext_dialog_regular_font);
             TypeFace(_MediumFont, _RegularFont);
 
             if (this.MediumFont == null) {
                 try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         this.MediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL);
-                    else
+                    } else {
                         this.MediumFont = Typeface.create("sans-serif", Typeface.BOLD);
+                    }
                 } catch (Exception ignored) {
 
                 }
@@ -497,95 +488,103 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
                 }
             }
+
+            final int _Blue = context.getResources().getColor(R.color.md_blue_600);
+            this.WidgetColor = Utils.ResolveColor(context, R.attr.colorAccent, _Blue);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                this.WidgetColor = Utils.ResolveColor(context, android.R.attr.colorAccent, this.WidgetColor);
+            }
+
+            //this.PositiveColor = Utils.GetActionTextStateList(context, this.WidgetColor);
+            //this.NegativeColor = Utils.GetActionTextStateList(context, this.WidgetColor);
+
+            this.ProgressPercentFormat = NumberFormat.getPercentInstance();
+            this.ProgressNumberFormat = "%1d/%2d";
+
+            this.BtnStackedGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_btn_stacked_gravity, this.BtnStackedGravity);
+            this.ListItemsGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_items_gravity, this.ListItemsGravity);
+            this.ButtonsGravity = Utils.ResolveGravityEnum(context, R.attr.ext_dialog_btn_gravity, this.ButtonsGravity);
         }
 
-        public Builder DialogBgColor(@ColorInt int color) {
-            this.DialogBgColor = color;
-            this.DialogBgColorSet = true;
+        public Builder TypeFace(@Nullable Typeface Medium, @Nullable Typeface Regular) {
+            this.MediumFont = Medium;
+            this.RegularFont = Regular;
             return this;
         }
 
-        public Builder DialogBgColorRes(@ColorRes int colorRes) {
-            return DialogBgColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder DialogBgColorAttr(@AttrRes int colorAttr) {
-            return DialogBgColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
-        }
-
-        public Builder DividerColor(@ColorInt int color) {
-            this.DividerColor = color;
-            this.DividerColorSet = true;
-            return this;
-        }
-
-        public Builder DividerColorRes(@ColorRes int colorRes) {
-            return DividerColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder DividerColorAttr(@AttrRes int colorAttr) {
-            return DividerColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
-        }
-
-        public Builder SetTitleFrameColor(@ColorInt int color) {
-            this.TitleFrameColor = color;
-            return this;
-        }
-
-        public Builder SetTitleFrameColorRes(@ColorRes int colorRes) {
-            return SetTitleFrameColor(this.BuilderContext.getResources().getColor(colorRes));
-        }
-
-        public Builder SetTitle(@StringRes int titleRes) {
-            SetTitle(this.BuilderContext.getText(titleRes));
-            return this;
-        }
-
-        public Builder SetTitle(@NonNull CharSequence title) {
-            this.Title = title;
-            return this;
-        }
-
-        public Builder TitleGravity(@NonNull GravityEnum gravity) {
-            this.TitleGravity = gravity;
-            return this;
-        }
-
-        public Builder TitleColor(@ColorInt int color) {
-            this.TitleColor = color;
-            this.TitleColorSet = true;
-            return this;
-        }
-
-        public Builder TitleColorRes(@ColorRes int colorRes) {
-            TitleColor(this.BuilderContext.getResources().getColor(colorRes));
-            return this;
-        }
-
-        public Builder TitleColorAttr(@AttrRes int colorAttr) {
-            TitleColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
-            return this;
-        }
-
-        public Builder TypeFace(@Nullable Typeface medium, @Nullable Typeface regular) {
-            this.MediumFont = medium;
-            this.RegularFont = regular;
-            return this;
-        }
-
-        public Builder TypeFace(@Nullable String medium, @Nullable String regular) {
-            if (medium != null) {
-                this.MediumFont = TypeFaceHelper.get(this.BuilderContext, medium);
+        public Builder TypeFace(@Nullable String Medium, @Nullable String Regular) {
+            if (Medium != null) {
+                this.MediumFont = TypeFaceHelper.Get(this.BuilderContext, Medium);
                 if (this.MediumFont == null) {
-                    throw new IllegalArgumentException("No font asset found for " + medium);
+                    throw new IllegalArgumentException("no font asset found for " + Medium);
                 }
             }
-            if (regular != null) {
-                this.RegularFont = TypeFaceHelper.get(this.BuilderContext, regular);
+            if (Regular != null) {
+                this.RegularFont = TypeFaceHelper.Get(this.BuilderContext, Regular);
                 if (this.RegularFont == null) {
-                    throw new IllegalArgumentException("No font asset found for " + regular);
+                    throw new IllegalArgumentException("no font asset found for " + Regular);
                 }
             }
+            return this;
+        }
+
+        public Builder DialogBgColor(@ColorInt int Color) {
+            this.DialogBgColor = Color;
+            return this;
+        }
+
+        public Builder DialogBgColorRes(@ColorRes int ColorRes) {
+            return DialogBgColor(this.BuilderContext.getResources().getColor(ColorRes));
+        }
+
+        public Builder DialogBgColorAttr(@AttrRes int ColorAttr) {
+            return DialogBgColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
+        }
+
+        public Builder DividerColor(@ColorInt int Color) {
+            this.DividerColor = Color;
+            return this;
+        }
+
+        public Builder DividerColorRes(@ColorRes int ColorRes) {
+            return DividerColor(this.BuilderContext.getResources().getColor(ColorRes));
+        }
+
+        public Builder DividerColorAttr(@AttrRes int ColorAttr) {
+            return DividerColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
+        }
+
+        public Builder SetTitle(@StringRes int TitleRes) {
+            SetTitle(this.BuilderContext.getText(TitleRes));
+            return this;
+        }
+
+        public Builder SetTitle(@NonNull CharSequence Title) {
+            this.Title = Title;
+            return this;
+        }
+
+        public Builder TitleFrameColor(@ColorInt int Color) {
+            this.TitleFrameColor = Color;
+            return this;
+        }
+
+        public Builder TitleFrameColorRes(@ColorRes int ColorRes) {
+            return TitleFrameColor(this.BuilderContext.getResources().getColor(ColorRes));
+        }
+
+        public Builder TitleColor(@ColorInt int Color) {
+            this.TitleColor = Color;
+            return this;
+        }
+
+        public Builder TitleColorRes(@ColorRes int ColorRes) {
+            TitleColor(this.BuilderContext.getResources().getColor(ColorRes));
+            return this;
+        }
+
+        public Builder TitleColorAttr(@AttrRes int ColorAttr) {
+            TitleColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
             return this;
         }
 
@@ -596,54 +595,96 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder TitleIconRes(@DrawableRes int Icon) {
-            if (Icon != -1) {
-                this.TitleIcon = ResourcesCompat.getDrawable(BuilderContext.getResources(), Icon, null);
+        public Builder TitleIconRes(@DrawableRes int IconRes) {
+            if (IconRes != -1) {
+                this.TitleIcon = ResourcesCompat.getDrawable(BuilderContext.getResources(), IconRes, null);
             }
             return this;
         }
 
-        public Builder SetMessage(@StringRes int contentRes) {
-            SetMessage(this.BuilderContext.getText(contentRes));
+        public Builder SetMessage(@StringRes int MessageRes) {
+            SetMessage(this.BuilderContext.getText(MessageRes));
             return this;
         }
 
-        public Builder SetMessage(@NonNull CharSequence content) {
+        public Builder SetMessage(@NonNull CharSequence MessageString) {
             if (this.CustomViewType != null) {
-                throw new IllegalStateException("You cannot set content() when you're using a custom view.");
+                throw new IllegalStateException("you cannot set message string when you're using a custom view.");
             }
-            this.Content = content;
+            this.MessageText = MessageString;
             return this;
         }
 
-        public Builder SetMessage(@StringRes int contentRes, Object... formatArgs) {
-            SetMessage(this.BuilderContext.getString(contentRes, formatArgs));
+        public Builder SetMessage(@StringRes int MessageRes, Object... FormatArgs) {
+            SetMessage(this.BuilderContext.getString(MessageRes, FormatArgs));
             return this;
         }
 
-        public Builder MessageColor(@ColorInt int color) {
-            this.ContentColor = color;
-            this.ContentColorSet = true;
+        public Builder MessageColor(@ColorInt int Color) {
+            this.MessageColor = Color;
             return this;
         }
 
-        public Builder MessageColorRes(@ColorRes int colorRes) {
-            MessageColor(this.BuilderContext.getResources().getColor(colorRes));
+        public Builder MessageColorRes(@ColorRes int ColorRes) {
+            MessageColor(this.BuilderContext.getResources().getColor(ColorRes));
             return this;
         }
 
-        public Builder MessageColorAttr(@AttrRes int colorAttr) {
-            MessageColor(Utils.ResolveColor(this.BuilderContext, colorAttr));
+        public Builder MessageColorAttr(@AttrRes int ColorAttr) {
+            MessageColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
+            return this;
+        }
+        
+        public Builder SetNegativeButton(@StringRes int negativeRes) {
+            return SetNegativeButton(this.BuilderContext.getText(negativeRes));
+        }
+
+        public Builder SetNegativeButton(@NonNull CharSequence message) {
+            this.NegativeText = message;
             return this;
         }
 
-        public Builder MessageGravity(@NonNull GravityEnum gravity) {
-            this.ContentGravity = gravity;
+        public Builder NegativeColor(@ColorInt int color) {
+            return NegativeColor(Utils.GetActionTextStateList(BuilderContext, color));
+        }
+
+        public Builder NegativeColorRes(@ColorRes int colorRes) {
+            return NegativeColor(Utils.GetActionTextColorStateList(this.BuilderContext, colorRes));
+        }
+
+        public Builder NegativeColorAttr(@AttrRes int colorAttr) {
+            return NegativeColor(Utils.ResolveActionTextColorStateList(this.BuilderContext, colorAttr, null));
+        }
+
+        public Builder NegativeColor(ColorStateList colorStateList) {
+            this.NegativeColor = colorStateList;
             return this;
         }
 
-        public Builder MessageLineSpacing(float multiplier) {
-            this.ContentLineSpacingMultiplier = multiplier;
+        public Builder SetPositiveButton(@StringRes int postiveRes) {
+            SetPositiveButton(this.BuilderContext.getText(postiveRes));
+            return this;
+        }
+
+        public Builder SetPositiveButton(@NonNull CharSequence message) {
+            this.PositiveText = message;
+            return this;
+        }
+
+        public Builder PositiveTextColor(@ColorInt int color) {
+            return PositiveTextColor(Utils.GetActionTextStateList(BuilderContext, color));
+        }
+
+        public Builder PositiveColorRes(@ColorRes int colorRes) {
+            return PositiveTextColor(Utils.GetActionTextColorStateList(this.BuilderContext, colorRes));
+        }
+
+        public Builder PositiveColorAttr(@AttrRes int colorAttr) {
+            return PositiveTextColor(Utils.ResolveActionTextColorStateList(this.BuilderContext, colorAttr, null));
+        }
+
+        public Builder PositiveTextColor(ColorStateList colorStateList) {
+            this.PositiveColor = colorStateList;
             return this;
         }
 
@@ -716,61 +757,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder SetPositiveButton(@StringRes int postiveRes) {
-            SetPositiveButton(this.BuilderContext.getText(postiveRes));
-            return this;
-        }
-
-        public Builder SetPositiveButton(@NonNull CharSequence message) {
-            this.PositiveText = message;
-            return this;
-        }
-
-        public Builder PositiveTextColor(@ColorInt int color) {
-            return PositiveTextColor(Utils.GetActionTextStateList(BuilderContext, color));
-        }
-
-        public Builder PositiveColorRes(@ColorRes int colorRes) {
-            return PositiveTextColor(Utils.GetActionTextColorStateList(this.BuilderContext, colorRes));
-        }
-
-        public Builder PositiveColorAttr(@AttrRes int colorAttr) {
-            return PositiveTextColor(Utils.ResolveActionTextColorStateList(this.BuilderContext, colorAttr, null));
-        }
-
-        public Builder PositiveTextColor(ColorStateList colorStateList) {
-            this.PositiveColor = colorStateList;
-            this.PositiveColorSet = true;
-            return this;
-        }
-
-        public Builder NegativeColor(@ColorInt int color) {
-            return NegativeColor(Utils.GetActionTextStateList(BuilderContext, color));
-        }
-
-        public Builder NegativeColorRes(@ColorRes int colorRes) {
-            return NegativeColor(Utils.GetActionTextColorStateList(this.BuilderContext, colorRes));
-        }
-
-        public Builder NegativeColorAttr(@AttrRes int colorAttr) {
-            return NegativeColor(Utils.ResolveActionTextColorStateList(this.BuilderContext, colorAttr, null));
-        }
-
-        public Builder NegativeColor(ColorStateList colorStateList) {
-            this.NegativeColor = colorStateList;
-            this.NegativeColorSet = true;
-            return this;
-        }
-
-        public Builder SetNegativeButton(@StringRes int negativeRes) {
-            return SetNegativeButton(this.BuilderContext.getText(negativeRes));
-        }
-
-        public Builder SetNegativeButton(@NonNull CharSequence message) {
-            this.NegativeText = message;
-            return this;
-        }
-
         public Builder ListSelector(@DrawableRes int selectorRes) {
             this.ListSelector = selectorRes;
             return this;
@@ -810,7 +796,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         }
 
         public Builder CustomView(@NonNull View view, boolean wrapInScrollView) {
-            if (this.Content != null) {
+            if (this.MessageText != null) {
                 throw new IllegalStateException("You cannot use CustomViewType() when you have content set.");
             } else if (this.ListItems != null) {
                 throw new IllegalStateException("You cannot use CustomViewType() when you have ListItems set.");
@@ -895,20 +881,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             this.Adapter = adapter;
             this.ListCallbackCustom = callback;
             return this;
-        }
-
-        public Builder LimitIconToDefaultSize() {
-            this.LimitIconToDefaultSize = true;
-            return this;
-        }
-
-        public Builder MaxIconSize(int maxIconSize) {
-            this.MaxIconSize = maxIconSize;
-            return this;
-        }
-
-        public Builder MaxIconSizeRes(@DimenRes int maxIconSizeRes) {
-            return MaxIconSize((int) this.BuilderContext.getResources().getDimension(maxIconSizeRes));
         }
 
         public Builder ShowListener(@NonNull DialogInterface.OnShowListener listener) {
@@ -1043,7 +1015,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
     @Nullable
     public final TextView GetContentView() {
-        return ContentTv;
+        return MessageTv;
     }
 
     @Nullable
@@ -1108,14 +1080,14 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
     @UiThread
     public void setIcon(@DrawableRes final int Id) {
-        TitleIconView.setImageResource(Id);
-        TitleIconView.setVisibility(Id != 0 ? View.VISIBLE : View.GONE);
+        TitleIv.setImageResource(Id);
+        TitleIv.setVisibility(Id != 0 ? View.VISIBLE : View.GONE);
     }
 
     @UiThread
     public void setIcon(final Drawable D) {
-        TitleIconView.setImageDrawable(D);
-        TitleIconView.setVisibility(D != null ? View.VISIBLE : View.GONE);
+        TitleIv.setImageDrawable(D);
+        TitleIv.setVisibility(D != null ? View.VISIBLE : View.GONE);
     }
 
     @UiThread
@@ -1126,8 +1098,8 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
     @UiThread
     public final void setContent(CharSequence Content) {
-        ContentTv.setText(Content);
-        ContentTv.setVisibility(TextUtils.isEmpty(Content) ? View.GONE : View.VISIBLE);
+        MessageTv.setText(Content);
+        MessageTv.setVisibility(TextUtils.isEmpty(Content) ? View.GONE : View.VISIBLE);
     }
 
     @UiThread
@@ -1327,7 +1299,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             InputMinMaxTv.setText(currentLength + "/" + mBuilder.InputMaxLength);
 
             final boolean _IsDisabled = (emptyDisabled && currentLength == 0) || currentLength > mBuilder.InputMaxLength;
-            final int _ColorText = _IsDisabled ? mBuilder.InputMaxLengthErrorColor : mBuilder.ContentColor;
+            final int _ColorText = _IsDisabled ? mBuilder.InputMaxLengthErrorColor : mBuilder.MessageColor;
             final int _ColorWidget = _IsDisabled ? mBuilder.InputMaxLengthErrorColor : mBuilder.WidgetColor;
             InputMinMaxTv.setTextColor(_ColorText);
             TintHelper.SetTint(InputEdText, _ColorWidget);

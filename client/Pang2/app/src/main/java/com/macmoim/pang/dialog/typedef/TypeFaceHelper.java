@@ -5,20 +5,20 @@ import android.graphics.Typeface;
 import android.support.v4.util.SimpleArrayMap;
 
 public class TypeFaceHelper {
-    private static final SimpleArrayMap<String, Typeface> cache = new SimpleArrayMap<>();
+    private static final SimpleArrayMap<String, Typeface> Cache = new SimpleArrayMap<>();
 
-    public static Typeface get(Context c, String name) {
-        synchronized (cache) {
-            if (!cache.containsKey(name)) {
+    public static Typeface Get(Context c, String name) {
+        synchronized (Cache) {
+            if (!Cache.containsKey(name)) {
                 try {
-                    Typeface t = Typeface.createFromAsset(c.getAssets(), String.format("fonts/%s", name));
-                    cache.put(name, t);
-                    return t;
+                    Typeface _TypeFace = Typeface.createFromAsset(c.getAssets(), String.format("fonts/%s", name));
+                    Cache.put(name, _TypeFace);
+                    return _TypeFace;
                 } catch (RuntimeException e) {
                     return null;
                 }
             }
-            return cache.get(name);
+            return Cache.get(name);
         }
     }
 }

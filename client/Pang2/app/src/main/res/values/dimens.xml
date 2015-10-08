@@ -134,6 +134,9 @@
     <dimen name="ext_dialog_bg_stroke_width">2dp</dimen>
     <dimen name="ext_dialog_bg_corner_radius">10dp</dimen>
     <dimen name="ext_dialog_divider_stroke_width">0dp</dimen>
+    <dimen name="ext_dialog_divider_top_depth">1dp</dimen>
+    <dimen name="ext_dialog_divider_bottom_depth">1dp</dimen>
+    <dimen name="ext_dialog_divider_botton_depth">1dp</dimen>
     <dimen name="ext_dialog_title_frame_margin_t">15dp</dimen>
     <dimen name="ext_dialog_title_frame_margin_b">15dp</dimen>
     <dimen name="ext_dialog_title_frame_icon_margin">16dp</dimen>
@@ -145,8 +148,6 @@
     <dimen name="ext_dialog_button_frame_height">52dp</dimen>
     <dimen name="ext_dialog_button_min_width">100dp</dimen>
     <dimen name="ext_dialog_button_text_size">16sp</dimen>
-    <dimen name="ext_dialog_divider_top_depth">2dp</dimen>
-    <dimen name="ext_dialog_divider_bottom_depth">1dp</dimen>
     <dimen name="ext_dialog_list_item_height">64dp</dimen>
     <dimen name="ext_dialog_list_item_control_margin">8dp</dimen>
     <dimen name="ext_dialog_progress_text_padding_lr">16dp</dimen>

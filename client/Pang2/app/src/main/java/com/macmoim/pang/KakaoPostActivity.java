@@ -188,7 +188,6 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
     private void CreateDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.move);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.post_upload_comment);
         _Attr.MessageColor = R.color.ExtDialogMessageColor;

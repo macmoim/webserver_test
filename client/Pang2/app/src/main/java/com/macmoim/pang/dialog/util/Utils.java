@@ -30,48 +30,48 @@ public class Utils {
         return Color.argb(alpha, red, green, blue);
     }
 
-    public static int ResolveColor(Context context, @AttrRes int attr) {
-        return ResolveColor(context, attr, 0);
+    public static int ResolveColor(Context context, @AttrRes int Attr) {
+        return ResolveColor(context, Attr, 0);
     }
 
-    public static int ResolveColor(Context context, @AttrRes int attr, int fallback) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    public static int ResolveColor(Context context, @AttrRes int Attr, int FallBack) {
+        TypedArray _AR = context.getTheme().obtainStyledAttributes(new int[]{Attr});
         try {
-            return a.getColor(0, fallback);
+            return _AR.getColor(0, FallBack);
         } finally {
-            a.recycle();
+            _AR.recycle();
         }
     }
 
-    public static ColorStateList ResolveActionTextColorStateList(Context context, @AttrRes int colorAttr, ColorStateList fallback) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{colorAttr});
+    public static ColorStateList ResolveActionTextColorStateList(Context context, @AttrRes int ColorAttr, ColorStateList FallBack) {
+        TypedArray _AR = context.getTheme().obtainStyledAttributes(new int[]{ColorAttr});
         try {
-            final TypedValue value = a.peekValue(0);
+            final TypedValue value = _AR.peekValue(0);
             if (value == null) {
-                return fallback;
+                return FallBack;
             }
             if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
                 return GetActionTextStateList(context, value.data);
             } else {
-                final ColorStateList stateList = a.getColorStateList(0);
+                final ColorStateList stateList = _AR.getColorStateList(0);
                 if (stateList != null) {
                     return stateList;
                 } else {
-                    return fallback;
+                    return FallBack;
                 }
             }
         } finally {
-            a.recycle();
+            _AR.recycle();
         }
     }
 
-    public static ColorStateList GetActionTextColorStateList(Context context, @ColorRes int colorId) {
-        final TypedValue value = new TypedValue();
-        context.getResources().getValue(colorId, value, true);
-        if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-            return GetActionTextStateList(context, value.data);
+    public static ColorStateList GetActionTextColorStateList(Context context, @ColorRes int ColorId) {
+        final TypedValue _Value = new TypedValue();
+        context.getResources().getValue(ColorId, _Value, true);
+        if (_Value.type >= TypedValue.TYPE_FIRST_COLOR_INT && _Value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return GetActionTextStateList(context, _Value.data);
         } else {
-            return context.getResources().getColorStateList(colorId);
+            return context.getResources().getColorStateList(ColorId);
         }
     }
 
@@ -137,10 +137,10 @@ public class Utils {
         }
     }
 
-    public static boolean ResolveBoolean(Context context, @AttrRes int attr, boolean fallback) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+    public static boolean ResolveBoolean(Context context, @AttrRes int Attr, boolean FallBack) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{Attr});
         try {
-            return a.getBoolean(0, fallback);
+            return a.getBoolean(0, FallBack);
         } finally {
             a.recycle();
         }

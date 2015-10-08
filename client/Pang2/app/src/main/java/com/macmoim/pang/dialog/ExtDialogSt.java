@@ -28,17 +28,55 @@ public class ExtDialogSt {
 
         _Builder.SetCancelable(Attr.Cancelable);
 
-        _Builder.SetTitle(Attr.Title)
-                .TitleColorRes(Attr.TitleColor)
-                .TitleIconRes(Attr.TitleIcon)
-                .SetMessage(Attr.Message)
-                .MessageColorRes(Attr.MessageColor)
-                .SetNegativeButton(Attr.NegativeButton)
-                .NegativeColorRes(Attr.NegativeButtonColor)
-                .SetPositiveButton(Attr.PositiveButton)
-                .PositiveColorRes(Attr.PositiveButtonColor)
-                .CallBack(Attr.ButtonCB)
-                .Show();
+        if (Attr.DividerColor != -1) {
+            _Builder.DividerColorRes(Attr.DividerColor);
+        }
+
+        if (Attr.Title != null) {
+            _Builder.SetTitle(Attr.Title);
+
+            if (Attr.TitleFrameColor != -1) {
+                _Builder.TitleFrameColorRes(Attr.TitleFrameColor);
+            }
+
+            if (Attr.TitleColor != -1) {
+                _Builder.TitleColorRes(Attr.TitleColor);
+            }
+
+            if (Attr.TitleIcon != -1) {
+                _Builder.TitleIconRes(Attr.TitleIcon);
+            }
+        }
+
+        if (Attr.Message != null) {
+            _Builder.SetMessage(Attr.Message);
+
+            if (Attr.MessageColor != -1) {
+                _Builder.MessageColorRes(Attr.MessageColor);
+            }
+        }
+
+        if (Attr.NegativeButton != null) {
+            _Builder.SetNegativeButton(Attr.NegativeButton);
+
+            if (Attr.NegativeButtonColor != -1) {
+                _Builder.NegativeColorRes(Attr.NegativeButtonColor);
+            }
+        }
+
+        if (Attr.PositiveButton != null) {
+            _Builder.SetPositiveButton(Attr.PositiveButton);
+
+            if (Attr.PositiveButtonColor != -1) {
+                _Builder.PositiveColorRes(Attr.PositiveButtonColor);
+            }
+        }
+
+        if (Attr.ButtonCB != null) {
+            _Builder.CallBack(Attr.ButtonCB);
+        }
+
+        _Builder.Show();
     }
 
     public ExtDialog GetProgressCircleExtDialog(Context Con, ProgressCircleDialogAttr Attr) {

@@ -16,6 +16,9 @@
         android:layout_height="@dimen/ext_dialog_title_frame_icon_max_size"
         android:layout_marginEnd="@dimen/ext_dialog_title_frame_icon_margin"
         android:layout_marginRight="@dimen/ext_dialog_title_frame_icon_margin"
+        android:adjustViewBounds="true"
+        android:maxHeight="@dimen/ext_dialog_title_frame_icon_max_size"
+        android:maxWidth="@dimen/ext_dialog_title_frame_icon_max_size"
         android:scaleType="fitXY"
         tools:ignore="ContentDescription" />
 

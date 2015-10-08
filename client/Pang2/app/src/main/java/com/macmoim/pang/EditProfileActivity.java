@@ -118,7 +118,6 @@ public class EditProfileActivity extends ProfileActivity {
     private void ShowExitEditorDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
         _Attr.Title = getString(R.string.editor_exit_title);
-        _Attr.TitleColor = R.color.ExtDialogTitleColor;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
         _Attr.MessageColor = R.color.ExtDialogMessageColor;
