@@ -54,6 +54,7 @@ import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.login.GoogleAuth;
 import com.macmoim.pang.login.SocialProfile;
+import com.macmoim.pang.pangeditor.PangEditorActivity2;
 
 /**
  * TODO

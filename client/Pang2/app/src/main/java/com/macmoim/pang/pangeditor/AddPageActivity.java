@@ -149,7 +149,7 @@ public class AddPageActivity extends AppCompatActivity {
                     dispatchPickIntent();
                 }
             }
-        }).SetTitle(getResources().getString(R.string.change_image_action)).BackgroundColor(getResources().getColor(R.color.mustard_op70))
+        }).SetTitle(getResources().getString(R.string.change_image_action))//.BackgroundColor(getResources().getColor(R.color.mustard_op70))
                 .ListItemColor(getResources().getColor(R.color.white_op100))
                 .TitleColor(getResources().getColor(R.color.white_op100))
                 .Build();
