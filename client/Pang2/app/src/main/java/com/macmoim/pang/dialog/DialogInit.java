@@ -44,7 +44,7 @@ public class DialogInit {
     public static int GetInflateLayout(ExtDialog.Builder builder) {
         if (builder.CustomViewType != null) {
             return R.layout.ext_dialog_type_custom;
-        } else if (builder.ListItems != null && builder.ListItems.length > 0 || builder.Adapter != null) {
+        } else if (builder.ListItems != null && builder.ListItems.length > 0 || builder.ListViewAdapter != null) {
             return R.layout.ext_dialog_type_list;
         } else if (builder.ProgressBarType > -2) {
             return R.layout.ext_dialog_type_progress;
@@ -77,7 +77,7 @@ public class DialogInit {
         Dialog.NegativeButton = (DialogButton) Dialog.vExtDialog.findViewById(R.id.negative);
         Dialog.NegativeButton.setVisibility(_Builder.NegativeText != null ? View.VISIBLE : View.GONE);
         // etc area : list, custom view, input, progress
-        Dialog.ListItemView = (ListView) Dialog.vExtDialog.findViewById(R.id.contentListView);
+        Dialog.ListItemView = (ListView) Dialog.vExtDialog.findViewById(R.id.ext_dialog_list_view);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // action
@@ -244,11 +244,9 @@ public class DialogInit {
         }
 
         // list dialog
-        if (_Builder.ListCallBackMultiChoice != null) {
-            Dialog.SelectedIndicesList = new ArrayList<>();
-        }
         if ((Dialog.ListItemView != null)
-                && (_Builder.ListItems != null && _Builder.ListItems.length > 0 || _Builder.Adapter != null)) {
+                && (_Builder.ListItems != null && _Builder.ListItems.length > 0 || _Builder.ListViewAdapter != null)) {
+            Dialog.ListItemView.setVisibility(View.VISIBLE);
             // list item color
             if (_Builder.ListItemColor == -1) {
                 final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_list_item_color);
@@ -259,20 +257,25 @@ public class DialogInit {
 
             // No custom Adapter specified, setup the list with a ExtDialogAdapter.
             // Which supports regular lists and single/multi choice dialogs.
-            if (_Builder.Adapter == null) {
+            if (_Builder.ListViewAdapter == null) {
                 // Determine list type
                 if (_Builder.ListCallBackSingleChoice != null) {
                     Dialog.mListType = ExtDialog.ListType.SINGLE;
                 } else if (_Builder.ListCallBackMultiChoice != null) {
                     Dialog.mListType = ExtDialog.ListType.MULTI;
-                    if (_Builder.SelectedIndices != null)
+                    Dialog.SelectedIndicesList = new ArrayList<>();
+
+                    if (_Builder.SelectedIndices != null) {
                         Dialog.SelectedIndicesList = new ArrayList<>(Arrays.asList(_Builder.SelectedIndices));
+                    }
                 } else {
                     Dialog.mListType = ExtDialog.ListType.REGULAR;
                 }
-                _Builder.Adapter = new TextListAdapter(Dialog,
-                        ExtDialog.ListType.GetLayoutForType(Dialog.mListType));
+                _Builder.ListViewAdapter = new TextListAdapter(Dialog, ExtDialog.ListType.GetLayoutForType(Dialog.mListType));
             }
+
+            Dialog.InvalidateList();
+            Dialog.CheckIfListInitScroll();
         }
 
         // progress dialog
@@ -284,6 +287,7 @@ public class DialogInit {
         // input dialog
         SetupInputDialog(Dialog);
 
+        // custom view
         if (_Builder.CustomViewType != null) {
             FrameLayout _Frame = (FrameLayout) Dialog.vExtDialog.findViewById(R.id.customViewFrame);
             Dialog.CustomViewFrame = _Frame;
@@ -316,6 +320,9 @@ public class DialogInit {
                     ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // listener
+        ////////////////////////////////////////////////////////////////////////////////////////////
         if (_Builder.ShowListener != null) {
             Dialog.setOnShowListener(_Builder.ShowListener);
         }
@@ -328,11 +335,7 @@ public class DialogInit {
         if (_Builder.KeyListener != null) {
             Dialog.setOnKeyListener(_Builder.KeyListener);
         }
-
         Dialog.SetOnShowListenerExt();
-
-        Dialog.InvalidateList();
-        Dialog.CheckIfListInitScroll();
 
         // dialog set content view
         Dialog.SetContentViewExt(Dialog.vExtDialog);
@@ -350,8 +353,7 @@ public class DialogInit {
             if (_Builder.ProgressCircleType &&
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                Dialog.mProgress.setIndeterminateDrawable(new CircularProgressDrawable(
-                        _Builder.WidgetColor, _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_progress_circle_border)));
+                Dialog.mProgress.setIndeterminateDrawable(new CircularProgressDrawable(_Builder.WidgetColor, _Builder.BuilderContext.getResources().getDimension(R.dimen.ext_dialog_progress_circle_border)));
                 // Dialog.mProgress.setIndeterminateDrawable(_Builder.BuilderContext.getResources().getDrawable(R.drawable.ext_dialog_progress_circle_bg));
                 TintHelper.SetTint(Dialog.mProgress, _Builder.WidgetColor, true);
             } else {
@@ -375,8 +377,7 @@ public class DialogInit {
 
                     if (_Builder.ShowMinMax) {
                         Dialog.mProgressMinMax.setVisibility(View.VISIBLE);
-                        Dialog.mProgressMinMax.setText(String.format(_Builder.ProgressNumberFormat,
-                                0, _Builder.ProgressMax));
+                        Dialog.mProgressMinMax.setText(String.format(_Builder.ProgressNumberFormat, 0, _Builder.ProgressMax));
                         ViewGroup.MarginLayoutParams _Mp = (ViewGroup.MarginLayoutParams) Dialog.mProgress.getLayoutParams();
                         _Mp.leftMargin = 0;
                         _Mp.rightMargin = 0;

@@ -160,8 +160,12 @@ public class ExtDialogSt {
             }
         }
 
-        if (Attr.ListItems != null) {
-            _Builder.ListItems(Attr.ListItems);
+        if (Attr.ListItems != null || Attr.ListItemsRes != -1) {
+            if (Attr.ListItems != null) {
+                _Builder.ListItems(Attr.ListItems);
+            } else if (Attr.ListItemsRes != -1) {
+                _Builder.ListItems(Attr.ListItemsRes);
+            }
 
             if (Attr.ListItemColor != -1) {
                 _Builder.ListItemColorRes(Attr.ListItemColor);
