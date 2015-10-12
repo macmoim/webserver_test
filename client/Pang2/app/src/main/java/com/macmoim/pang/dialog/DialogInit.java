@@ -244,15 +244,17 @@ public class DialogInit {
         }
 
         // list dialog
-        if (_Builder.ListItemColor == -1) {
-            final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_list_item_color);
-            _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_list_item_color, _FB);
-        }
-
         if (_Builder.ListCallBackMultiChoice != null) {
             Dialog.SelectedIndicesList = new ArrayList<>();
         }
-        if (Dialog.ListItemView != null && (_Builder.ListItems != null && _Builder.ListItems.length > 0 || _Builder.Adapter != null)) {
+        if ((Dialog.ListItemView != null)
+                && (_Builder.ListItems != null && _Builder.ListItems.length > 0 || _Builder.Adapter != null)) {
+            // list item color
+            if (_Builder.ListItemColor == -1) {
+                final int _FB = Utils.ResolveColor(Dialog.getContext(), R.attr.ext_dialog_list_item_color);
+                _Builder.ListItemColor = Utils.ResolveColor(_Builder.BuilderContext, R.attr.ext_dialog_list_item_color, _FB);
+            }
+
             Dialog.ListItemView.setSelector(Dialog.GetListSelector());
 
             // No custom Adapter specified, setup the list with a ExtDialogAdapter.

@@ -65,14 +65,13 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     protected ImageView TitleIv = null;
     protected TextView TitleTv = null;
 
-    protected ScrollView MessageSv;
-    protected TextView MessageTv;
+    protected ScrollView MessageSv = null;
+    protected TextView MessageTv = null;
 
-    protected DialogButton PositiveButton;
-    protected DialogButton NegativeButton;
+    protected DialogButton PositiveButton = null;
+    protected DialogButton NegativeButton = null;
 
-    protected FrameLayout CustomViewFrame;
-    protected ListView ListItemView;
+    protected ListView ListItemView = null;
     protected ListType mListType;
     protected List<Integer> SelectedIndicesList;
     protected ProgressBar mProgress;
@@ -80,6 +79,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     protected TextView mProgressMinMax;
     protected EditText InputEdText;
     protected TextView InputMinMaxTv;
+    protected FrameLayout CustomViewFrame;
 
     public final Builder GetBuilder() {
         return mBuilder;
@@ -269,7 +269,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     }
 
     protected final Drawable GetListSelector() {
-        if (mBuilder.ListSelector != 0) {
+        if (mBuilder.ListSelector != -1) {
             return ResourcesCompat.getDrawable(mBuilder.BuilderContext.getResources(), mBuilder.ListSelector, null);
         }
 
@@ -408,12 +408,14 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         // etc area : list, custom view, input, progress
         protected int WidgetColor = -1;
         // list view
+        protected CharSequence[] ListItems = null;
         protected int ListItemColor = -1;
 
         protected GravityEnum ListItemsGravity = GravityEnum.START;
+        @DrawableRes
+        protected int ListSelector = -1;
 
 
-        protected CharSequence[] ListItems;
 
         protected View CustomViewType;
 
@@ -458,8 +460,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected NumberFormat ProgressPercentFormat;
 
 
-        @DrawableRes
-        protected int ListSelector;
+
 
 
         public final Context GetContext() {

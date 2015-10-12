@@ -80,7 +80,6 @@
         <item name="ext_dialog_btn_negative_selector">@drawable/ext_dialog_btn_left_selector</item>
         <item name="ext_dialog_widget_color">@color/ExtDialogWidgetColor</item>
         <item name="ext_dialog_list_item_color">@color/ExtDialogListItemTextColor</item>
-
         <item name="ext_dialog_list_selector">@drawable/ext_dialog_item_selector</item>
     </style>
 
