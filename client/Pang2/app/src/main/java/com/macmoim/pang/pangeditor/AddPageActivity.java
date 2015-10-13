@@ -34,25 +34,25 @@ import java.util.Calendar;
 public class AddPageActivity extends AppCompatActivity {
 
     static final String TAG = "AddPageActivity";
-    ImageView mDialogAddPageIv;
-    EditText contentEt;
-    Button submitBtn;
+    protected ImageView mDialogAddPageIv;
+    protected EditText contentEt;
+    protected Button submitBtn;
 
-    private Uri mCropImagedUri;
+    protected Uri mCropImagedUri;
 
     static final int REQ_CODE_PICK_PICTURE = 1;
     static final int REQ_CODE_TAKE_PHOTO = 2;
     static final int REQ_CODE_CROP = 3;
 
-    private static final int PROFILE_IMAGE_ASPECT_X = 4;
-    private static final int PROFILE_IMAGE_ASPECT_Y = 3;
-    private int PROFILE_IMAGE_OUTPUT_X;
-    private int PROFILE_IMAGE_OUTPUT_Y;
+    protected static final int PROFILE_IMAGE_ASPECT_X = 4;
+    protected static final int PROFILE_IMAGE_ASPECT_Y = 3;
+    protected int PROFILE_IMAGE_OUTPUT_X;
+    protected int PROFILE_IMAGE_OUTPUT_Y;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.editor_add_page_activity);
+        setContentView(R.layout.activity_editor_add_page);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,7 +60,7 @@ public class AddPageActivity extends AppCompatActivity {
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mDialogAddPageIv = (ImageView) findViewById(R.id.page_dialog_imageview);
+        mDialogAddPageIv = (MyNetworkImageView) findViewById(R.id.page_dialog_imageview);
         mDialogAddPageIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,7 +247,7 @@ public class AddPageActivity extends AppCompatActivity {
         Intent intent = new Intent("com.android.camera.action.CROP");
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
-        PROFILE_IMAGE_OUTPUT_X =  screenSize.x / 2;//mEditor.getWidth() / 2;
+        PROFILE_IMAGE_OUTPUT_X =  screenSize.x;// / 2;//mEditor.getWidth() / 2;
         PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
         intent.setDataAndType(imageCaptureUri, "image/*");
         intent.putExtra("crop", "true");

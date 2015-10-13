@@ -13,25 +13,38 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewer_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp">
 
-    <com.navercorp.volleyextensions.view.ZoomableNetworkImageView
-        android:id="@+id/page_network_iv"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
+        android:layout_height="match_parent"
+        android:background="@color/white_op90"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/page_content_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@android:color/holo_red_dark"/>
+        <com.navercorp.volleyextensions.view.ZoomableNetworkImageView
+            android:id="@+id/page_network_iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:id="@+id/page_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 
-</LinearLayout>
+
+
+</FrameLayout>

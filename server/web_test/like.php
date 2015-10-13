@@ -39,7 +39,7 @@ function get_my_like($user_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT DISTINCT posts.id, posts.user_id as p_user_id, posts.title, posts.upload_filename, 
+	$sql_query = "SELECT DISTINCT posts.id, posts.user_id as p_user_id, posts.title,  
 						posts.upload_date, posts.thumb_img_path, likes.like_bool, profiles.user_name as profile_user_name
 						FROM posts 
 						JOIN likes ON posts.id = likes.post_id 
@@ -56,7 +56,6 @@ function get_my_like($user_id) {
 					"id" => $row ['id'],
 					"title" => $row ['title'],
 					"user_id" => $row ['p_user_id'],
-					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
 					"img_path" => $row ['thumb_img_path'], 
 					"user_name" => $row ['profile_user_name']

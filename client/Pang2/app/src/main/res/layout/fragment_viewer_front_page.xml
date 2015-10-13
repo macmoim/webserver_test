@@ -17,14 +17,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/viewer_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black_op40">
 
     <com.navercorp.volleyextensions.view.ZoomableNetworkImageView
         android:id="@+id/page_network_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="20dp"
-        android:background="@android:color/holo_blue_bright"
         />
 
     <LinearLayout

@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements Auth.OnAuthListen
     }
 
     private void StartPangEditorActivity() {
-        Intent i = new Intent(getApplicationContext(), PangEditorActivity.class);
+        Intent i = new Intent(getApplicationContext(), PangEditorActivity2.class);
         startActivity(i);
     }
 

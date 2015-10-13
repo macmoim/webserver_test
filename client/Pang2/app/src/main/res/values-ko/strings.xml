@@ -58,6 +58,7 @@
     <string name="search_hint">검색할 제목을 입력하세요.</string>
     <string name="editor_exit">작성을 취소하시겠습니까?\n작성중인 글은 저장되지 않습니다.</string>
     <string name="editor_exit_title">작성 취소</string>
+    <string name="send">전송</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">페이스북 계정으로 로그인</string>

@@ -3,7 +3,6 @@ package com.macmoim.pang.pangeditor;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,8 +15,6 @@ import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,18 +26,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
-import com.macmoim.pang.CommentActivity;
+import com.android.volley.toolbox.NetworkImageView;
 import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
-import com.macmoim.pang.adapter.FoodCommentRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.FoodCommentItem;
@@ -50,14 +44,12 @@ import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.layout.CircleFlatingMenu;
 import com.macmoim.pang.layout.CircleFlatingMenuWithActionView;
-import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
 import com.navercorp.volleyextensions.view.ZoomableNetworkImageView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,9 +57,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -108,7 +97,6 @@ public class ViewerActivity2 extends AppCompatActivity {
     private LinearLayout mRankingView;
     private Rect mRankingViewRect;
 
-    private static final int REQ_ADD_COMMENT = 1;
     private String postUserId;
     private String postUserName;
     private String mUserId;
@@ -117,9 +105,7 @@ public class ViewerActivity2 extends AppCompatActivity {
     private ArrayList<FoodCommentItem> foodCommentItems;
 
     private static final String VOLLEY_REQ_TAG_STAR = "get-star";
-    private static final String VOLLEY_REQ_TAG_HTML = "get-html";
     private static final String VOLLEY_REQ_TAG_LIKE = "get-like";
-    private static final String VOLLEY_REQ_TAG_COMMENT = "get-comment";
 
     private ViewPager mPageViewPager;
     private static final String VOLLEY_REQ_TAG_POST = "get-post";
@@ -128,7 +114,7 @@ public class ViewerActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.viewer_main2);
+        setContentView(R.layout.activity_viewer_main2);
 
         mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
@@ -181,8 +167,6 @@ public class ViewerActivity2 extends AppCompatActivity {
             }
         });
 
-//        mCommentRv = (RecyclerView) findViewById(R.id.recyclerview_comment);
-//        setupRecyclerView(mCommentRv);
 
         mPageViewPager = (ViewPager) findViewById(R.id.page_viewpager);
 
@@ -193,17 +177,6 @@ public class ViewerActivity2 extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager, ArrayList<PageItem> items) {
         PagePagerAdapter adapter = new PagePagerAdapter(getSupportFragmentManager(), this.getBaseContext(), items);
         viewPager.setAdapter(adapter);
-    }
-
-    private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setHasFixedSize(true);
-        foodCommentItems = new ArrayList<FoodCommentItem>();
-        MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView.getContext(), OrientationHelper.VERTICAL, false);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new FoodCommentRecyclerViewAdapter(ViewerActivity2.this,
-                foodCommentItems));
-        recyclerView.setNestedScrollingEnabled(false);
     }
 
     private void RequestPageItems() {
@@ -267,7 +240,8 @@ public class ViewerActivity2 extends AppCompatActivity {
                 pageItems.add(0, frontPageItem);
                 setupViewPager(mPageViewPager, pageItems);
 
-                getComment();
+                setMainBackground(mThumbFileName);
+
                 getLike();
                 getStar();
             }
@@ -283,21 +257,16 @@ public class ViewerActivity2 extends AppCompatActivity {
         super.onResume();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQ_ADD_COMMENT) {
-            if (resultCode == Activity.RESULT_OK) {
-                getComment();
-            }
-        }
+    private void setMainBackground(String imageUrl) {
+        ((NetworkImageView) findViewById(R.id.mainBg)).setImageUrl(Util.IMAGE_FOLDER_URL + imageUrl, AppController.getInstance().getImageLoader());
     }
 
     private void startAddCommentActivity() {
-        Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CommentActivity2.class);
         intent.putExtra("comment_user_id", mUserId);
         intent.putExtra("post_id", getIntent().getIntExtra("id", 0));
         intent.putExtra("post_user_id", postUserId);
-        startActivityForResult(intent, REQ_ADD_COMMENT);
+        startActivity(intent);
     }
 
 
@@ -325,62 +294,6 @@ public class ViewerActivity2 extends AppCompatActivity {
             mRankingBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.star_nor_white));
         }
     }
-
-    private void getComment() {
-        final int post_id = getIntent().getIntExtra("id", 0);
-
-        String url = URL_COMMENT + "/" + String.valueOf(post_id);
-
-        CustomRequest jsonReq = new CustomRequest(Request.Method.GET,
-                url, null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                VolleyLog.d(TAG, "Response: " + response.toString());
-                if (response != null && mCommentRv != null) {
-                    try {
-                        JSONArray feedArray = response.getJSONArray("comment_info");
-
-                        if (foodCommentItems != null) {
-                            foodCommentItems.clear();
-                        }
-                        int length = feedArray.length();
-                        for (int i = 0; i < length; i++) {
-                            JSONObject feedObj = (JSONObject) feedArray.get(i);
-
-                            FoodCommentItem item = new FoodCommentItem();
-                            item.setPostId(post_id);
-                            item.setPostUserId(postUserId);
-                            item.setCommentUserId(feedObj.getString("comment_user_id"));
-                            item.setCommentUserName(feedObj.getString("comment_user_name"));
-                            item.setComment(feedObj.getString("comment"));
-                            item.setTimeStamp(feedObj.getString("upload_date"));
-                            item.setProfileImgUrl(feedObj.getString("user_profile_img_url"));
-
-                            Log.d(TAG, "getcomment comment " + feedObj.getString("comment"));
-
-                            foodCommentItems.add(0, item);
-                        }
-
-                        // notify data changes to list adapater
-                        mCommentRv.getAdapter().notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-            }
-        });
-
-        // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_COMMENT);
-    }
-
 
     private void getLike() {
         int post_id = getIntent().getIntExtra("id", 0);
@@ -876,8 +789,6 @@ public class ViewerActivity2 extends AppCompatActivity {
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_STAR);
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
-        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_HTML);
-        AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_COMMENT);
         if (mShareCf != null) {
             mShareCf.setListener(null);
             mShareCf = null;

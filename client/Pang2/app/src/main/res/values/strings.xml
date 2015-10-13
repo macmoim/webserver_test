@@ -51,6 +51,7 @@
     <string name="submit">submit</string>
     <string name="editor_hint">Insert</string>
     <string name="search">Search</string>
+    <string name="send">Send</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">Login with Facebook</string>

@@ -1,21 +1,13 @@
 package com.macmoim.pang.pangeditor;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.macmoim.pang.OtherUserPostActivity;
-import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
-import com.macmoim.pang.data.FoodCommentItem;
-import com.macmoim.pang.dialog.ExtDialog;
 
 import java.util.List;
 
@@ -35,13 +27,13 @@ public class PangEditorAdapter extends RecyclerView.Adapter<PangEditorAdapter.Vi
         public final View mView;
         public final TextView mPageNumberTv;
         public final TextView mContentTv;
-        public final ImageView mPageImage;
+        public final MyNetworkImageView mPageImage;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mPageNumberTv = (TextView) view.findViewById(R.id.page_number_tv);
-            mPageImage = (ImageView) view
+            mPageImage = (MyNetworkImageView) view
                     .findViewById(R.id.page_image);
             mContentTv = (TextView) view.findViewById(R.id.content_tv);
         }
@@ -70,6 +62,7 @@ public class PangEditorAdapter extends RecyclerView.Adapter<PangEditorAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
 
 
         PageItem item = mValues.get(position);

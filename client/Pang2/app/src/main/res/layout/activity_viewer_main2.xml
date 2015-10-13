@@ -37,11 +37,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/mainBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"></com.android.volley.toolbox.NetworkImageView>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/page_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/holo_blue_bright"/>
+        android:layout_height="match_parent"/>
 
     <!--<com.macmoim.pang.pangeditor.MyPageNestedScrollView
         android:layout_width="match_parent"
@@ -113,7 +118,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/basePrimaryBackgroundColour"
             android:orientation="horizontal"
             android:padding="10dp">
 

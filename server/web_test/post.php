@@ -73,7 +73,7 @@ function get_post($user_id) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT posts.id, posts.user_id, title, upload_filename, db_filename, filepath, upload_date, thumb_img_path, profiles.user_name
+	$sql_query = "SELECT posts.id, posts.user_id, title, upload_date, thumb_img_path, profiles.user_name
 	                   FROM posts 
                        LEFT JOIN profiles ON posts.user_id = profiles.user_id
                        WHERE posts.user_id = '$user_id'";
@@ -87,7 +87,6 @@ function get_post($user_id) {
 					"id" => $row ['id'],
 					"title" => $row ['title'],
 					"user_id" => $row ['user_id'],
-					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
 					"img_path" => $row ['thumb_img_path'],
 					"user_name" => $row ['user_name']
@@ -129,7 +128,7 @@ function rest_search($text) {
 	if ($mysqli->connect_errno) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
-	$sql_query = "SELECT posts.id, posts.user_id, title, upload_filename, db_filename, filepath, upload_date, category, thumb_img_path, profiles.user_name
+	$sql_query = "SELECT posts.id, posts.user_id, title, upload_date, category, thumb_img_path, profiles.user_name
 	                   FROM posts 
 	                   LEFT JOIN profiles ON posts.user_id = profiles.user_id
 	                   WHERE title LIKE '%$text%'";
@@ -143,7 +142,6 @@ function rest_search($text) {
 					"id" => $row ['id'],
 					"title" => $row ['title'],
 					"user_id" => $row ['user_id'],
-					"filename" => $row ['upload_filename'],
 					"date" => $row ['upload_date'],
 					"img_path" => $row ['thumb_img_path'],
 					"user_name" => $row ['user_name']
@@ -527,6 +525,7 @@ function rest_delete($id) {
 	$post_to_delete_info = array ();
 	$thumbFolderPath = $thumbnailFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/thumbnails/';
 	$htmlFolderPath = $uploadHTMLFolder;//$_SERVER ['DOCUMENT_ROOT'] . '/web_test/image_test/upload_html/';
+	$imageFolderPath = $uploadImageFolder;
 	$imgfilename = array();
 	
 	// normally this info would be pulled from a database.
@@ -539,53 +538,83 @@ function rest_delete($id) {
 		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 	}
 
-	$sql_query_select = "SELECT db_filename, thumb_img_path
-	                   FROM posts WHERE id = '$id'";
-	if ($result = $mysqli->query ( $sql_query_select )) {
-		$row = $result->fetch_array ();
-		if (isset ( $row ['db_filename'] )) {
-			$imgfilename = explode("/", $row['thumb_img_path']);
-			$post_to_delete_info = array (
-					"db_filename" => $htmlFolderPath.$row ['db_filename'],
-					"thumb_img_path" => $thumbFolderPath.end($imgfilename)
-			);
-		} else {
-			echo 'fail to get post_to_delete_info';
-		}
-	}
+	// $sql_query_select = "SELECT db_filename, thumb_img_path
+	//                    FROM posts WHERE id = '$id'";
+	// if ($result = $mysqli->query ( $sql_query_select )) {
+	// 	$row = $result->fetch_array ();
+	// 	if (isset ( $row ['db_filename'] )) {
+	// 		$imgfilename = explode("/", $row['thumb_img_path']);
+	// 		$post_to_delete_info = array (
+	// 				"db_filename" => $htmlFolderPath.$row ['db_filename'],
+	// 				"thumb_img_path" => $thumbFolderPath.end($imgfilename)
+	// 		);
+	// 	} else {
+	// 		echo 'fail to get post_to_delete_info';
+	// 	}
+	// }
 
-	if (count($post_to_delete_info) > 0) {
-		// delete HTML file
-		if (file_exists($post_to_delete_info['db_filename'])) {
-				unlink($post_to_delete_info['db_filename']);
-		}
-		// delete thumbnail image file
-		if (file_exists($post_to_delete_info['thumb_img_path'])) {
-			// do not delete defaul thumbnail image.
-			if (strcmp("default_backdrop_img.jpg", end($imgfilename))) {
-				unlink($post_to_delete_info['thumb_img_path']);
-			} else {
+	// if (count($post_to_delete_info) > 0) {
+	// 	// delete HTML file
+	// 	if (file_exists($post_to_delete_info['db_filename'])) {
+	// 			unlink($post_to_delete_info['db_filename']);
+	// 	}
+	// 	// delete thumbnail image file
+	// 	if (file_exists($post_to_delete_info['thumb_img_path'])) {
+	// 		// do not delete defaul thumbnail image.
+	// 		if (strcmp("default_backdrop_img.jpg", end($imgfilename))) {
+	// 			unlink($post_to_delete_info['thumb_img_path']);
+	// 		} else {
 				
+	// 		}
+	// 	}
+	// }
+
+	$sql_query_select = "SELECT img_path
+	                   FROM pages WHERE post_id = '$id'";
+	if ($result = $mysqli->query ( $sql_query_select )) {
+		while ( $row = $result->fetch_assoc () ) {
+
+			if (isset ( $row ['img_path'] )) {
+				$imgfilename = $row ['img_path'];
+				if (file_exists($imageFolderPath.$imgfilename)) {
+					unlink($imageFolderPath.$imgfilename);
+				}
+			} else {
+				echo 'fail to get post_to_delete_info';
 			}
+
 		}
+		
 	}
 	
 
 	$ret = array();
-	if (delete_post_images($id)) {
-		$sql_query = "DELETE FROM posts WHERE id = '$id'";
+	// if (delete_post_images($id)) {
+	// 	$sql_query = "DELETE FROM posts WHERE id = '$id'";
 
-		$mysqli->query ( $sql_query );
+	// 	$mysqli->query ( $sql_query );
 		
 
-		if ($mysqli->affected_rows > 0) {
+	// 	if ($mysqli->affected_rows > 0) {
 			
-			$ret['ret_val'] = "success";
-		} else {
-			$ret['ret_val'] = "fail";
-		}
+	// 		$ret['ret_val'] = "success";
+	// 	} else {
+	// 		$ret['ret_val'] = "fail";
+	// 	}
 		
 		
+	// } else {
+	// 	$ret['ret_val'] = "fail";
+	// }
+
+	$sql_query = "DELETE FROM posts WHERE id = '$id'";
+
+	$mysqli->query ( $sql_query );
+	
+
+	if ($mysqli->affected_rows > 0) {
+		
+		$ret['ret_val'] = "success";
 	} else {
 		$ret['ret_val'] = "fail";
 	}
@@ -987,5 +1016,68 @@ function rest_get_new($id) {
 	$mysqli->close ();
 	
 	return $post_info;
+}
+
+function rest_post_update_new() {
+	include "serverconfig.php";
+	include "./image_test/dbconfig.php";
+	$debug_msg = '';
+// 	echo "saveHTMLFile filename: ".$_FILES ['html_file'] ['name'];
+	
+	$mysqli = new mysqli ( $dbhost, $dbusr, $dbpass, $dbname );
+	if ($mysqli->connect_errno) {
+		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	}
+	
+	$create_table = "CREATE TABLE if not exists posts (
+					id int auto_increment,
+					user_id varchar(30),
+					title varchar(100),
+					upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+					thumb_img_path varchar(100),
+					category varchar(20),
+					rank float,
+					PRIMARY KEY (id)
+					);";
+	
+	$mysqli->query ( $create_table );
+	
+	// set time to Seoul.
+	date_default_timezone_set("Asia/Seoul");
+	$upload_date = date ( "Y-m-d H:i:s" );
+	
+	// create and save thumbnail
+	// $thumbPath = $thumbnailFolderForClient;//'http://localhost:8080/web_test/image_test/thumbnails/';
+	// $thumb_url = isset($_POST['thumb_img_url']) ? $_POST['thumb_img_url'] : null;
+	// $thumbimagename = save_thumbnail($thumb_url);
+
+	$query = sprintf ( "SELECT img_path FROM pages WHERE post_id='%s' AND page_index='%s'",
+		$_POST['id'], $_POST['thumbnail_index']);
+	$result = $mysqli->query($query);
+	$row = $result->fetch_assoc ();
+
+	// echo 'postnewupdate thumbpath '.$row['img_path'];
+
+
+		
+	
+	$query = sprintf ( "UPDATE  posts SET
+		title = '%s', upload_date = '%s', category='%s', thumb_img_path='%s'
+		 WHERE id=%s", $_POST ["title"], $upload_date, $_POST ["category"], $row['img_path'], $_POST["id"]);
+	
+	$mysqli->query ( $query );
+	
+	$ret_val = "success";
+	if ($mysqli->error) {
+		echo "Failed to insert posts db: (" . $mysqli->error . ") ";
+		$ret_val = "fail";
+	}
+
+	$html_saving_info = array (
+			"ret_val" => $ret_val
+	);
+	$mysqli->close ();
+
+	return $html_saving_info;
 }
 ?>

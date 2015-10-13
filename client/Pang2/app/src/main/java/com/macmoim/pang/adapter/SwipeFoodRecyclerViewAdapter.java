@@ -23,6 +23,7 @@ import com.macmoim.pang.SearchActivity;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.pangeditor.ViewerActivity2;
 import com.macmoim.pang.util.Util;
 
 import java.util.List;
@@ -144,7 +145,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
             public void onClick(View v) {
                 if (!mSwipeOpen) {
                     Context context = v.getContext();
-                    Intent i = new Intent(context, ViewerActivity.class);
+                    Intent i = new Intent(context, ViewerActivity2.class);
                     i.putExtra("id", mValues.get(position).getId());
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -212,7 +213,7 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
     }
 
     public String getImageFolderURL() {
-        return Util.IMAGE_THUMBNAIL_FOLDER_URL;
+        return Util.IMAGE_FOLDER_URL;
     }
 
     @Override

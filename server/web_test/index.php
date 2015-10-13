@@ -235,5 +235,26 @@ $app->get('/post/get_new/:id', function ($id) {
 
 });
 
+$app->post('/post/post_update_new', function () use ($app) {
+	include 'post.php';
+	$value = rest_post_update_new();
+	exit ( json_encode ( $value ) );
+
+});
+
+$app->post('/page/update', function () use ($app) {
+	include 'page.php';
+	$value = updateImageFiles();
+	exit ( json_encode ( $value ) );
+
+});
+
+$app->post('/page/update_content', function () use ($app) {
+	include 'page.php';
+	$value = updateContentOnly();
+	exit ( json_encode ( $value ) );
+
+});
+
 $app->run();
 ?>

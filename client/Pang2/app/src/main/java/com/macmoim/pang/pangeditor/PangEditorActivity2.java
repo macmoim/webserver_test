@@ -31,6 +31,7 @@ import com.macmoim.pang.R;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.util.Util;
 import com.macmoim.pang.app.AppController;
@@ -39,7 +40,6 @@ import com.macmoim.pang.multipart.MultiPartGsonRequest;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,32 +58,33 @@ public class PangEditorActivity2 extends AppCompatActivity {
 
     static final String TAG = "PangEditorActivity2";
 
-    private static final String URL_POST_IMAGE = Util.SERVER_ROOT + "/page/image";
-    private static final String URL_POST_POST = Util.SERVER_ROOT + "/post/post_new";
+    protected static final String URL_POST_IMAGE = Util.SERVER_ROOT + "/page/image";
+    protected static final String URL_POST_POST = Util.SERVER_ROOT + "/post/post_new";
 
-    private MaterialEditText mTitleEdit;
-    private MaterialBetterSpinner mSpinner;
-    private String mSelectedFood;
-    private Button mPageAddBtn;
-    private RecyclerView mRecyclerView;
-    private String mUserId;
-    private ExtDialog mDialog;
+    protected MaterialEditText mTitleEdit;
+    protected MaterialBetterSpinner mSpinner;
+    protected String mSelectedFood;
+    protected Button mPageAddBtn;
+    protected RecyclerView mRecyclerView;
+    protected String mUserId;
+    protected ExtDialog mDialog;
 
-    private ArrayList<PageItem> mPageItems;
+    protected ArrayList<PageItem> mPageItems;
 
-    private final int REQ_ADD_PAGE = 1;
+
+    protected final int REQ_ADD_PAGE = 1;
+    protected final int REQ_EDIT_PAGE = 2;
+    protected final String VOLLEY_REQ_TAG_POST = "req-post-edit";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ediotr_main2);
+        setContentView(R.layout.activity_ediotr_main2);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
 
         mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
@@ -102,8 +103,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
             }
         });
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.editor_item_recycler_view);
-        setupRecyclerView(mRecyclerView);
+
 
         mPageAddBtn = (Button) findViewById(R.id.add_page_btn);
         mPageAddBtn.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +112,15 @@ public class PangEditorActivity2 extends AppCompatActivity {
                 ShowAddPageDialog();
             }
         });
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.editor_item_recycler_view);
+        setupRecyclerView(mRecyclerView);
+    }
+
+    public void setupActionBar() {
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -135,18 +144,17 @@ public class PangEditorActivity2 extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    public void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         mPageItems = new ArrayList<PageItem>();
         MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView.getContext(), OrientationHelper.VERTICAL, false);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new PangEditorAdapter(PangEditorActivity2.this,
-                mPageItems));
+        recyclerView.setAdapter(new PangEditorAdapter(PangEditorActivity2.this, mPageItems));
         recyclerView.setNestedScrollingEnabled(false);
     }
 
-    private void ShowAddPageDialog() {
+    public void ShowAddPageDialog() {
         Intent intent = new Intent(this, AddPageActivity.class);
         startActivityForResult(intent, REQ_ADD_PAGE);
 
@@ -177,17 +185,17 @@ public class PangEditorActivity2 extends AppCompatActivity {
             for (File f : params) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                long fileSize = params[0].length();
+                long fileSize = f.length();
                 if (fileSize > 2 * 1024 * 1024) {
-                    options.inSampleSize = 4;
+                    options.inSampleSize = 2;
                 } else if (fileSize < 700 * 1024) {
                     files.add(f);
                     continue;
                 } else {
-                    options.inSampleSize = 2;
+                    options.inSampleSize = 1;
                 }
 
-                Bitmap bitmap = BitmapFactory.decodeFile(params[0].getAbsolutePath(), options);
+                Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), options);
 
 
                 OutputStream out = null;
@@ -219,7 +227,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
         }
     }
 
-    private void requestPages(ArrayList<File> thumbFile) {
+    public void requestPages(ArrayList<File> thumbFile) {
         String title = mTitleEdit.getText().toString();
         if ("".equals(title)) {
             Toast.makeText(getApplicationContext(), "제목을 입력하세요.",  Toast.LENGTH_SHORT).show();
@@ -242,8 +250,8 @@ public class PangEditorActivity2 extends AppCompatActivity {
         Map<String, File> obj_file = new HashMap<String, File>();
         int key_count = 0;
         for (File f : thumbFile) {
-            obj_file.put("image"+String.valueOf(key_count++), f);
-            Log.d(TAG, "requestPages file path " + f.getAbsolutePath());
+            obj_file.put("image" + String.valueOf(key_count++), f);
+            Log.d(TAG, "requestPages file path " + (f == null ? "null" : f.getAbsolutePath()));
         }
 
         @SuppressWarnings("unchecked")
@@ -284,7 +292,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
         showDialog();
     }
 
-    private void removeCropFiles() {
+    public void removeCropFiles() {
         for (PageItem p : mPageItems) {
             File file = new File(p.getImageUri().getPath());
             file.delete();
@@ -292,7 +300,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
 
     }
 
-    private void showDialog() {
+    public void showDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
@@ -306,11 +314,43 @@ public class PangEditorActivity2 extends AppCompatActivity {
 
     }
 
-    private void removeDialog() {
+    public void removeDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         }
         mDialog = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        ShowExitEditorDialog();
+    }
+
+    public void ShowExitEditorDialog() {
+        AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Title = getString(R.string.editor_exit_title);
+        _Attr.TitleColor = R.color.white_op100;
+        _Attr.TitleIcon = R.drawable.ic_pencil;
+        _Attr.Message = getString(R.string.editor_exit);
+        _Attr.MessageColor = R.color.white_op100;
+        _Attr.NegativeButton = getString(R.string.no);
+        _Attr.NegativeButtonColor = R.color.white_op100;
+        _Attr.PositiveButton = getString(R.string.yes);
+        _Attr.PositiveButtonColor = R.color.white_op100;
+        _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
+            @Override
+            public void OnPositive(ExtDialog dialog) {
+                finish();
+                super.OnPositive(dialog);
+            }
+
+            @Override
+            public void OnNegative(ExtDialog dialog) {
+                super.OnNegative(dialog);
+            }
+        };
+
+        ExtDialogSt.Get().AlertExtDialog(this, _Attr);
     }
 
 }

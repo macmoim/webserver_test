@@ -15,6 +15,7 @@ import com.macmoim.pang.R;
 import com.macmoim.pang.ViewerActivity;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.pangeditor.ViewerActivity2;
 import com.macmoim.pang.util.Util;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class FoodRecyclerViewAdapter extends RecyclerView.Adapter<FoodRecyclerVi
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Intent i = new Intent(context, ViewerActivity.class);
+                Intent i = new Intent(context, ViewerActivity2.class);
                 i.putExtra("id", mValues.get(position).getId());
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

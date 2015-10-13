@@ -1,6 +1,7 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.gcm.MyGcmListenerService;
+import com.macmoim.pang.pangeditor.PangEditorActivity2;
+import com.macmoim.pang.pangeditor.PangEditorEditModeActivity2;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -46,6 +49,8 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
 
     private static final String VOLLEY_REQ_TAG_MYPOST = "get-mypost";
     private static final String VOLLEY_REQ_TAG_DEL_MYPOST = "del-mypost";
+
+    private static final int REQ_EDIT = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,12 +219,21 @@ public class MyPostActivity extends RequestFeedListActivity implements SwipeFood
     public void onEditButtonClick(int position) {
         try {
             Objects.requireNonNull(feedItems, "feedItems is null");
-            Intent intent = new Intent(this, PangEditorActivity.class);
+            Intent intent = new Intent(this, PangEditorEditModeActivity2.class);
             intent.putExtra("edit", true);
             intent.putExtra("id", feedItems.get(position).getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQ_EDIT);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_EDIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                ShowList();
+            }
         }
     }
 
