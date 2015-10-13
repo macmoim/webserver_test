@@ -33,7 +33,6 @@
     <attr name="ext_dialog_btn_negative_selector" format="reference" />
     <attr name="ext_dialog_widget_color" format="color" />
     <attr name="ext_dialog_list_item_color" format="color" />
-
     <attr name="ext_dialog_list_selector" format="reference" />
 
     <attr name="ext_dialog_items_gravity" format="enum">

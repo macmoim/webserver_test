@@ -65,21 +65,24 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     protected ImageView TitleIv = null;
     protected TextView TitleTv = null;
 
-    protected ScrollView MessageSv;
-    protected TextView MessageTv;
+    protected ScrollView MessageSv = null;
+    protected TextView MessageTv = null;
 
-    protected DialogButton PositiveButton;
-    protected DialogButton NegativeButton;
+    protected DialogButton PositiveButton = null;
+    protected DialogButton NegativeButton = null;
 
-    protected FrameLayout CustomViewFrame;
-    protected ListView ListItemView;
-    protected ListType mListType;
-    protected List<Integer> SelectedIndicesList;
-    protected ProgressBar mProgress;
-    protected TextView mProgressLabel;
-    protected TextView mProgressMinMax;
-    protected EditText InputEdText;
-    protected TextView InputMinMaxTv;
+    protected ListView ListItemView = null;
+    protected ListType mListType = null;
+    protected List<Integer> SelectedIndicesList = null; // multi
+
+    protected ProgressBar mProgress = null;
+    protected TextView mProgressLabel = null;
+    protected TextView mProgressMinMax = null;
+
+    protected EditText InputEdText = null;
+    protected TextView InputMinMaxTv = null;
+
+    protected FrameLayout CustomViewFrame = null;
 
     public final Builder GetBuilder() {
         return mBuilder;
@@ -161,12 +164,12 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     protected final void InvalidateList() {
         if (ListItemView == null) {
             return;
-        } else if ((mBuilder.ListItems == null || mBuilder.ListItems.length == 0) && mBuilder.Adapter == null) {
+        } else if ((mBuilder.ListItems == null || mBuilder.ListItems.length == 0) && (mBuilder.ListViewAdapter == null)) {
             return;
         }
 
-        // Set up list with Adapter
-        ListItemView.setAdapter(mBuilder.Adapter);
+        // set up list with adapter
+        ListItemView.setAdapter(mBuilder.ListViewAdapter);
 
         if (mListType != null || mBuilder.ListCallbackCustom != null) {
             ListItemView.setOnItemClickListener(this);
@@ -218,7 +221,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
                 }
             } else if (mListType == ListType.SINGLE) {
                 boolean _AllowSelection = true;
-                final TextListAdapter _Adapter = (TextListAdapter) mBuilder.Adapter;
+                final TextListAdapter _Adapter = (TextListAdapter) mBuilder.ListViewAdapter;
                 final RadioButton _Rb = (RadioButton) view.findViewById(R.id.control);
 
                 if (mBuilder.AutoDismiss && mBuilder.PositiveText == null) {
@@ -269,7 +272,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     }
 
     protected final Drawable GetListSelector() {
-        if (mBuilder.ListSelector != 0) {
+        if (mBuilder.ListSelector != -1) {
             return ResourcesCompat.getDrawable(mBuilder.BuilderContext.getResources(), mBuilder.ListSelector, null);
         }
 
@@ -342,9 +345,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         DialogButtonAction tag = (DialogButtonAction) v.getTag();
         switch (tag) {
             case POSITIVE: {
-                if (mBuilder.CallBack != null) {
-                    mBuilder.CallBack.OnAny(this);
-                    mBuilder.CallBack.OnPositive(this);
+                if (mBuilder.ButtonCallBack != null) {
+                    mBuilder.ButtonCallBack.OnAny(this);
+                    mBuilder.ButtonCallBack.OnPositive(this);
                 }
                 if (mBuilder.ListCallBackSingleChoice != null) {
                     SendSingleChoiceCallback(v);
@@ -361,9 +364,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
                 break;
             }
             case NEGATIVE: {
-                if (mBuilder.CallBack != null) {
-                    mBuilder.CallBack.OnAny(this);
-                    mBuilder.CallBack.OnNegative(this);
+                if (mBuilder.ButtonCallBack != null) {
+                    mBuilder.ButtonCallBack.OnAny(this);
+                    mBuilder.ButtonCallBack.OnNegative(this);
                 }
                 if (mBuilder.AutoDismiss) {
                     dismiss();
@@ -405,62 +408,51 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         protected int BtnSelectorPositive = -1;
         @DrawableRes
         protected int BtnSelectorNegative = -1;
+        protected ButtonCallback ButtonCallBack = null;
         // etc area : list, custom view, input, progress
         protected int WidgetColor = -1;
         // list view
+        protected CharSequence[] ListItems = null;
         protected int ListItemColor = -1;
-
         protected GravityEnum ListItemsGravity = GravityEnum.START;
-
-
-        protected CharSequence[] ListItems;
-
-        protected View CustomViewType;
-
-
-        protected ButtonCallback CallBack;
-        protected ListCallback ListCallBack;
-        protected ListCallbackSingleChoice ListCallBackSingleChoice;
-        protected ListCallbackMultiChoice ListCallBackMultiChoice;
-        protected ListCallback ListCallbackCustom;
-        protected boolean AlwaysCallMultiChoiceCallback = false;
-        protected boolean AlwaysCallSingleChoiceCallback = false;
-        protected boolean Cancelable = true;
-
+        protected ListAdapter ListViewAdapter = null;
+        @DrawableRes
+        protected int ListSelector = -1;
+        protected ListCallback ListCallBack = null;
+        protected ListCallbackSingleChoice ListCallBackSingleChoice = null;
         protected int SelectedIndex = -1;
+        protected boolean AlwaysCallSingleChoiceCallback = false;
+        protected ListCallbackMultiChoice ListCallBackMultiChoice = null;
         protected Integer[] SelectedIndices = null;
-        protected boolean AutoDismiss = true;
-
-
-        protected ListAdapter Adapter;
-        protected DialogInterface.OnDismissListener DismissListener;
-        protected DialogInterface.OnCancelListener CancelListener;
-        protected DialogInterface.OnKeyListener KeyListener;
-        protected DialogInterface.OnShowListener ShowListener;
-
-        protected boolean WrapCustomViewInScroll;
-
-
-        protected boolean ProgressCircleType;
-        protected boolean ShowMinMax;
+        protected boolean AlwaysCallMultiChoiceCallback = false;
+        protected ListCallback ListCallbackCustom = null;
+        // progress
+        protected boolean ProgressCircleType = false;
         protected int ProgressBarType = -2;
         protected int ProgressMax = 0;
-        protected CharSequence InputPrefill;
-        protected CharSequence InputHint;
-        protected InputCallback InputCallback;
-        protected boolean InputAllowEmpty;
+        protected boolean ShowMinMax = false;
+        protected String ProgressNumberFormat = null;
+        protected NumberFormat ProgressPercentFormat = null;
+        // input
+        protected CharSequence InputPrefill = null;
+        protected CharSequence InputHint = null;
+        protected InputCallback InputCallback = null;
+        protected boolean InputAllowEmpty = false;
         protected int InputType = -1;
-        protected boolean AlwaysCallInputCallback;
+        protected boolean AlwaysCallInputCallback = false;
         protected int InputMaxLength = -1;
         protected int InputMaxLengthErrorColor = 0;
+        // custum view
+        protected View CustomViewType = null;
+        protected boolean WrapCustomViewInScroll = false;
+        // listener
+        protected DialogInterface.OnShowListener ShowListener = null;
+        protected DialogInterface.OnCancelListener CancelListener = null;
+        protected DialogInterface.OnDismissListener DismissListener = null;
+        protected DialogInterface.OnKeyListener KeyListener = null;
 
-        protected String ProgressNumberFormat;
-        protected NumberFormat ProgressPercentFormat;
-
-
-        @DrawableRes
-        protected int ListSelector;
-
+        protected boolean Cancelable = true;
+        protected boolean AutoDismiss = true;
 
         public final Context GetContext() {
             return BuilderContext;
@@ -692,7 +684,7 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         }
 
         public Builder CallBack(@NonNull ButtonCallback CB) {
-            this.CallBack = CB;
+            this.ButtonCallBack = CB;
             return this;
         }
 
@@ -713,6 +705,19 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
                 }
             }
             return this;
+        }
+
+        public Builder WidgetColor(@ColorInt int Color) {
+            this.WidgetColor = Color;
+            return this;
+        }
+
+        public Builder WidgetColorRes(@ColorRes int ColorRes) {
+            return WidgetColor(this.BuilderContext.getResources().getColor(ColorRes));
+        }
+
+        public Builder WidgetColorAttr(@AttrRes int ColorAttr) {
+            return WidgetColorRes(Utils.ResolveColor(this.BuilderContext, ColorAttr));
         }
 
         public Builder ListItems(@ArrayRes int ItemsRes) {
@@ -739,6 +744,16 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
 
         public Builder ListItemColorAttr(@AttrRes int ColorAttr) {
             return ListItemColor(Utils.ResolveColor(this.BuilderContext, ColorAttr));
+        }
+
+        public Builder ListViewAdapter(@NonNull ListAdapter Adapter, @Nullable ListCallback CB) {
+            if (this.CustomViewType != null) {
+                throw new IllegalStateException("cannot set Adapter() when you're using a custom view.");
+            }
+
+            this.ListViewAdapter = Adapter;
+            this.ListCallbackCustom = CB;
+            return this;
         }
 
         public Builder ListItemsCallback(@NonNull ListCallback CB) {
@@ -779,85 +794,37 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
-        public Builder CustomView(@LayoutRes int layoutRes, boolean wrapInScrollView) {
-            LayoutInflater li = LayoutInflater.from(this.BuilderContext);
-            return CustomView(li.inflate(layoutRes, null), wrapInScrollView);
-        }
-
-        public Builder CustomView(@NonNull View view, boolean wrapInScrollView) {
-            if (this.MessageText != null) {
-                throw new IllegalStateException("You cannot use CustomViewType() when you have content set.");
-            } else if (this.ListItems != null) {
-                throw new IllegalStateException("You cannot use CustomViewType() when you have ListItems set.");
-            } else if (this.InputCallback != null) {
-                throw new IllegalStateException("You cannot use CustomViewType() with an input dialog");
-            } else if (this.ProgressBarType > -2 || this.ProgressCircleType) {
-                throw new IllegalStateException("You cannot use CustomViewType() with a ProgressBarType dialog");
-            }
-
-            if (view.getParent() != null && view.getParent() instanceof ViewGroup) {
-                ((ViewGroup) view.getParent()).removeView(view);
-            }
-
-            this.CustomViewType = view;
-            this.WrapCustomViewInScroll = wrapInScrollView;
-            return this;
-        }
-
-        public Builder WidgetColor(@ColorInt int Color) {
-            this.WidgetColor = Color;
-            return this;
-        }
-
-        public Builder WidgetColorRes(@ColorRes int ColorRes) {
-            return WidgetColor(this.BuilderContext.getResources().getColor(ColorRes));
-        }
-
-        public Builder widgetColorAttr(@AttrRes int ColorAttr) {
-            return WidgetColorRes(Utils.ResolveColor(this.BuilderContext, ColorAttr));
-        }
-
-        public Builder Progress(boolean indeterminate, int max) {
+        public Builder Progress(boolean Circle, int Max) {
             if (this.CustomViewType != null)
                 throw new IllegalStateException("You cannot set ProgressBarType() when you're using a custom view.");
-            if (indeterminate) {
+            if (Circle) {
                 this.ProgressCircleType = true;
                 this.ProgressBarType = -2;
             } else {
                 this.ProgressCircleType = false;
                 this.ProgressBarType = -1;
-                this.ProgressMax = max;
+                this.ProgressMax = Max;
             }
             return this;
         }
 
-        public Builder Progress(boolean indeterminate, int max, boolean showMinMax) {
-            this.ShowMinMax = showMinMax;
-            return Progress(indeterminate, max);
+        public Builder Progress(boolean Circle, int Max, boolean ShowMinMax) {
+            this.ShowMinMax = ShowMinMax;
+            return Progress(Circle, Max);
         }
 
-        public Builder ProgressNumberFormat(@NonNull String format) {
-            this.ProgressNumberFormat = format;
+        public Builder ProgressNumberFormat(@NonNull String String) {
+            this.ProgressNumberFormat = String;
             return this;
         }
 
-        public Builder ProgressPercentFormat(@NonNull NumberFormat format) {
-            this.ProgressPercentFormat = format;
+        public Builder ProgressPercentFormat(@NonNull NumberFormat Number) {
+            this.ProgressPercentFormat = Number;
             return this;
         }
 
         public Builder AutoDismiss(boolean dismiss) {
             this.AutoDismiss = dismiss;
-            return this;
-        }
-
-        public Builder Adapter(@NonNull ListAdapter adapter, @Nullable ListCallback callback) {
-            if (this.CustomViewType != null) {
-                throw new IllegalStateException("You cannot set Adapter() when you're using a custom view.");
-            }
-
-            this.Adapter = adapter;
-            this.ListCallbackCustom = callback;
             return this;
         }
 
@@ -882,8 +849,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         }
 
         public Builder Input(@Nullable CharSequence hint, @Nullable CharSequence prefill, boolean allowEmptyInput, @NonNull InputCallback callback) {
-            if (this.CustomViewType != null)
-                throw new IllegalStateException("You cannot set content() when you're using a custom view.");
+            if (this.CustomViewType != null) {
+                throw new IllegalStateException("cannot set content() when you're using a custom view.");
+            }
             this.InputCallback = callback;
             this.InputHint = hint;
             this.InputPrefill = prefill;
@@ -934,6 +902,31 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return this;
         }
 
+        public Builder CustomView(@LayoutRes int layoutRes, boolean wrapInScrollView) {
+            LayoutInflater li = LayoutInflater.from(this.BuilderContext);
+            return CustomView(li.inflate(layoutRes, null), wrapInScrollView);
+        }
+
+        public Builder CustomView(@NonNull View view, boolean wrapInScrollView) {
+            if (this.MessageText != null) {
+                throw new IllegalStateException("cannot use CustomViewType() when you have content set.");
+            } else if (this.ListItems != null) {
+                throw new IllegalStateException("cannot use CustomViewType() when you have ListItems set.");
+            } else if (this.InputCallback != null) {
+                throw new IllegalStateException("cannot use CustomViewType() with an input dialog");
+            } else if (this.ProgressBarType > -2 || this.ProgressCircleType) {
+                throw new IllegalStateException("cannot use CustomViewType() with a ProgressBarType dialog");
+            }
+
+            if (view.getParent() != null && view.getParent() instanceof ViewGroup) {
+                ((ViewGroup) view.getParent()).removeView(view);
+            }
+
+            this.CustomViewType = view;
+            this.WrapCustomViewInScroll = wrapInScrollView;
+            return this;
+        }
+
         @UiThread
         public ExtDialog Build() {
             return new ExtDialog(this);
@@ -968,32 +961,9 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         }
     }
 
-    public final View GetView() {
-        return vExtDialog;
-    }
-
-    @Nullable
-    public final ListView GetListView() {
-        return ListItemView;
-    }
-
     @Nullable
     public final EditText GetInputEditText() {
         return InputEdText;
-    }
-
-    public final TextView GetTitleView() {
-        return TitleTv;
-    }
-
-    @Nullable
-    public final TextView GetContentView() {
-        return MessageTv;
-    }
-
-    @Nullable
-    public final View GetCustomView() {
-        return mBuilder.CustomViewType;
     }
 
     @UiThread
@@ -1091,18 +1061,18 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     }
 
     @UiThread
-    public final void setItems(CharSequence[] items) {
-        if (mBuilder.Adapter == null) {
+    public final void SetItems(CharSequence[] items) {
+        if (mBuilder.ListViewAdapter == null) {
             throw new IllegalStateException("This ExtDialog instance does not yet have an adapter set to it.cannot use setItems().");
         }
         mBuilder.ListItems = items;
 
-        if (mBuilder.Adapter instanceof TextListAdapter) {
-            mBuilder.Adapter = new TextListAdapter(this, ListType.GetLayoutForType(mListType));
+        if (mBuilder.ListViewAdapter instanceof TextListAdapter) {
+            mBuilder.ListViewAdapter = new TextListAdapter(this, ListType.GetLayoutForType(mListType));
         } else {
             throw new IllegalStateException("When using a custom adapter, setItems() cannot be used. set ListItems through the adapter instead.");
         }
-        ListItemView.setAdapter(mBuilder.Adapter);
+        ListItemView.setAdapter(mBuilder.ListViewAdapter);
     }
 
     public final int GetCurrentProgress() {
@@ -1110,10 +1080,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             return -1;
         }
         return mProgress.getProgress();
-    }
-
-    public ProgressBar GetProgressBar() {
-        return mProgress;
     }
 
     public final void IncrementProgress(final int by) {
@@ -1148,10 +1114,6 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
             throw new IllegalStateException("cannot use SetMaxProgress() on this dialog.");
         }
         mProgress.setMax(max);
-    }
-
-    public final boolean IsIndeterminateProgress() {
-        return mBuilder.ProgressCircleType;
     }
 
     public final int GetMaxProgress() {
@@ -1195,8 +1157,8 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     @UiThread
     public void SetSelectedIndex(int index) {
         mBuilder.SelectedIndex = index;
-        if (mBuilder.Adapter != null && mBuilder.Adapter instanceof TextListAdapter) {
-            ((TextListAdapter) mBuilder.Adapter).notifyDataSetChanged();
+        if (mBuilder.ListViewAdapter != null && mBuilder.ListViewAdapter instanceof TextListAdapter) {
+            ((TextListAdapter) mBuilder.ListViewAdapter).notifyDataSetChanged();
         } else {
             throw new IllegalStateException("only use SetSelectedIndex() with the default adapter implementation.");
         }
@@ -1206,8 +1168,8 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
     public void SetSelectedIndices(@NonNull Integer[] indices) {
         mBuilder.SelectedIndices = indices;
         SelectedIndicesList = new ArrayList<>(Arrays.asList(indices));
-        if (mBuilder.Adapter != null && mBuilder.Adapter instanceof TextListAdapter) {
-            ((TextListAdapter) mBuilder.Adapter).notifyDataSetChanged();
+        if (mBuilder.ListViewAdapter != null && mBuilder.ListViewAdapter instanceof TextListAdapter) {
+            ((TextListAdapter) mBuilder.ListViewAdapter).notifyDataSetChanged();
         } else {
             throw new IllegalStateException("only use SetSelectedIndices() with the default adapter implementation.");
         }
@@ -1219,8 +1181,8 @@ public class ExtDialog extends DialogBase implements View.OnClickListener, Adapt
         }
         mBuilder.SelectedIndices = null;
         SelectedIndicesList.clear();
-        if (mBuilder.Adapter != null && mBuilder.Adapter instanceof TextListAdapter) {
-            ((TextListAdapter) mBuilder.Adapter).notifyDataSetChanged();
+        if (mBuilder.ListViewAdapter != null && mBuilder.ListViewAdapter instanceof TextListAdapter) {
+            ((TextListAdapter) mBuilder.ListViewAdapter).notifyDataSetChanged();
         } else {
             throw new IllegalStateException("only use ClearSelectedIndicies() with the default adapter implementation.");
         }

@@ -1,5 +1,6 @@
 package com.macmoim.pang.dialog.typedef;
 
+import android.support.annotation.ArrayRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
@@ -13,7 +14,7 @@ public class ListDialogAttr {
 
     public ListDialogAttr(@StringRes String title, @ColorRes int titleColor, @DrawableRes int titleIcon,
                           @StringRes String message, @ColorRes int messageColor,
-                          CharSequence[] listItems, @ColorRes int listItemColor, ExtDialog.ListCallback listCB,
+                          CharSequence[] listItems, @ArrayRes int listItemsRes, @ColorRes int listItemColor, ExtDialog.ListCallback listCB,
                           boolean cancelable,
                           @ColorRes int bgColor, @ColorRes int dividerColor, @ColorRes int titleFrameColor) {
         this.Title = title;
@@ -22,6 +23,7 @@ public class ListDialogAttr {
         this.Message = message;
         this.MessageColor = messageColor;
         this.ListItems = listItems;
+        this.ListItemsRes = listItemsRes;
         this.ListItemColor = listItemColor;
         this.ListCB = listCB;
 
@@ -43,6 +45,8 @@ public class ListDialogAttr {
     public int MessageColor = -1;
 
     public CharSequence[] ListItems = null;
+    @ArrayRes
+    public int ListItemsRes = -1;
     @ColorRes
     public int ListItemColor = -1;
 
