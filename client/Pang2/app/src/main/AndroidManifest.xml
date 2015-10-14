@@ -40,7 +40,7 @@
     <application
         android:name="com.macmoim.pang.app.AppController"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_smc"
         android:label="@string/app_name"
         android:theme="@style/Theme.DesignDemo">
 
