@@ -203,6 +203,7 @@
 
         <activity
             android:name=".pangeditor.ViewerActivity2"
+            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:parentActivityName="com.macmoim.pang.MainActivity">
             <meta-data

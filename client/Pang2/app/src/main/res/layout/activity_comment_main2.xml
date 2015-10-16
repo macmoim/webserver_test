@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +20,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ViewBackGroundColor">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -92,8 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:text="@string/send"
-                android:background="@drawable/button_action_blue_selector"/>
+                android:background="@drawable/button_action_blue_selector"
+                android:text="@string/send" />
         </LinearLayout>
     </LinearLayout>
 

@@ -47,7 +47,7 @@ public class SearchActivity extends RequestFeedListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState, R.layout.search_activity);
+        super.onCreate(savedInstanceState, R.layout.activity_search);
 
         mSearchEdit = (EditText) findViewById(R.id.search_edit);
         ((Button) findViewById(R.id.search_btn)).setOnClickListener(new View.OnClickListener() {

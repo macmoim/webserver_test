@@ -16,16 +16,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -33,22 +30,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.NetworkImageView;
-import com.macmoim.pang.OtherUserProfileActivity;
 import com.macmoim.pang.R;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
-import com.macmoim.pang.data.FoodCommentItem;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
-import com.macmoim.pang.layout.CircleFlatingMenu;
-import com.macmoim.pang.layout.CircleFlatingMenuWithActionView;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
-import com.navercorp.volleyextensions.view.ZoomableNetworkImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,8 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Created by P14983 on 2015-10-05.
  */
@@ -78,20 +68,17 @@ public class ViewerActivity2 extends AppCompatActivity {
     private static final String URL_SHARE = Util.SERVER_ROOT + "/post/share";
 
     private RichViewer mViewer;
-    private Toolbar mToolbar;
+    private LinearLayout mBottomCtlBar = null;
     private Button mLikeBtn;
     private boolean isLikeCheck;
     private ArrayList<ImageView> mRankingStartArr;
     private Button mRankingBtn;
-    CircleFlatingMenuWithActionView mShareCf;
+
     private int mStar;
     private int mLikeDbId = -1;
     private int mStarDbId = -1;
     private String mThumbFileName;
     private String mTitle;
-    private CircleImageView profilePic;
-    private ZoomableNetworkImageView mZoomInImageView;
-    private RelativeLayout mZoomInLayout;
     private ExtDialog mDialog;
 
     private LinearLayout mRankingView;
@@ -102,7 +89,6 @@ public class ViewerActivity2 extends AppCompatActivity {
     private String mUserId;
 
     private RecyclerView mCommentRv;
-    private ArrayList<FoodCommentItem> foodCommentItems;
 
     private static final String VOLLEY_REQ_TAG_STAR = "get-star";
     private static final String VOLLEY_REQ_TAG_LIKE = "get-like";
@@ -118,12 +104,11 @@ public class ViewerActivity2 extends AppCompatActivity {
 
         mUserId = LoginPreferences.GetInstance().getString(this, LoginPreferences.PROFILE_ID);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // get like from server
         isLikeCheck = false;
+
+        mBottomCtlBar = (LinearLayout) findViewById(R.id.bottom_control_bar);
+        mBottomCtlBar.setVisibility(View.GONE);
 
         mLikeBtn = (Button) findViewById(R.id.like_btn);
         setLikeBtnBg(isLikeCheck);
@@ -144,34 +129,13 @@ public class ViewerActivity2 extends AppCompatActivity {
             }
         });
 
-
         mRankingView = (LinearLayout) findViewById(R.id.star_view);
         mRankingBtn = (Button) findViewById(R.id.ranking_btn);
         setupRankingStarView();
 
-
-//        profilePic = (CircleImageView) findViewById(R.id.profilePic);
-//        profilePic.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startOtherProfileActivity();
-//            }
-//        });
-
-        mZoomInLayout = (RelativeLayout) findViewById(R.id.zoomin_layout);
-        mZoomInImageView = (ZoomableNetworkImageView) findViewById(R.id.zoomin_imageview);
-        mZoomInImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideZoomImage();
-            }
-        });
-
-
         mPageViewPager = (ViewPager) findViewById(R.id.page_viewpager);
 
         RequestPageItems();
-
     }
 
     private void setupViewPager(ViewPager viewPager, ArrayList<PageItem> items) {
@@ -182,7 +146,7 @@ public class ViewerActivity2 extends AppCompatActivity {
     private void RequestPageItems() {
         showDialog();
         int id = getIntent().getIntExtra("id", 0);
-        String url = Util.SERVER_ROOT + "/post/get_new/"+String.valueOf(id);
+        String url = Util.SERVER_ROOT + "/post/get_new/" + String.valueOf(id);
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -190,7 +154,6 @@ public class ViewerActivity2 extends AppCompatActivity {
                 VolleyLog.d(TAG, "Response: " + response.toString());
                 if (response != null) {
                     OnResponseRequestPage(response);
-
                 }
             }
         }, new Response.ErrorListener() {
@@ -215,7 +178,7 @@ public class ViewerActivity2 extends AppCompatActivity {
                 ArrayList<String> contentList = Util.splitString(response.getString("page_content"), "\\|");
                 ArrayList<String> imagePathList = Util.splitString(response.getString("img_path"), "\\|");
                 ArrayList<PageItem> pageItems = new ArrayList<>();
-                for (int i=0; i<contentList.size(); i++) {
+                for (int i = 0; i < contentList.size(); i++) {
                     PageItem item = new PageItem(contentList.get(i), Uri.parse(imagePathList.get(i)));
                     pageItems.add(item);
                 }
@@ -240,6 +203,27 @@ public class ViewerActivity2 extends AppCompatActivity {
                 pageItems.add(0, frontPageItem);
                 setupViewPager(mPageViewPager, pageItems);
 
+                mPageViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        if (position == 0) {
+                            mBottomCtlBar.setVisibility(View.GONE);
+                        } else {
+                            mBottomCtlBar.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
                 setMainBackground(mThumbFileName);
 
                 getLike();
@@ -249,7 +233,6 @@ public class ViewerActivity2 extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -268,8 +251,6 @@ public class ViewerActivity2 extends AppCompatActivity {
         intent.putExtra("post_user_id", postUserId);
         startActivity(intent);
     }
-
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setLikeBtnBg(boolean isLike) {
@@ -477,35 +458,6 @@ public class ViewerActivity2 extends AppCompatActivity {
         return true;
     }
 
-    private void setShareFloationAction(View actionView) {
-        final int[] id = {R.drawable.facebook_icon, R.drawable.ic_dashboard, R.drawable.ic_pencil};
-
-        mShareCf = new CircleFlatingMenuWithActionView(this, actionView);
-        mShareCf.setListener(new CircleFlatingMenu.Listener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if ((int) v.getTag() == R.drawable.ic_facebook) {
-                        new ShareFacebookTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
-                        mShareCf.menuClose(false);
-                    } else if ((int) v.getTag() == R.drawable.ic_dashboard) {
-                        new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
-                        mShareCf.menuClose(false);
-                    } else if ((int) v.getTag() == R.drawable.ic_pencil) {
-                        new ShareEtcTask().execute(Util.IMAGE_THUMBNAIL_FOLDER_URL + mThumbFileName);
-                        mShareCf.menuClose(false);
-                    }
-
-                }
-                return true;
-            }
-        });
-        mShareCf.addResId(id);
-        mShareCf.setItemAngle(-135, -45);
-        mShareCf.setItemRadius(getResources().getDimensionPixelSize(R.dimen.radius_medium));
-        mShareCf.setFloationAction();
-    }
-
     private void setupRankingStarView() {
         if (mRankingStartArr == null) {
             mRankingStartArr = new ArrayList<>();
@@ -549,7 +501,6 @@ public class ViewerActivity2 extends AppCompatActivity {
             animation[i - 1].setDuration(1000);
             animation[i - 1].start();
         }
-
     }
 
     private class RankingStarTouchListener implements View.OnTouchListener {
@@ -604,7 +555,6 @@ public class ViewerActivity2 extends AppCompatActivity {
         shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
         startActivity(Intent.createChooser(shareIntent, "Share Food"));
-
     }
 
     private void shareContentFacebook(Uri contentUri) {
@@ -612,7 +562,6 @@ public class ViewerActivity2 extends AppCompatActivity {
 
         Auth auth = new FacebookAuth(this, null);
         auth.share(url, contentUri);
-
     }
 
     private void setRankStar(int starIndexInArray) {
@@ -714,43 +663,17 @@ public class ViewerActivity2 extends AppCompatActivity {
         return imgBitmap;
     }
 
-    private void startOtherProfileActivity() {
-        if (postUserId == null || postUserName == null) {
-            return;
-        }
-        Intent intent = new Intent(ViewerActivity2.this, OtherUserProfileActivity.class);
-        intent.putExtra("other-user-id", postUserId);
-        intent.putExtra("other-user-name", postUserName);
-        startActivity(intent);
-    }
-
-    private void showZoomImage(String url) {
-        if (mZoomInLayout != null && mZoomInImageView != null) {
-            mZoomInLayout.setVisibility(View.VISIBLE);
-            mZoomInImageView.setImageUrl(url, AppController.getInstance().getImageLoader());
-        }
-    }
-
-    private boolean hideZoomImage() {
-        if (mZoomInLayout != null && mZoomInLayout.getVisibility() == View.VISIBLE) {
-            mZoomInLayout.setVisibility(View.GONE);
-            return true;
-        }
-        return false;
-    }
-
     private void showDialog() {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
             ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
             attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
+            attr.MessageColor = R.color.ExtDialogMessageColor;
             mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
         }
 
         mDialog.show();
-
     }
 
     private void removeDialog() {
@@ -774,8 +697,6 @@ public class ViewerActivity2 extends AppCompatActivity {
         if (mRankingView != null && mRankingView.getVisibility() == View.VISIBLE) {
             invisibleRankingViewAnim();
             return;
-        } else if (hideZoomImage()) {
-            return;
         }
         super.onBackPressed();
     }
@@ -789,9 +710,9 @@ public class ViewerActivity2 extends AppCompatActivity {
     protected void onDestroy() {
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_STAR);
         AppController.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG_LIKE);
-        if (mShareCf != null) {
-            mShareCf.setListener(null);
-            mShareCf = null;
+
+        if (mBottomCtlBar != null) {
+            mBottomCtlBar = null;
         }
         if (mLikeBtn != null) {
             mLikeBtn.setOnClickListener(null);
@@ -819,39 +740,11 @@ public class ViewerActivity2 extends AppCompatActivity {
             mCommentRv.setAdapter(null);
             mCommentRv = null;
         }
-        mZoomInImageView = null;
-        mZoomInLayout = null;
         if (mViewer != null) {
             mViewer.setOnInitialLoadListener(null);
             mViewer.destroy();
             mViewer = null;
         }
         super.onDestroy();
-
-    }
-
-    private class WebAppInterface {
-
-
-        /**
-         * Instantiate the interface and set the context
-         */
-        WebAppInterface() {
-        }
-
-        /**
-         * Show a toast from the web page
-         */
-
-        @JavascriptInterface
-        public void onImageItemClick(String value) {
-            final String filename = (String) value.subSequence(value.lastIndexOf("/") + 1, value.length());
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showZoomImage(Util.IMAGE_FOLDER_URL + filename);
-                }
-            });
-        }
     }
 }

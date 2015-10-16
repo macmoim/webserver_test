@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +20,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ViewBackGroundColor">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -43,9 +46,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:hint="Add comment"
-        app:met_maxCharacters="@integer/server_define_comment"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:met_maxCharacters="@integer/server_define_comment" />
 
 
 </android.support.design.widget.CoordinatorLayout>

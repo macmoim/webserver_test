@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,55 +21,24 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ViewBackGroundColor"
     android:fitsSystemWindows="true">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </android.support.design.widget.AppBarLayout>
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/mainBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"></com.android.volley.toolbox.NetworkImageView>
+        android:scaleType="centerCrop">
+
+    </com.android.volley.toolbox.NetworkImageView>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/page_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <!--<com.macmoim.pang.pangeditor.MyPageNestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.macmoim.pang.pangeditor.MyPageWrapViewPager
-                android:id="@+id/page_viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-
-    </com.macmoim.pang.pangeditor.MyPageNestedScrollView>-->
+        android:layout_height="match_parent" />
 
     <LinearLayout
+        android:id="@+id/bottom_control_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -76,7 +47,7 @@
         <LinearLayout
             android:id="@+id/star_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/viewer_card_view_control_bar_height"
             android:background="@color/orange_op20"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal"
@@ -84,108 +55,94 @@
 
             <ImageView
                 android:id="@+id/star01"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star02"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star03"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star04"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
 
             <ImageView
                 android:id="@+id/star05"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                 android:background="@drawable/star_nor_white" />
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/viewer_card_view_control_bar_height"
             android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/like_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/like_nor_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/ranking_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/star_nor_white" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/comment_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/ic_discuss" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <Button
                     android:id="@+id/share_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/viewer_card_view_control_bar_icon_size"
+                    android:layout_height="@dimen/viewer_card_view_control_bar_icon_size"
                     android:layout_centerInParent="true"
                     android:background="@drawable/ic_share_white" />
             </RelativeLayout>
         </LinearLayout>
-
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/zoomin_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView
-            android:id="@+id/zoomin_imageview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></com.navercorp.volleyextensions.view.MultiLevelSingleTapZoomNetworkImageView>
-    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

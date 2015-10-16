@@ -47,6 +47,15 @@
     </style>
 
     <!-- text drop shadow -->
+    <style name="text_drop_shadow_grey_dt1_sz1">
+        <item name="android:shadowColor">@color/md_grey_900</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="text_drop_shadow_grey_dt2_sz2">
         <item name="android:shadowColor">@color/md_grey_900</item>
         <item name="android:shadowDx">2</item>

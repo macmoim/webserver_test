@@ -3,8 +3,8 @@
     android:id="@+id/feed_main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ViewBackGroundColor"
     android:fitsSystemWindows="true">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,19 +32,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp" >
+            android:padding="10dp">
 
             <EditText
                 android:id="@+id/search_edit"
-                android:layout_weight="7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="7"
                 android:hint="@string/search_hint" />
+
             <Button
                 android:id="@+id/search_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/ic_search"/>
+                android:background="@drawable/ic_search" />
         </LinearLayout>
 
 
