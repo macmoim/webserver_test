@@ -112,15 +112,12 @@ public class AddPageActivity extends AppCompatActivity {
 
     private void ShowExitEditorDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Cancelable = false;
         _Attr.Title = getString(R.string.editor_exit_title);
-        _Attr.TitleColor = R.color.white_op100;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
-        _Attr.MessageColor = R.color.white_op100;
         _Attr.NegativeButton = getString(R.string.no);
-        _Attr.NegativeButtonColor = R.color.white_op100;
         _Attr.PositiveButton = getString(R.string.yes);
-        _Attr.PositiveButtonColor = R.color.white_op100;
         _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
             @Override
             public void OnPositive(ExtDialog dialog) {
@@ -194,7 +191,6 @@ public class AddPageActivity extends AppCompatActivity {
                 mDialogAddPageIv.setImageURI(mCropImagedUri);
 
 
-
 //                File mFile = new File(mCropImagedUri.getPath());
 //                if (mProfileDbId != -1) {
 //                    requestUpdateThumbImage(mFile);
@@ -247,7 +243,7 @@ public class AddPageActivity extends AppCompatActivity {
         Intent intent = new Intent("com.android.camera.action.CROP");
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
-        PROFILE_IMAGE_OUTPUT_X =  screenSize.x;// / 2;//mEditor.getWidth() / 2;
+        PROFILE_IMAGE_OUTPUT_X = screenSize.x;// / 2;//mEditor.getWidth() / 2;
         PROFILE_IMAGE_OUTPUT_Y = PROFILE_IMAGE_OUTPUT_X * 3 / 4;
         intent.setDataAndType(imageCaptureUri, "image/*");
         intent.putExtra("crop", "true");
@@ -275,7 +271,7 @@ public class AddPageActivity extends AppCompatActivity {
         }
         Calendar c = Calendar.getInstance();
         int mseconds = c.get(Calendar.MILLISECOND);
-        File file = new File(newDirectory, (prefix + "crop_temp_"+String.valueOf(mseconds)+".jpg"));
+        File file = new File(newDirectory, (prefix + "crop_temp_" + String.valueOf(mseconds) + ".jpg"));
         if (file.exists()) {
             //this wont be executed
             file.delete();

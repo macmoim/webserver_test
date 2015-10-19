@@ -675,12 +675,12 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.ExtDialogMessageColor;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
-        }
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Cancelable = false;
+            _Attr.Message = getResources().getString(R.string.loading);
 
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
+        }
         mDialog.show();
     }
 

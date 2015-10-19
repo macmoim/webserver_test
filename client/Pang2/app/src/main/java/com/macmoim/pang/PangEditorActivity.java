@@ -1046,9 +1046,7 @@ public class PangEditorActivity extends AppCompatActivity {
         } else {
             ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
             _Attr.Message = getResources().getString(R.string.loading);
-            _Attr.MessageColor = R.color.ExtDialogMessageColor;
             _Attr.Cancelable = false;
-
             mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 

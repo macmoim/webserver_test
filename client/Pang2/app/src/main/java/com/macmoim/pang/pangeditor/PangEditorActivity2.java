@@ -104,7 +104,6 @@ public class PangEditorActivity2 extends AppCompatActivity {
         });
 
 
-
         mPageAddBtn = (Button) findViewById(R.id.add_page_btn);
         mPageAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +133,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_submit: {
                 File[] files = new File[mPageItems.size()];
-                for (int i=0; i<files.length; i++) {
+                for (int i = 0; i < files.length; i++) {
                     files[i] = new File(mPageItems.get(i).getImageUri().getPath());
                 }
                 new ResizeBitmapTask().execute(files);
@@ -230,11 +229,11 @@ public class PangEditorActivity2 extends AppCompatActivity {
     public void requestPages(ArrayList<File> thumbFile) {
         String title = mTitleEdit.getText().toString();
         if ("".equals(title)) {
-            Toast.makeText(getApplicationContext(), "제목을 입력하세요.",  Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "제목을 입력하세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("".equals(mSelectedFood)) {
-            Toast.makeText(getApplicationContext(), "카테고리를 선택하세요.",  Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "카테고리를 선택하세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         Map<String, String> obj_body = new HashMap<String, String>();
@@ -244,7 +243,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
         obj_body.put("thumbnail_index", "0");
         int content_count = 0;
         for (PageItem p : mPageItems) {
-            obj_body.put("content"+String.valueOf(content_count++), p.getContents());
+            obj_body.put("content" + String.valueOf(content_count++), p.getContents());
         }
 
         Map<String, File> obj_file = new HashMap<String, File>();
@@ -304,10 +303,10 @@ public class PangEditorActivity2 extends AppCompatActivity {
         if (mDialog != null) {
             mDialog.dismiss();
         } else {
-            ProgressCircleDialogAttr attr = new ProgressCircleDialogAttr();
-            attr.Message = getResources().getString(R.string.loading);
-            attr.MessageColor = R.color.white_op100;
-            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, attr);
+            ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
+            _Attr.Cancelable = false;
+            _Attr.Message = getResources().getString(R.string.loading);
+            mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
         }
 
         mDialog.show();
@@ -328,15 +327,12 @@ public class PangEditorActivity2 extends AppCompatActivity {
 
     public void ShowExitEditorDialog() {
         AlertDialogAttr _Attr = new AlertDialogAttr();
+        _Attr.Cancelable = false;
         _Attr.Title = getString(R.string.editor_exit_title);
-        _Attr.TitleColor = R.color.white_op100;
         _Attr.TitleIcon = R.drawable.ic_pencil;
         _Attr.Message = getString(R.string.editor_exit);
-        _Attr.MessageColor = R.color.white_op100;
         _Attr.NegativeButton = getString(R.string.no);
-        _Attr.NegativeButtonColor = R.color.white_op100;
         _Attr.PositiveButton = getString(R.string.yes);
-        _Attr.PositiveButtonColor = R.color.white_op100;
         _Attr.ButtonCB = new ExtDialog.ButtonCallback() {
             @Override
             public void OnPositive(ExtDialog dialog) {

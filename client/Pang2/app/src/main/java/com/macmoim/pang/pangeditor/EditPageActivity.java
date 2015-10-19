@@ -2,33 +2,13 @@ package com.macmoim.pang.pangeditor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.macmoim.pang.R;
 import com.macmoim.pang.app.AppController;
-import com.macmoim.pang.dialog.ExtDialog;
-import com.macmoim.pang.dialog.ExtDialogSt;
-import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.util.Util;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
 
 /**
  * Created by P14983 on 2015-10-02.

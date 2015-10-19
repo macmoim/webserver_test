@@ -1,13 +1,11 @@
 package com.macmoim.pang.pangeditor;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 /**
  * Created by P14983 on 2015-10-02.
  */
 public class PageItem {
-
     private String contents;
     private Uri imageUri;
 

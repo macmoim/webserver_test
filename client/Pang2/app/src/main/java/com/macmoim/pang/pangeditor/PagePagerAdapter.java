@@ -43,6 +43,7 @@ public class PagePagerAdapter extends FragmentPagerAdapter {
         } else {
             myFragment = PageViewerFragment.GetInstance(position);
             ((PageViewerFragment)myFragment).setPageItem(mPageItems.get(position));
+            ((PageViewerFragment)myFragment).SetPageInfo(position, getCount() - 1);
         }
 
         return myFragment;
