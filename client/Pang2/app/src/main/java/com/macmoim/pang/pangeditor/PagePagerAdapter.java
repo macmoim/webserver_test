@@ -15,6 +15,7 @@ public class PagePagerAdapter extends FragmentPagerAdapter {
     Context mContext;
 
     ArrayList<PageItem> mPageItems;
+    PageMoveListener mListener;
     //Defined from strings.xml
 
     public PagePagerAdapter(FragmentManager fm) {
@@ -22,11 +23,12 @@ public class PagePagerAdapter extends FragmentPagerAdapter {
         //Initialising the strings array of tabs
     }
 
-    public PagePagerAdapter(FragmentManager fm, Context context, ArrayList<PageItem> items) {
+    public PagePagerAdapter(FragmentManager fm, Context context, ArrayList<PageItem> items, PageMoveListener l) {
         super(fm);
         //Initialising the strings array of tabs
         mContext = context;
         mPageItems = items;
+        mListener = l;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class PagePagerAdapter extends FragmentPagerAdapter {
         if (position == 0) {
             myFragment = PageViewerFrontPageFragment.GetInstance(position);
             ((PageViewerFrontPageFragment)myFragment).setPageItem((FrontPageItem)mPageItems.get(position));
+            ((PageViewerFrontPageFragment)myFragment).setPageListener(mListener);
         } else {
             myFragment = PageViewerFragment.GetInstance(position);
             ((PageViewerFragment)myFragment).setPageItem(mPageItems.get(position));

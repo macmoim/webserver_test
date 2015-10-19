@@ -58,7 +58,7 @@ import java.util.Map;
 /**
  * Created by P14983 on 2015-10-05.
  */
-public class ViewerActivity2 extends AppCompatActivity {
+public class ViewerActivity2 extends AppCompatActivity implements PageMoveListener {
     private static final String TAG = "ViewerActivity2";
 
     private static final String URL_LIKE = Util.SERVER_ROOT + "/like";
@@ -139,7 +139,7 @@ public class ViewerActivity2 extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager, ArrayList<PageItem> items) {
-        PagePagerAdapter adapter = new PagePagerAdapter(getSupportFragmentManager(), this.getBaseContext(), items);
+        PagePagerAdapter adapter = new PagePagerAdapter(getSupportFragmentManager(), this.getBaseContext(), items, this);
         viewPager.setAdapter(adapter);
     }
 
@@ -191,6 +191,10 @@ public class ViewerActivity2 extends AppCompatActivity {
                 postUserName = response.getString("user_name");
                 String profile_img_url = response.getString("profile_img_url");
                 postUserId = response.getString("user_id");
+                String userEmail = response.getString("user_email");
+                String commentSum = response.getString("comment_sum");
+                String pageSum = response.getString("page_sum");
+                String uploadDate = response.getString("upload_date");
 
                 FrontPageItem frontPageItem = new FrontPageItem();
                 frontPageItem.setImageUri(Uri.parse(thumbImgPath));
@@ -200,6 +204,10 @@ public class ViewerActivity2 extends AppCompatActivity {
                 frontPageItem.setUserName(postUserName);
                 frontPageItem.setProfileImgUrl(profile_img_url);
                 frontPageItem.setUserId(postUserId);
+                frontPageItem.setUserEmail(userEmail);
+                frontPageItem.setCommentSum(commentSum);
+                frontPageItem.setPageSum(pageSum);
+                frontPageItem.setUploadDate(uploadDate);
                 pageItems.add(0, frontPageItem);
                 setupViewPager(mPageViewPager, pageItems);
 
@@ -681,6 +689,11 @@ public class ViewerActivity2 extends AppCompatActivity {
             mDialog.dismiss();
         }
         mDialog = null;
+    }
+
+    @Override
+    public void OnChangePage(int index) {
+        mPageViewPager.setCurrentItem(index);
     }
 
     @Override

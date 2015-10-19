@@ -13,11 +13,15 @@ public class FrontPageItem extends PageItem {
     private String like;
     private String title;
     private String profileImgUrl;
+    private String userEmail;
+    private String commentSum;
+    private String pageSum;
+    private String uploadDate;
 
     public FrontPageItem() {
     }
 
-    public FrontPageItem(String contents, Uri imageUri, String userId, String userName, String star, String like, String title, String profileImgUrl) {
+    public FrontPageItem(String contents, Uri imageUri, String userId, String userName, String star, String like, String title, String profileImgUrl, String userEmail, String commentSum, String pageSum, String uploadDate) {
         super(contents, imageUri);
         this.userId = userId;
         this.userName = userName;
@@ -25,6 +29,10 @@ public class FrontPageItem extends PageItem {
         this.like = like;
         this.title = title;
         this.profileImgUrl = profileImgUrl;
+        this.userEmail = userEmail;
+        this.commentSum = commentSum;
+        this.pageSum = pageSum;
+        this.uploadDate = uploadDate;
     }
 
     public String getUserId() {
@@ -73,5 +81,37 @@ public class FrontPageItem extends PageItem {
 
     public void setProfileImgUrl(String profileImgUrl) {
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getCommentSum() {
+        return commentSum;
+    }
+
+    public void setCommentSum(String commentSum) {
+        this.commentSum = commentSum;
+    }
+
+    public String getPageSum() {
+        return pageSum;
+    }
+
+    public void setPageSum(String pageSum) {
+        this.pageSum = pageSum;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
     }
 }

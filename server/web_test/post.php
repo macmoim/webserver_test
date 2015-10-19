@@ -970,16 +970,21 @@ function rest_get_new($id) {
 	}
 
 
-	$sql_query = "SELECT posts.user_id as p_user_id, title, upload_date, category, thumb_img_path, rank,
-					count(like_bool) as likes_sum, profiles.user_name, profiles.profile_img_url, 
-					GROUP_CONCAT(pages.content SEPARATOR '\\|') as content, GROUP_CONCAT(pages.img_path SEPARATOR '\\|') as img_path
+	$sql_query = "SELECT posts.user_id as p_user_id, title, posts.upload_date, category, thumb_img_path, rank,
+					mylike.like_sum, profiles.user_name, profiles.profile_img_url, 
+                    profiles.user_email,
+					post_c.comment_sum,
+                    mypage.page_sum,
+					mypage.content, mypage.img_path
 					FROM posts 
-					LEFT JOIN likes
-					ON likes.post_id = posts.id AND likes.like_bool = '1'
+					LEFT JOIN ( SELECT post_id, count(like_bool) as like_sum FROM likes WHERE post_id = '$id' AND like_bool = '1' ) mylike
+					ON mylike.post_id = posts.id
 					LEFT JOIN profiles 
                     			ON profiles.user_id = posts.user_id
-                    LEFT JOIN pages
-                    			ON posts.id = pages.post_id
+                    LEFT JOIN ( SELECT post_id, count(comment) as comment_sum from post_comment WHERE post_id = '$id' ) post_c
+								ON post_c.post_id = posts.id 
+                    LEFT JOIN ( SELECT post_id, count(page_index) as page_sum, GROUP_CONCAT(content SEPARATOR '\\|') as content, GROUP_CONCAT(img_path SEPARATOR '\\|') as img_path from pages WHERE post_id = '$id' ) mypage
+                    			ON posts.id = mypage.post_id
 					WHERE posts.id = '$id'";
 
 	if ($result = $mysqli->query ( $sql_query )) {
@@ -993,10 +998,13 @@ function rest_get_new($id) {
 					"category" => $row ['category'],
 					"thumb_img_path" => $row['thumb_img_path'],
 					"rank" => $row['rank'],
-					"like_sum" => $row['likes_sum'],
+					"like_sum" => $row['like_sum'],
 					"profile_img_url" => $row['profile_img_url'],
 					"page_content" => $row['content'],
 					"img_path" => $row['img_path'],
+					"user_email" => $row['user_email'],
+					"comment_sum" => $row['comment_sum'],
+					"page_sum" => $row['page_sum'],
 					"ret_val" => "success"
 			);
 		} else {

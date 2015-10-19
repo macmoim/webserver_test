@@ -27,6 +27,8 @@ public class PageViewerFrontPageFragment extends Fragment {
     private FrontPageItem mPageItem;
     private CircleImageView profilePic;
 
+    private PageMoveListener mListener;
+
     public static PageViewerFrontPageFragment GetInstance(int position) {
         //Construct the fragment
         PageViewerFrontPageFragment myFragment = new PageViewerFrontPageFragment();
@@ -50,6 +52,10 @@ public class PageViewerFrontPageFragment extends Fragment {
         mPageItem = item;
     }
 
+    public void setPageListener(PageMoveListener l) {
+        mListener = l;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,13 +75,20 @@ public class PageViewerFrontPageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((TextView) mRoot.findViewById(R.id.title_tv)).setText(mPageItem.getTitle());
-        ((TextView) mRoot.findViewById(R.id.like_text)).setText("  " + mPageItem.getLike());
+        String likeSum = mPageItem.getLike();
+        ((TextView) mRoot.findViewById(R.id.like_text)).setText("  " + (likeSum.equals("null") ? "0" : likeSum));
 
         String score = mPageItem.getStar();
         ((TextView) mRoot.findViewById(R.id.score_text)).setText("  " + (score.equals("null") ? "0" : score));
 
         String postUserName = mPageItem.getUserName();
         ((TextView) mRoot.findViewById(R.id.user_name_text)).setText(postUserName);
+        ((TextView) mRoot.findViewById(R.id.user_email)).setText(mPageItem.getUserEmail());
+        String commentSum = mPageItem.getCommentSum();
+        ((TextView) mRoot.findViewById(R.id.comments_numbers_tv)).setText((commentSum.equals("null") ? "0" : commentSum) + " comments");
+        String pageSum = mPageItem.getPageSum();
+        ((TextView) mRoot.findViewById(R.id.contents_numbers_tv)).setText((pageSum.equals("null") ? "0" : pageSum) + " contents");
+        ((TextView) mRoot.findViewById(R.id.date_tv)).setText(mPageItem.getUploadDate());
 
         String profile_img_url = mPageItem.getProfileImgUrl();
         if (profile_img_url != null) {
@@ -89,6 +102,15 @@ public class PageViewerFrontPageFragment extends Fragment {
                     .fitCenter()
                     .into(profilePic);
         }
+
+        ((ViewGroup) mRoot.findViewById(R.id.start_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.OnChangePage(getArguments().getInt("position") + 1);
+                }
+            }
+        });
     }
 
     @Override
