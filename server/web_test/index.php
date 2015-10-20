@@ -194,13 +194,13 @@ $app->get('/thumbImageList/:category(/)(/:timeStamp)', function ($category, $tim
 	exit ( json_encode ( $value ) );
 });
 
-$app->get('/post/share/:htmlUrl', function ($htmlUrl) {
-	include __DIR__.'/front/frontpage.php';
-	if (isset($htmlUrl)) {
-		shareHtml($htmlUrl);	
+$app->get('/post/share/:post_id', function ($post_id) {
+	include __DIR__.'/front/frontpage2.php';
+	if (isset($post_id)) {
+		shareHtml($post_id);	
 		
 	} else {
-		echo 'html url invalid';
+		echo 'post id invalid';
 	}
 	
 	exit();

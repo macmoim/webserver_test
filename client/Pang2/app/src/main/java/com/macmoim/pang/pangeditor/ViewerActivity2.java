@@ -143,6 +143,15 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
         viewPager.setAdapter(adapter);
     }
 
+    private void setupSharedButton() {
+        ((Button) findViewById(R.id.share_btn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ShareEtcTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+            }
+        });
+    }
+
     private void RequestPageItems() {
         showDialog();
         int id = getIntent().getIntExtra("id", 0);
@@ -236,6 +245,7 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
 
                 getLike();
                 getStar();
+                setupSharedButton();
             }
             removeDialog();
         } catch (JSONException e) {
@@ -554,7 +564,9 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
     }
 
     private void shareContent(Uri shareImageUri) {
-        String url = URL_SHARE + "/" /*+ mHtmlFileName.toLowerCase()*/;
+        int id = getIntent().getIntExtra("id", 0);
+
+        String url = URL_SHARE + "/" + String.valueOf(id);
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");

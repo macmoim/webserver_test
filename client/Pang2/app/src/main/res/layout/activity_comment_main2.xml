@@ -18,6 +18,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -80,11 +81,23 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                app:border_color="@color/white_op100"
+                app:border_width="1dp"
+                tools:src="@drawable/person">
+
+            </de.hdodenhof.circleimageview.CircleImageView>
+
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/comment_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="9"
                 android:hint="Add comment"
                 app:met_maxCharacters="@integer/server_define_comment" />

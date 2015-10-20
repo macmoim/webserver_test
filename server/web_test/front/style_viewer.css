@@ -17,15 +17,15 @@
 @charset "UTF-8";
 
 
-html {
+/*html {
         height: 100%;
-}
+}*/
 
 body {
-        overflow: hidden;
+        overflow: scroll;
 }
 
-#editor {
+/*#editor {
         -webkit-user-select: auto !important;
         -webkit-user-modify: read-write !important;
 }
@@ -54,8 +54,17 @@ body {
 
 .delete-button {
     visibility: hidden;
-}
+}*/
 
-div {
+/*div {
     pointer-events: none;
+}*/
+
+img.displayed {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+img.circular-image {
+  border-radius:  50%;
 }
