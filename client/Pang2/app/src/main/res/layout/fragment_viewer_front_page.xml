@@ -182,7 +182,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/user_name"
-                    android:layout_marginTop="13dp"
+                    android:layout_marginTop="17dp"
                     android:textColor="@color/white_op100"
                     android:textSize="13sp"
                     tools:text="macmoim4885@gmail.com" />
@@ -196,14 +196,30 @@
             android:layout_marginTop="30dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/title_tv"
-                style="@style/text_drop_shadow_grey_dt2_sz2"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white_op100"
-                android:textSize="40sp"
-                tools:text="Content Title" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/title_iv"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="7dp"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/bg_login_6" />
+
+                <TextView
+                    android:id="@+id/title_tv"
+                    style="@style/text_drop_shadow_grey_dt2_sz2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_op100"
+                    android:textSize="40sp"
+                    tools:text="Content Title"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/date_tv"

@@ -35,7 +35,8 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="1dp">
 
             <com.navercorp.volleyextensions.view.ZoomableNetworkImageView
                 android:id="@+id/page_network_iv"
@@ -68,11 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/mm_grey" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="2dp"
+                    android:textColor="@color/basePrimaryBackgroundColour"
                     android:textSize="14sp"
                     tools:text="1" />
 

@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,7 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"/>
 
-</LinearLayout>-->
+</LinearLayout>
+
+-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -61,8 +66,8 @@
             android:layout_gravity="bottom"
             android:layout_marginLeft="5dp"
             android:layout_weight="5"
-            android:singleLine="true"
-            android:hint="@string/editor_title_hint"/>
+            android:hint="@string/editor_title_hint"
+            android:singleLine="true" />
 
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
             android:id="@+id/food_spinner"
@@ -71,8 +76,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="2"
             android:hint="category"
-            app:met_floatingLabel="normal"
-            />
+            app:met_floatingLabel="normal" />
 
     </LinearLayout>
 
@@ -82,8 +86,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title_layout"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/button_action_blue_selector"
-        android:text="Add Page"/>
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_rectangle_mustard_selector"
+        android:text="Add Page"
+        android:textColor="@color/md_grey_600" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/editor_item_recycler_view"
@@ -93,5 +99,4 @@
         android:background="@color/ViewBackGroundColor"
         android:paddingLeft="@dimen/feed_item_recycler_view_padding"
         android:paddingRight="@dimen/feed_item_recycler_view_padding" />
-
 </RelativeLayout>

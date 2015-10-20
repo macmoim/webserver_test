@@ -10,22 +10,26 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.macmoim.pang.R;
+import com.macmoim.pang.util.Util;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PageViewerFrontPageFragment extends Fragment {
-
     private static final String TAG = "PageViewerFragment";
     private static String REQ_TAG = "FOOD-REQ";
 
     private ViewGroup mRoot;
-    private TextView mTextView;
     private FrontPageItem mPageItem;
     private CircleImageView profilePic;
+    private ImageView TitleIv = null;
 
     private PageMoveListener mListener;
 
@@ -60,9 +64,8 @@ public class PageViewerFrontPageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRoot = (ViewGroup) inflater.inflate(R.layout.fragment_viewer_front_page, container, false);
-
         profilePic = (CircleImageView) mRoot.findViewById(R.id.profilePic);
-
+        TitleIv = (ImageView) mRoot.findViewById(R.id.title_iv);
         return mRoot;
     }
 
@@ -74,6 +77,12 @@ public class PageViewerFrontPageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        try {
+            Glide.with(TitleIv.getContext()).load(new URL(Util.IMAGE_FOLDER_URL + mPageItem.getImageUri().toString())).fitCenter().into(TitleIv);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         ((TextView) mRoot.findViewById(R.id.title_tv)).setText(mPageItem.getTitle());
         String likeSum = mPageItem.getLike();
         ((TextView) mRoot.findViewById(R.id.like_text)).setText("  " + (likeSum.equals("null") ? "0" : likeSum));

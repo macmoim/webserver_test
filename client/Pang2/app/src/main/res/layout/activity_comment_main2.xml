@@ -107,11 +107,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_action_blue_selector"
-                android:text="@string/send" />
+                android:background="@drawable/button_rectangle_mustard_selector"
+                android:text="@string/send"
+                android:textColor="@color/md_grey_600" />
         </LinearLayout>
     </LinearLayout>
-
-
 </RelativeLayout>
