@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class AddPageActivity extends AppCompatActivity {
     protected ImageView mDialogAddPageIv;
     protected EditText contentEt;
     protected Button submitBtn;
+    protected CheckBox mThumbImgCb;
 
     protected Uri mCropImagedUri;
 
@@ -69,6 +71,9 @@ public class AddPageActivity extends AppCompatActivity {
         });
 
         contentEt = (EditText) findViewById(R.id.page_dialog_content_et);
+
+        mThumbImgCb = (CheckBox) findViewById(R.id.thumb_img_cb);
+
     }
 
     @Override
@@ -92,6 +97,7 @@ public class AddPageActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("content", contentEt.getText().toString());
                 returnIntent.putExtra("image-uri", mCropImagedUri.toString());
+                returnIntent.putExtra("thumb-img-checked", mThumbImgCb.isChecked());
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
                 return true;

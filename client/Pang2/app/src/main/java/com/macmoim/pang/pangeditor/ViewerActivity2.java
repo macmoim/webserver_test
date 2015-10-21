@@ -36,9 +36,11 @@ import com.macmoim.pang.app.CustomRequest;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
+import com.macmoim.pang.dialog.typedef.ListDialogAttr;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
 import com.macmoim.pang.login.Auth;
 import com.macmoim.pang.login.FacebookAuth;
+import com.macmoim.pang.login.KakaoAuth;
 import com.macmoim.pang.richeditor.RichViewer;
 import com.macmoim.pang.util.Util;
 
@@ -147,7 +149,7 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
         ((Button) findViewById(R.id.share_btn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ShareEtcTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                setShareFloationAction();
             }
         });
     }
@@ -563,6 +565,28 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
         }
     }
 
+    private void setShareFloationAction() {
+
+        ListDialogAttr _Attr = new ListDialogAttr();
+        _Attr.Title = getResources().getString(R.string.user_info);
+        _Attr.ListItems = new CharSequence[]{"facebook","kakao story", "etc"};
+        _Attr.ListCB = new ExtDialog.ListCallback() {
+            @Override
+            public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
+                if (which == 0) {
+                    new ShareFacebookTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                } else if (which == 1) {
+                    new ShareKaKaokTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+                } else if (which == 2) {
+                    new ShareEtcTask().execute(Util.IMAGE_FOLDER_URL + mThumbFileName);
+
+                }
+            }
+        };
+
+        ExtDialogSt.Get().AlertListDialog(this, _Attr);
+    }
+
     private void shareContent(Uri shareImageUri) {
         int id = getIntent().getIntExtra("id", 0);
 
@@ -578,9 +602,18 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
     }
 
     private void shareContentFacebook(Uri contentUri) {
-        String url = URL_SHARE + "/" /*+ mHtmlFileName.toLowerCase()*/;
+        int id = getIntent().getIntExtra("id", 0);
+        String url = URL_SHARE + "/" + String.valueOf(id);
 
         Auth auth = new FacebookAuth(this, null);
+        auth.share(url, contentUri);
+    }
+
+    private void shareContentKakaoStory(Uri contentUri) {
+        int id = getIntent().getIntExtra("id", 0);
+        String url = URL_SHARE + "/" + String.valueOf(id);
+
+        Auth auth = new KakaoAuth(this, null);
         auth.share(url, contentUri);
     }
 
@@ -624,6 +657,22 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
             super.onPostExecute(file);
             Uri contentUri = Util.getImageContentUri(getApplicationContext(), file);
             shareContentFacebook(contentUri);
+
+        }
+    }
+
+    private class ShareKaKaokTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+
+            return getLocalBitmapFile(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            super.onPostExecute(file);
+            Uri contentUri = Util.getImageContentUri(getApplicationContext(), file);
+            shareContentKakaoStory(contentUri);
 
         }
     }

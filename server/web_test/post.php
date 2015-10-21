@@ -902,6 +902,7 @@ function rest_post_new() {
 					thumb_img_path varchar(100),
 					category varchar(20),
 					rank float,
+					thumb_img_index int,
 					PRIMARY KEY (id)
 					);";
 	
@@ -970,7 +971,7 @@ function rest_get_new($id) {
 	}
 
 
-	$sql_query = "SELECT posts.user_id as p_user_id, title, posts.upload_date, category, thumb_img_path, rank,
+	$sql_query = "SELECT posts.user_id as p_user_id, title, posts.upload_date, category, thumb_img_path, rank, thumb_img_index,
 					mylike.like_sum, profiles.user_name, profiles.profile_img_url, 
                     profiles.user_email,
 					post_c.comment_sum,
@@ -1005,6 +1006,7 @@ function rest_get_new($id) {
 					"user_email" => $row['user_email'],
 					"comment_sum" => $row['comment_sum'],
 					"page_sum" => $row['page_sum'],
+					"thumb_img_index" => $row['thumb_img_index'],
 					"ret_val" => "success"
 			);
 		} else {
@@ -1045,6 +1047,7 @@ function rest_post_update_new() {
 					thumb_img_path varchar(100),
 					category varchar(20),
 					rank float,
+					thumb_img_index int,
 					PRIMARY KEY (id)
 					);";
 	
@@ -1070,8 +1073,9 @@ function rest_post_update_new() {
 		
 	
 	$query = sprintf ( "UPDATE  posts SET
-		title = '%s', upload_date = '%s', category='%s', thumb_img_path='%s'
-		 WHERE id=%s", $_POST ["title"], $upload_date, $_POST ["category"], $row['img_path'], $_POST["id"]);
+		title = '%s', upload_date = '%s', category='%s', thumb_img_path='%s', thumb_img_index='%s'
+
+		 WHERE id=%s", $_POST ["title"], $upload_date, $_POST ["category"], $row['img_path'], $_POST['thumbnail_index'], $_POST["id"]);
 	
 	$mysqli->query ( $query );
 	

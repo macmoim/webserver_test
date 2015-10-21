@@ -94,6 +94,13 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
                 } else {
                     mOldUrl = null;
                 }
+                boolean isThumbChecked = data.getBooleanExtra("thumb-img-checked", false);
+                if (isThumbChecked) {
+                    for (PageItem i : mPageItems) {
+                        i.setIsThumbImg(false);
+                    }
+                }
+                item.setIsThumbImg(isThumbChecked);
                 mChagedIndex = data.getIntExtra("index", 0);
                 mPageItems.set(mChagedIndex, item);
 
@@ -110,6 +117,13 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
                 PageItem item = new PageItem();
                 item.setContents(data.getStringExtra("content"));
 //                item.setImageUri(Uri.parse(data.getStringExtra("image-uri")));
+                boolean isThumbChecked = data.getBooleanExtra("thumb-img-checked", false);
+                if (isThumbChecked) {
+                    for (PageItem i : mPageItems) {
+                        i.setIsThumbImg(false);
+                    }
+                }
+                item.setIsThumbImg(isThumbChecked);
                 mPageItems.add(item);
                 mChagedIndex = mPageItems.size()-1;
 
@@ -143,6 +157,9 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
                 i.putExtra("index", index);
                 i.putExtra("content", mPageItems.get(index).getContents());
                 i.putExtra("img_url", mPageItems.get(index).getImageUri().toString());
+                if (mPageItems.get(index).getIsThumbImg()) {
+                    i.putExtra("is-thumb-img", true);
+                }
 //                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(i, REQ_EDIT_PAGE);
             }
@@ -192,6 +209,9 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
                     ArrayList<String> imagePathList = Util.splitString(response.getString("img_path"), "\\|");
                     for (int i=0; i<contentList.size(); i++) {
                         PageItem item = new PageItem(contentList.get(i), Uri.parse(imagePathList.get(i)));
+                        if (Integer.parseInt(response.getString("thumb_img_index")) == i) {
+                            item.setIsThumbImg(true);
+                        }
                         mPageItems.add(item);
                     }
 
@@ -277,11 +297,12 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
             Toast.makeText(getApplicationContext(), "카테고리를 선택하세요.",  Toast.LENGTH_SHORT).show();
             return;
         }
+
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", title);
         obj_body.put("category", mSelectedFood);
         obj_body.put("user_id", mUserId);
-        obj_body.put("thumbnail_index", "0");
+        obj_body.put("thumbnail_index", String.valueOf(getThumbIndex(mPageItems)));
         obj_body.put("id", String.valueOf(getIntent().getIntExtra("id", 0)));
         obj_body.put("index", String.valueOf(mChagedIndex));
         obj_body.put("content", mPageItems.get(mChagedIndex).getContents());
@@ -350,6 +371,7 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
             Toast.makeText(getApplicationContext(), "카테고리를 선택하세요.",  Toast.LENGTH_SHORT).show();
             return;
         }
+
         Map<String, String> obj_body = new HashMap<String, String>();
         obj_body.put("title", title);
         obj_body.put("category", mSelectedFood);
@@ -412,7 +434,7 @@ public class PangEditorEditModeActivity2 extends PangEditorActivity2 {
         obj_body.put("title", title);
         obj_body.put("category", mSelectedFood);
         obj_body.put("user_id", mUserId);
-        obj_body.put("thumbnail_index", "0");
+        obj_body.put("thumbnail_index", String.valueOf(getThumbIndex(mPageItems)));
         obj_body.put("id", String.valueOf(getIntent().getIntExtra("id", 0)));
 
 

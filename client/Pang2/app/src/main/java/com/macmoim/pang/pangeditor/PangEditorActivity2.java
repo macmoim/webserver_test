@@ -169,6 +169,13 @@ public class PangEditorActivity2 extends AppCompatActivity {
                 Log.d(TAG, "returned addPageSetResult content  " + data.getStringExtra("content"));
                 Log.d(TAG, "returned addPageSetResult uri " + Uri.parse(data.getStringExtra("image-uri")));
                 item.setImageUri(Uri.parse(data.getStringExtra("image-uri")));
+                boolean isThumbChecked = data.getBooleanExtra("thumb-img-checked", false);
+                item.setIsThumbImg(isThumbChecked);
+                if (isThumbChecked) {
+                    for (PageItem i : mPageItems) {
+                        i.setIsThumbImg(false);
+                    }
+                }
                 mPageItems.add(item);
                 mRecyclerView.getAdapter().notifyDataSetChanged();
 
@@ -240,7 +247,7 @@ public class PangEditorActivity2 extends AppCompatActivity {
         obj_body.put("title", title);
         obj_body.put("category", mSelectedFood);
         obj_body.put("user_id", mUserId);
-        obj_body.put("thumbnail_index", "0");
+        obj_body.put("thumbnail_index", String.valueOf(getThumbIndex(mPageItems)));
         int content_count = 0;
         for (PageItem p : mPageItems) {
             obj_body.put("content" + String.valueOf(content_count++), p.getContents());
@@ -293,10 +300,23 @@ public class PangEditorActivity2 extends AppCompatActivity {
 
     public void removeCropFiles() {
         for (PageItem p : mPageItems) {
-            File file = new File(p.getImageUri().getPath());
-            file.delete();
+            if (p.getImageUri() != null) {
+                File file = new File(p.getImageUri().getPath());
+                file.delete();
+            }
         }
 
+    }
+
+    public int getThumbIndex(ArrayList<PageItem> items) {
+        int thumbIndex = items.size()-1;
+        for (int i=0; i<items.size(); i++) {
+            if (items.get(i).getIsThumbImg()) {
+                thumbIndex = i;
+                break;
+            }
+        }
+        return thumbIndex;
     }
 
     public void showDialog() {

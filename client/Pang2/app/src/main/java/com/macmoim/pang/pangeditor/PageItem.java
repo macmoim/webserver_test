@@ -8,6 +8,7 @@ import android.net.Uri;
 public class PageItem {
     private String contents;
     private Uri imageUri;
+    private boolean isThumbImg;
 
     public PageItem() {
     }
@@ -32,5 +33,13 @@ public class PageItem {
 
     public void setImageUri(Uri imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public boolean getIsThumbImg() {
+        return isThumbImg;
+    }
+
+    public void setIsThumbImg(boolean isThumbImg) {
+        this.isThumbImg = isThumbImg;
     }
 }
