@@ -17,11 +17,11 @@
 package com.macmoim.pang;
 
 import android.annotation.TargetApi;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,11 +34,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.macmoim.pang.layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.adapter.FoodLargeRecyclerViewAdapter;
 import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.app.CustomRequest;
+import com.macmoim.pang.custom.swiperefresh.CustomSwipeHeadView;
+import com.macmoim.pang.custom.swiperefresh.CustomSwipeRefreshLayout;
 import com.macmoim.pang.data.FoodItem;
+import com.macmoim.pang.layout.SimpleDividerItemDecoration;
 import com.macmoim.pang.util.Util;
 
 import org.json.JSONArray;
@@ -56,7 +58,7 @@ public class FoodListFragment extends Fragment {
 
     private String URL = Util.SERVER_ROOT + "/thumbImageList";
     private List<FoodItem> feedItems;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private CustomSwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
 
@@ -86,18 +88,19 @@ public class FoodListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_feed_list, container, false);
-
-        mRecyclerView = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.feed_item_recycler_view);
-        SetupRecyclerView(mRecyclerView);
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout = (CustomSwipeRefreshLayout) inflater.inflate(R.layout.fragment_feed_list, container, false);
+        // Set a custom HeadView. use default HeadView if not provided
+        mSwipeRefreshLayout.SetCustomHeadview(new CustomSwipeHeadView(getActivity(), R.layout.custom_swiperefresh_head_layout));
+        // set onRefresh listener
+        mSwipeRefreshLayout.SetOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                DoRefresh();
+            public void OnRefresh() {
+                InitiateRefresh();
             }
         });
 
+        mRecyclerView = (RecyclerView) mSwipeRefreshLayout.findViewById(R.id.feed_item_recycler_view);
+        SetupRecyclerView(mRecyclerView);
         return mSwipeRefreshLayout;
     }
 
@@ -105,7 +108,7 @@ public class FoodListFragment extends Fragment {
     public void onDestroyView() {
 //        AppController.getInstance().cancelPendingRequests(REQ_TAG);
         if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setOnRefreshListener(null);
+            mSwipeRefreshLayout.SetOnRefreshListener(null);
             mSwipeRefreshLayout.removeAllViews();
         }
         if (mRecyclerView != null) {
@@ -161,6 +164,47 @@ public class FoodListFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(jsonReq, REQ_TAG);
     }
 
+    private void InitiateRefresh() {
+        new DummyBackgroundTask().execute(0);
+    }
+
+    private void onRefreshComplete(List<String> result) {
+        OnFinishRefresh();
+
+        // to notify CustomSwipeRefreshLayout that the refreshing is completed
+        mSwipeRefreshLayout.RefreshComplete();
+    }
+
+    public class DummyBackgroundTask extends AsyncTask<Integer, Void, List<String>> {
+        public static final int TASK_DURATION = 3 * 1000; // 3 seconds
+        public static final int LIST_ITEM_COUNT = 20;
+
+        int viewId;
+
+        @Override
+        protected List<String> doInBackground(Integer... params) {
+            // Sleep for a small amount of time to simulate a background-task
+            try {
+                Thread.sleep(TASK_DURATION);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            DoRefresh();
+
+            // Return a new random list of cheeses
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
+
+            // Tell the view that the refresh has completed
+            onRefreshComplete(result);
+        }
+    }
+
     private void DoRefresh() {
         if (isAdded()) {
             String category = getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
@@ -176,7 +220,6 @@ public class FoodListFragment extends Fragment {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void RefreshListByTimeStamp() {
-        OnStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         String ctg = category;
@@ -222,7 +265,6 @@ public class FoodListFragment extends Fragment {
     }
 
     private void RefreshListWithClearingArray() {
-        OnStartRefresh();
         String category = getActivity().getResources().getStringArray(R.array.tabs)[getArguments().getInt("position")];
 
         String ctg = category;
@@ -268,16 +310,7 @@ public class FoodListFragment extends Fragment {
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
     }
 
-    private void OnStartRefresh() {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(true);
-        }
-    }
-
     private void OnFinishRefresh() {
-        if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
         if (feedItems != null && feedItems.size() > 0) {
             SetLatestTimestamp(feedItems.get(0).getTimeStamp());
         }

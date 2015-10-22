@@ -130,4 +130,9 @@
     <string name="share_etc">기타</string>
     <string name="other_profile">님의 글</string>
 
+    <!-- custom :: swiperefreshlayout -->
+    <string name="swipe_refresh_state_ready">업데이트 하려면 아래로 내리세요.</string>
+    <string name="swipe_refresh_state_release">손을 놓으면 업데이트 합니다.</string>
+    <string name="swipe_refresh_state_refresh">업데이트 중 ...</string>
+    <string name="swipe_refresh_state_refresh_complete">업데이트 완료되었습니다.</string>
 </resources>

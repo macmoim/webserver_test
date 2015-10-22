@@ -85,4 +85,17 @@
         <!-- true to draw circular border -->
         <attr name="drawCircle" format="boolean" />
     </declare-styleable>
+
+    <!-- custom :: swiperefreshlayout -->
+    <declare-styleable name="CustomSwipeRefreshLayout">
+        <attr name="enable_top_progress_bar" format="boolean" />
+        <attr name="time_out_return_to_top" format="integer" />
+        <attr name="time_out_refresh_complete" format="integer" />
+        <attr name="return_to_top_duration" format="integer" />
+        <attr name="return_to_header_duration" format="integer" />
+        <attr name="pgb_color_1" format="color|reference" />
+        <attr name="pgb_color_2" format="color|reference" />
+        <attr name="pgb_color_3" format="color|reference" />
+        <attr name="pgb_color_4" format="color|reference" />
+    </declare-styleable>
 </resources>

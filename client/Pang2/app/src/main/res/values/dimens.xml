@@ -155,4 +155,6 @@
     <dimen name="ext_dialog_progress_circle_border">4dp</dimen>
     <dimen name="ext_dialog_progress_text_size">16sp</dimen>
 
+    <!-- custom :: swiperefreshlayout -->
+    <dimen name="swipe_refresh_layout_heigt">100dp</dimen>
 </resources>

@@ -90,4 +90,10 @@
     <color name="color7">#000000</color>
     <color name="color8">#4A4A4C</color>
     <color name="color9">#BDD1DC</color>
+
+    <!-- custom :: swiperefresh layout-->
+    <color name="srl_red_1">#f2ef2620</color>
+    <color name="srl_red_2">#ee5522</color>
+    <color name="srl_yellow_1">#ffee33</color>
+    <color name="srl_yellow_2">#ffa600</color>
 </resources>

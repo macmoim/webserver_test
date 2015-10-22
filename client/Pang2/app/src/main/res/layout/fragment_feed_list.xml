@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,10 +15,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipeRefreshLayout"
+
+<com.macmoim.pang.custom.swiperefresh.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swiperefresh="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_l"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    swiperefresh:enable_top_progress_bar="true"
+    swiperefresh:time_out_refresh_complete="2000"
+    swiperefresh:time_out_return_to_top="1000"
+    swiperefresh:return_to_header_duration="1000"
+    swiperefresh:return_to_top_duration="500"
+    swiperefresh:pgb_color_1="@color/srl_red_1"
+    swiperefresh:pgb_color_2="@color/srl_red_2"
+    swiperefresh:pgb_color_3="@color/srl_yellow_2"
+    swiperefresh:pgb_color_4="@color/srl_yellow_1">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/feed_item_recycler_view"
@@ -25,4 +39,4 @@
         android:paddingLeft="@dimen/feed_item_recycler_view_padding"
         android:paddingRight="@dimen/feed_item_recycler_view_padding" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</com.macmoim.pang.custom.swiperefresh.CustomSwipeRefreshLayout>
