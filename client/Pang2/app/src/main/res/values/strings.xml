@@ -52,6 +52,7 @@
     <string name="editor_hint">Insert</string>
     <string name="search">Search</string>
     <string name="send">Send</string>
+    <string name="content_hint">Insert contents.</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">Login with Facebook</string>
@@ -143,5 +144,10 @@
     <string name="change_image_action">Change profile image</string>
     <string name="capture_image">Capture Image</string>
     <string name="select_image">Select Image</string>
+
+    <string name="share_facebook">facebook</string>
+    <string name="share_kakaostory">kakao story</string>
+    <string name="share_etc">etc</string>
+    <string name="other_profile">\'s posts</string>
 
 </resources>

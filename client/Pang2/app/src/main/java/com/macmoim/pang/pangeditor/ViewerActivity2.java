@@ -568,8 +568,8 @@ public class ViewerActivity2 extends AppCompatActivity implements PageMoveListen
     private void setShareFloationAction() {
 
         ListDialogAttr _Attr = new ListDialogAttr();
-        _Attr.Title = getResources().getString(R.string.user_info);
-        _Attr.ListItems = new CharSequence[]{"facebook","kakao story", "etc"};
+        _Attr.Title = getResources().getString(R.string.share);
+        _Attr.ListItems = new CharSequence[]{getString(R.string.share_facebook), getString(R.string.share_kakaostory), getString(R.string.share_etc)};
         _Attr.ListCB = new ExtDialog.ListCallback() {
             @Override
             public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {

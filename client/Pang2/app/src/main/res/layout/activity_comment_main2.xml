@@ -82,9 +82,9 @@
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profilePic"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/myprofilePic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
                 app:border_color="@color/white_op100"
                 app:border_width="1dp"
@@ -94,7 +94,7 @@
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/comment_edit"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"

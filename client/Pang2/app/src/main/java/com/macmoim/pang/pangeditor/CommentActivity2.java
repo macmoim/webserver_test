@@ -61,6 +61,7 @@ public class CommentActivity2 extends AppCompatActivity {
     private static final String URL_PROFILE = Util.SERVER_ROOT + "/profile";
 
     private static final String VOLLEY_REQ_TAG_COMMENT = "get-comment";
+    private static final String VOLLEY_REQ_TAG_IMAGE = "get-profile-image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +135,6 @@ public class CommentActivity2 extends AppCompatActivity {
     }
 
     private void GetProfileImage() {
-        Log.d(TAG, "GetComment postid " + mPostId);
         String _Url = URL_PROFILE + "/" + mCommentUserId;
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.GET, _Url, null, new Response.Listener<JSONObject>() {
@@ -144,7 +144,7 @@ public class CommentActivity2 extends AppCompatActivity {
                 if (response != null && mCommentRv != null) {
                     try {
                         String profile_img_url = response.getString("profile_img_url");
-                        CircleImageView profilePic = (CircleImageView) findViewById(R.id.profilePic);
+                        CircleImageView profilePic = (CircleImageView) findViewById(R.id.myprofilePic);
                         if (profile_img_url != null) {
                             Glide.with(profilePic.getContext())
                                     .load(profile_img_url)
@@ -170,7 +170,7 @@ public class CommentActivity2 extends AppCompatActivity {
         });
 
         // Adding request to volley request queue
-        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_COMMENT);
+        AppController.getInstance().addToRequestQueue(jsonReq, VOLLEY_REQ_TAG_IMAGE);
     }
 
     private void GetComment() {

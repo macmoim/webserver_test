@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:hint="내용을 입력하세요."
+                android:hint="@string/content_hint"
                 android:textSize="@dimen/profile_item_edit_text_size"
                 app:met_maxCharacters="@integer/server_define_user_intro" />
         </LinearLayout>

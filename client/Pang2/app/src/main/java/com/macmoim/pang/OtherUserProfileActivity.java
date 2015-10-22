@@ -24,6 +24,6 @@ public class OtherUserProfileActivity extends ProfileActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 }

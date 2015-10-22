@@ -59,6 +59,7 @@
     <string name="editor_exit">작성을 취소하시겠습니까?\n작성중인 글은 저장되지 않습니다.</string>
     <string name="editor_exit_title">작성 취소</string>
     <string name="send">전송</string>
+    <string name="content_hint">내용을 입력하세요.</string>
 
     <!-- Log In-->
     <string name="login_with_facebook">페이스북 계정으로 로그인</string>
@@ -123,5 +124,10 @@
     <string name="change_image_action">프로필 이미지 변경</string>
     <string name="capture_image">사진 찍기</string>
     <string name="select_image">사진 고르기</string>
+
+    <string name="share_facebook">페이스북</string>
+    <string name="share_kakaostory">카카오스토리</string>
+    <string name="share_etc">기타</string>
+    <string name="other_profile">님의 글</string>
 
 </resources>

@@ -10,4 +10,5 @@
     <integer name="server_define_user_score">10</integer>
     <integer name="server_define_user_intro">500</integer>
     <integer name="server_define_comment">100</integer>
+    <integer name="kakao_story_posting">2048</integer>
 </resources>

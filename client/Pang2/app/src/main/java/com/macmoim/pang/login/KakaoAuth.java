@@ -167,6 +167,7 @@ public class KakaoAuth extends Auth{
     public void share(String content, Uri imageOrVideo) {
         final Intent intent = new Intent(hostActivity, KakaoPostActivity.class);
         intent.setData(imageOrVideo);
+        intent.putExtra("content-link", content);
         hostActivity.startActivity(intent);
     }
     private class SessionCallback implements ISessionCallback {
@@ -225,7 +226,7 @@ public class KakaoAuth extends Auth{
         profile.id = String.valueOf(userProfile.getId());
         profile.image = userProfile.getProfileImagePath();
         profile.network = SocialProfile.KAKAO;
-        profile.email = "test@gmail.com";
+        profile.email = null;
 
         return profile;
     }
@@ -267,7 +268,7 @@ public class KakaoAuth extends Auth{
                     profile.name = result.getNickName();
                     profile.image = result.getProfileImageUrl();
                     profile.network = SocialProfile.KAKAO;
-                    profile.email = "test@gmail.com";
+                    profile.email = null;
                 }
             });
         }

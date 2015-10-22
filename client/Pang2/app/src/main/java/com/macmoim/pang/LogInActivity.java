@@ -218,8 +218,8 @@ public class LogInActivity extends AppCompatActivity implements Auth.OnAuthListe
         Map<String, String> obj = new HashMap<>();
         obj.put("user_id", profile.getId());
         obj.put("user_name", profile.getName());
-        obj.put("user_email", profile.getEmail());
-        obj.put("profile_img_url", profile.getImage());
+        obj.put("user_email", profile.getEmail() == null ? "" : profile.getEmail());
+        obj.put("profile_img_url", profile.getImage() == null ? "" : profile.getImage());
 
         CustomRequest jsonReq = new CustomRequest(Request.Method.POST,
                 _URL_PROFILE, obj, new Response.Listener<JSONObject>() {

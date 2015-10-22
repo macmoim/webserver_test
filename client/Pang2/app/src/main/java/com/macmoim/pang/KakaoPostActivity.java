@@ -50,6 +50,7 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
     private Button button;
     String filePath;
     Uri contentUri;
+    String contentLink;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -61,6 +62,8 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
         editText = (EditText) findViewById(R.id.edittext_content);
 
         contentUri = getIntent().getData();
+        contentLink = getIntent().getStringExtra("content-link");
+
         setImage();
         AppController.setCurrentActivity(this);
     }
@@ -140,13 +143,13 @@ public class KakaoPostActivity extends Activity implements View.OnClickListener{
                 }
                 final List<File> l = new ArrayList<File>();
                 l.add(file);
-                String storyPostText = editText.getText().toString();
+                String storyPostText = editText.getText().toString() + "\n" + contentLink;
 
                 ProgressCircleDialogAttr _Attr = new ProgressCircleDialogAttr();
                 _Attr.Message = getResources().getString(R.string.loading);
                 _Attr.MessageColor = R.color.ExtDialogMessageColor;
                 _Attr.Cancelable = false;
-                final ExtDialog mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(this, _Attr);
+                final ExtDialog mDialog = ExtDialogSt.Get().GetProgressCircleExtDialog(KakaoPostActivity.this, _Attr);
                 mDialog.show();
 
                 KakaoStoryService.requestPostPhoto(new StoryResponseCallback<MyStoryInfo>() {

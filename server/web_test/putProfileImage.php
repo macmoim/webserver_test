@@ -53,9 +53,12 @@ function updateImageFile($fileName_old) {
 			@mkdir($filePath);
 		}
 
-		if (file_exists($filePath.$fileName_old)) {
-			unlink($filePath.$fileName_old);
+		if ($fileName_old != "") {
+			if (file_exists($filePath.$fileName_old)) {
+				unlink($filePath.$fileName_old);
+			}
 		}
+		
 
 		if (move_uploaded_file ( $_FILES ['image'] ['tmp_name'], $filePath . $fileName )) {
 			

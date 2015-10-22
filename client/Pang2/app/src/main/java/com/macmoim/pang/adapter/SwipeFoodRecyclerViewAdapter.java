@@ -13,16 +13,16 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.macmoim.pang.LikeActivity;
+import com.macmoim.pang.MyPostActivity;
+import com.macmoim.pang.OtherUserPostActivity;
+import com.macmoim.pang.R;
+import com.macmoim.pang.SearchActivity;
+import com.macmoim.pang.app.AppController;
+import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.layout.swipe.SimpleSwipeListener;
 import com.macmoim.pang.layout.swipe.SwipeLayout;
 import com.macmoim.pang.layout.swipe.adapters.RecyclerSwipeAdapter;
-import com.macmoim.pang.LikeActivity;
-import com.macmoim.pang.MyPostActivity;
-import com.macmoim.pang.R;
-import com.macmoim.pang.SearchActivity;
-import com.macmoim.pang.ViewerActivity;
-import com.macmoim.pang.app.AppController;
-import com.macmoim.pang.data.FoodItem;
 import com.macmoim.pang.pangeditor.ViewerActivity2;
 import com.macmoim.pang.util.Util;
 
@@ -110,6 +110,10 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
         }
 
         if (activity instanceof SearchActivity) {
+            mDisableSwipe = true;
+        }
+
+        if (activity instanceof OtherUserPostActivity) {
             mDisableSwipe = true;
         }
     }
@@ -202,7 +206,8 @@ public class SwipeFoodRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeFood
             });
             holder.mDeleteBtn.setVisibility(View.GONE);
             holder.mEditBtn.setVisibility(View.GONE);
-        } else if (mDisableSwipe) {
+        }
+        if (mDisableSwipe) {
             holder.swipeLayout.setSwipeEnabled(false);
         }
     }
