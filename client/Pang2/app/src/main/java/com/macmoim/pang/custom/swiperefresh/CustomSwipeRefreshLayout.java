@@ -718,6 +718,13 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
 
                     // curTargetTop is bigger than trigger
                     if (_CurTargetTop >= mDistanceToTriggerSync) {
+                        if (_CurTargetTop > mDistanceToTriggerSync) {
+                            mPrevY = event.getY();
+                            _Handled = true;
+                            UpdateContentOffsetTop(mDistanceToTriggerSync, false);
+                            break;
+                        }
+
                         // User movement passed distance; trigger a refresh
                         if (enableTopProgressBar) {
                             mTopProgressBar.SetTriggerPercentage(1f);
