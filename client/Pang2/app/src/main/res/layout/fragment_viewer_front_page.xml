@@ -206,7 +206,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="7dp"
+                    android:layout_marginRight="14dp"
                     android:scaleType="fitCenter"
                     tools:src="@drawable/bg_login_6" />
 
@@ -215,7 +215,7 @@
                     style="@style/text_drop_shadow_grey_dt2_sz2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white_op100"
+                    android:textColor="@color/basePrimaryBackgroundColour"
                     android:textSize="40sp"
                     tools:text="Content Title"
                     android:layout_gravity="center_vertical" />
