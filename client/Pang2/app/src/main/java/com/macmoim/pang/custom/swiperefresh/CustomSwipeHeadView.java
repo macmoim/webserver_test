@@ -43,12 +43,12 @@ public class CustomSwipeHeadView extends LinearLayout implements CustomSwipeRefr
     }
 
     @Override
-    public void OnStateChange(State state, State lastState) {
-        Log.d("csrh", "onStateChange() :: state = " + state + ", last state = " + lastState);
+    public void OnStateChange(State CurrentState, State LastState) {
+        Log.d("csrh", "onStateChange() :: state = " + CurrentState + ", last state = " + LastState);
 
-        int _StateCode = state.getRefreshState();
-        int _LastStateCode = lastState.getRefreshState();
-        float _Percent = state.getPercent();
+        int _StateCode = CurrentState.getRefreshState();
+        int _LastStateCode = LastState.getRefreshState();
+        float _Percent = CurrentState.getPercent();
 
         switch (_StateCode) {
             case CustomSwipeRefreshLayout.State.STATE_NORMAL: {

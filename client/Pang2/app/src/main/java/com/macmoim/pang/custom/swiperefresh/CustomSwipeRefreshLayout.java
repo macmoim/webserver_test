@@ -65,8 +65,9 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
     };
     boolean enableTopProgressBar = true;
 
-    State currentState = new State(State.STATE_NORMAL);
-    State lastState = new State(-1);
+    State mCurrentState = new State(State.STATE_NORMAL);
+    State mLastState = new State(-1);
+
     private RefreshCheckHandler mRefreshCheckHandler;
     private ScrollUpHandler mScrollUpHandler;
     private ScrollLeftOrRightHandler mScrollLeftOrRightHandler;
@@ -413,14 +414,14 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
     }
 
     private void SetRefreshState(int State) {
-        currentState.update(State, mCurrentTargetOffsetTop, mTriggerOffset);
-        ((CustomSwipeRefreshHeadLayout) mHeadView).OnStateChange(currentState, lastState);
-        lastState.update(State, mCurrentTargetOffsetTop, mTriggerOffset);
+        mCurrentState.update(State, mCurrentTargetOffsetTop, mTriggerOffset);
+        ((CustomSwipeRefreshHeadLayout) mHeadView).OnStateChange(mCurrentState, mLastState);
+        mLastState.update(State, mCurrentTargetOffsetTop, mTriggerOffset);
     }
 
     private void UpdateHeadViewState(boolean ChangeHeightOnly) {
         if (ChangeHeightOnly) {
-            SetRefreshState(currentState.getRefreshState());
+            SetRefreshState(mCurrentState.getRefreshState());
         } else {
             if (mTarget.getTop() > mDistanceToTriggerSync) {
                 SetRefreshState(State.STATE_READY);
@@ -721,7 +722,7 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
                         if (_CurTargetTop > mDistanceToTriggerSync) {
                             mPrevY = event.getY();
                             _Handled = true;
-                            UpdateContentOffsetTop(mDistanceToTriggerSync, false);
+                            FitTargetOffsetTop();
                             break;
                         }
 
@@ -795,6 +796,17 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
         }
     }
 
+    private void FitTargetOffsetTop() {
+        final int _Offset = mDistanceToTriggerSync - mTarget.getTop();
+
+        mTarget.offsetTopAndBottom(_Offset);
+        mHeadView.offsetTopAndBottom(_Offset);
+        mCurrentTargetOffsetTop += _Offset;
+
+        mCurrentState.update(State.STATE_READY, mCurrentTargetOffsetTop, mTriggerOffset);
+        mLastState.update(State.STATE_READY, mCurrentTargetOffsetTop, mTriggerOffset);
+    }
+
     private void UpdateContentOffsetTop(int TargetTop, boolean ChangeHeightOnly) {
         final int _CurrentTop = mTarget.getTop();
         if (TargetTop < mTargetOriginalTop) {
@@ -856,7 +868,7 @@ public class CustomSwipeRefreshLayout extends ViewGroup {
     }
 
     public interface CustomSwipeRefreshHeadLayout {
-        void OnStateChange(State currentState, State lastState);
+        void OnStateChange(State CurrentState, State LastState);
     }
 
     public static class State {
