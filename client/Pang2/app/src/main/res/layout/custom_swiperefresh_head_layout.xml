@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/swipe_refresh_layout_heigt"
         android:layout_gravity="center_vertical"
+        android:background="@color/basePrimaryBackgroundColour"
         android:orientation="horizontal">
 
         <FrameLayout
@@ -30,7 +31,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
-                android:src="@drawable/refresh"
+                android:src="@drawable/refresh_orange"
                 android:visibility="gone" />
 
             <!-- progressbar -->
