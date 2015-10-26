@@ -23,6 +23,16 @@
     <!-- content description -->
     <string name="content_description_empty" translatable="false">" "</string>
 
+    <string-array name="viewpager_tabs" translatable="false">
+        <item>최신</item>
+        <item>인기</item>
+        <item>한식</item>
+        <item>중식</item>
+        <item>양식</item>
+        <item>일식</item>
+        <item>유럽식</item>
+    </string-array>
+
     <string-array name="tabs" translatable="false">
         <item>Latest</item>
         <item>Popular</item>
@@ -133,10 +143,14 @@
     <string name="loading">Loading ...</string>
 
     <!--카카오톡-->
-    <string name="kakao_app_key">3bc7bdc790ca740b5dc258490dce57d2</string>
-    <string name="kakao_scheme">kakao3bc7bdc790ca740b5dc258490dce57d2</string>
-    <string name="kakaotalk_host">kakotalk</string>
-    <string name="kakaostory_host">kakaostory</string>
+    <string name="move">move</string>
+    <string name="post_upload_comment">move to KakaoStroy now?</string>
+    <!--카카오톡-->
+    <string name="kakao_app_key" translatable="false">3bc7bdc790ca740b5dc258490dce57d2</string>
+
+    <string name="kakao_scheme" translatable="false">kakao3bc7bdc790ca740b5dc258490dce57d2</string>
+    <string name="kakaotalk_host" translatable="false">kakotalk</string>
+    <string name="kakaostory_host" translatable="false">kakaostory</string>
 
     <!--change profile image dialog-->
     <string name="change_image_action">Change profile image</string>

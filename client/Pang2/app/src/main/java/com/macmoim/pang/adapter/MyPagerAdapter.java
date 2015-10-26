@@ -24,14 +24,14 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     public MyPagerAdapter(FragmentManager fm) {
         super(fm);
         //Initialising the strings array of tabs
-        tabText = mContext.getResources().getStringArray(R.array.food_spinner);
+        tabText = mContext.getResources().getStringArray(R.array.viewpager_tabs);
     }
 
     public MyPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         //Initialising the strings array of tabs
         mContext = context;
-        tabText = mContext.getResources().getStringArray(R.array.tabs);
+        tabText = mContext.getResources().getStringArray(R.array.viewpager_tabs);
     }
 
     @Override
