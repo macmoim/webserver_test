@@ -8,7 +8,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.kakao.auth.KakaoSDK;
 import com.macmoim.pang.multipart.MultiPartStack;
+import com.macmoim.pang.util.KakaoSDKAdapter;
 import com.macmoim.pang.volley.LruBitmapCache;
 
 public class AppController extends Application {
@@ -30,7 +32,7 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-
+        KakaoSDK.init(new KakaoSDKAdapter());
         if (isReleaseVersion) {
             Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
         }

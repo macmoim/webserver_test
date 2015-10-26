@@ -11,7 +11,6 @@ import com.kakao.auth.AuthType;
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ErrorResult;
 import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.KakaoSDK;
 import com.kakao.auth.Session;
 import com.kakao.kakaotalk.KakaoTalkService;
 import com.kakao.kakaotalk.callback.TalkResponseCallback;
@@ -29,7 +28,6 @@ import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.ListDialogAttr;
-import com.macmoim.pang.util.KakaoSDKAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,16 +40,18 @@ public class KakaoAuth extends Auth{
     private SessionCallback callback;
     Activity hostActivity;
     private final String TAG = getClass().getName();
+    private Uri mImageOrVideo;
+    private boolean mbDirectGoToPostActivity;  //for directpost kakastory after login;
+
     public KakaoAuth(Activity activity, OnAuthListener authListener) {
-        super();
-        KakaoSDK.init(new KakaoSDKAdapter());
         hostActivity = activity;
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
         Session.getCurrentSession().checkAndImplicitOpen();
         setOnAuthListener(authListener);
         AppController.setCurrentActivity(activity);
-        Log.d("Test", "compent = " + AppController.getCurrentActivity().getComponentName().getClassName() + "Activity = " + LogInActivity.class.getName());
+
+        Log.d(TAG, "compent = " + AppController.getCurrentActivity().getComponentName().getClassName() + "Activity = " + LogInActivity.class.getName());
     }
 
     private static class Item {
@@ -87,7 +87,6 @@ public class KakaoAuth extends Auth{
     }
     @Override
     public void login() {
-//        Session.getCurrentSession().open(AuthType.KAKAO_TALK, hostActivity);
         final List<AuthType> authTypes = getAuthTypes();
         if(authTypes.size() == 1){
             Session.getCurrentSession().open(authTypes.get(0), hostActivity);
@@ -97,9 +96,13 @@ public class KakaoAuth extends Auth{
     }
 
     private void onClickLoginButton(final List<AuthType> authTypes){
+
         final List<Item> itemList = new ArrayList<Item>();
         if(authTypes.contains(AuthType.KAKAO_TALK)) {
             itemList.add(new Item(com.kakao.usermgmt.R.string.com_kakao_kakaotalk_account, com.kakao.usermgmt.R.drawable.kakaotalk_icon, AuthType.KAKAO_TALK));
+        }
+        if(authTypes.contains(AuthType.KAKAO_STORY)) {
+            itemList.add(new Item(com.kakao.usermgmt.R.string.com_kakao_kakaostory_account, com.kakao.usermgmt.R.drawable.kakaostory_icon, AuthType.KAKAO_STORY));
         }
         if(authTypes.contains(AuthType.KAKAO_ACCOUNT)){
             itemList.add(new Item(com.kakao.usermgmt.R.string.com_kakao_other_kakaoaccount, com.kakao.usermgmt.R.drawable.kakaoaccount_icon, AuthType.KAKAO_ACCOUNT));
@@ -107,34 +110,8 @@ public class KakaoAuth extends Auth{
         itemList.add(new Item(com.kakao.usermgmt.R.string.com_kakao_account_cancel, 0, null)); //no icon for this one
 
         final Item[] items = itemList.toArray(new Item[itemList.size()]);
-
-        /*final ListAdapter adapter = new ArrayAdapter<Item>(
-                hostActivity,
-                android.R.layout.select_dialog_item,
-                android.R.id.text1, items){
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View v = super.getView(position, convertView, parent);
-                TextView tv = (TextView)v.findViewById(android.R.id.text1);
-
-                tv.setText(items[position].textId);
-                tv.setTextColor(Color.BLACK);
-                tv.setTextSize(15);
-                tv.setGravity(Gravity.CENTER);
-                if(position == itemList.size() -1) {
-                    tv.setBackgroundResource(com.kakao.usermgmt.R.drawable.kakao_cancel_button_background);
-                } else {
-                    tv.setBackgroundResource(com.kakao.usermgmt.R.drawable.kakao_account_button_background);
-                }
-                tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
-
-                int dp5 = (int) (5 * hostActivity.getResources().getDisplayMetrics().density + 0.5f);
-                tv.setCompoundDrawablePadding(dp5);
-
-                return v;
-            }
-        };*/
         ListDialogAttr _Attr = new ListDialogAttr();
-        _Attr.ListItems = new CharSequence[]{hostActivity.getString(items[0].textId), hostActivity.getString(items[1].textId)};
+        _Attr.ListItems = new CharSequence[]{hostActivity.getString(items[0].textId), hostActivity.getString(items[1].textId), hostActivity.getString(items[2].textId)};
         _Attr.ListCB = new ExtDialog.ListCallback() {
             @Override
             public void OnSelection(ExtDialog dialog, View itemView, int which, CharSequence text) {
@@ -143,6 +120,7 @@ public class KakaoAuth extends Auth{
                 final AuthType authType = items[which].authType;
                 if (authType != null) {
                     Session.getCurrentSession().open(authType, hostActivity);
+
                 }
             }
         };
@@ -164,19 +142,30 @@ public class KakaoAuth extends Auth{
     }
 
     @Override
-    public void share(String content, Uri imageOrVideo) {
+    public void share(String content, final Uri imageOrVideo) {
+        mImageOrVideo = imageOrVideo;
+        if(Session.getCurrentSession().isOpened()) {
+            redirectPostActivity();
+        } else {
+            login();
+            mbDirectGoToPostActivity = true;
+        }
+    }
+
+    private void redirectPostActivity() {
         final Intent intent = new Intent(hostActivity, KakaoPostActivity.class);
-        intent.setData(imageOrVideo);
+        intent.setData(mImageOrVideo);
         intent.putExtra("content-link", content);
         hostActivity.startActivity(intent);
+        mImageOrVideo = null;
+        logout();
     }
     private class SessionCallback implements ISessionCallback {
 
         @Override
         public void onSessionOpened() {
-            if(AppController.getCurrentActivity().getComponentName().getClassName().equals(LogInActivity.class.getName())) {
-                requestMe();
-            }
+            Log.d(TAG, "onSessionOpened");
+            requestMe();
         }
 
         @Override
@@ -196,20 +185,29 @@ public class KakaoAuth extends Auth{
                 if (errorResult.getErrorCode() == ErrorCode.CLIENT_ERROR_CODE) {
                     Toast.makeText(hostActivity, hostActivity.getString(R.string.network_problem), Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.d(TAG, "onFailure");
 //                    redirectLoginActivity();
                 }
             }
 
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
+                Log.d(TAG, "onSessionClosed");
                 //redirectLoginActivity();
             }
 
             @Override
             public void onSuccess(UserProfile userProfile) {
 //                redirectMainActivity();
-                SocialProfile profile = getProfileInfo();
-                onAuthListener.onLoginSuccess(profile);
+                Log.d(TAG, "onSuccess");
+                if(onAuthListener != null) {  //from login Activity
+                    SocialProfile profile = getProfileInfo(); // one time for login()
+                    onAuthListener.onLoginSuccess(profile);
+                }
+                if(mbDirectGoToPostActivity) {
+                    redirectPostActivity();
+                    mbDirectGoToPostActivity = false;
+                }
             }
 
             @Override
@@ -294,10 +292,5 @@ public class KakaoAuth extends Auth{
             }
         });
         dialog.show();*/
-    }
-
-    private void redirectMainActivity() {
-//        startActivity(new Intent(this, KakaoServiceActivity.class));
-//        finish();
     }
 }
