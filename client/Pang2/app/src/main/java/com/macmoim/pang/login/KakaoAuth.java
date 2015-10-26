@@ -41,6 +41,7 @@ public class KakaoAuth extends Auth{
     Activity hostActivity;
     private final String TAG = getClass().getName();
     private Uri mImageOrVideo;
+    private String mContentLink;
     private boolean mbDirectGoToPostActivity;  //for directpost kakastory after login;
 
     public KakaoAuth(Activity activity, OnAuthListener authListener) {
@@ -144,6 +145,7 @@ public class KakaoAuth extends Auth{
     @Override
     public void share(String content, final Uri imageOrVideo) {
         mImageOrVideo = imageOrVideo;
+        mContentLink = content;
         if(Session.getCurrentSession().isOpened()) {
             redirectPostActivity();
         } else {
@@ -155,7 +157,7 @@ public class KakaoAuth extends Auth{
     private void redirectPostActivity() {
         final Intent intent = new Intent(hostActivity, KakaoPostActivity.class);
         intent.setData(mImageOrVideo);
-        intent.putExtra("content-link", content);
+        intent.putExtra("content-link", mContentLink);
         hostActivity.startActivity(intent);
         mImageOrVideo = null;
         logout();
