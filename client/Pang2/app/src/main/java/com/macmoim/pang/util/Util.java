@@ -131,4 +131,11 @@ public class Util {
         }
     }
 
+    public static void purgeDirectory(File dir) {
+        for (File file: dir.listFiles()) {
+            if (file.isDirectory()) purgeDirectory(file);
+            file.delete();
+        }
+    }
+
 }

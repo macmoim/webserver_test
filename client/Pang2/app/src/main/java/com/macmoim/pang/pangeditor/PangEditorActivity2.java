@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,15 +29,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.macmoim.pang.R;
+import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.data.LoginPreferences;
 import com.macmoim.pang.dialog.ExtDialog;
 import com.macmoim.pang.dialog.ExtDialogSt;
 import com.macmoim.pang.dialog.typedef.AlertDialogAttr;
 import com.macmoim.pang.dialog.typedef.ProgressCircleDialogAttr;
-import com.macmoim.pang.util.Util;
-import com.macmoim.pang.app.AppController;
 import com.macmoim.pang.layoutmanager.MyLinearLayoutManager;
 import com.macmoim.pang.multipart.MultiPartGsonRequest;
+import com.macmoim.pang.util.Util;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -299,12 +300,16 @@ public class PangEditorActivity2 extends AppCompatActivity {
     }
 
     public void removeCropFiles() {
-        for (PageItem p : mPageItems) {
-            if (p.getImageUri() != null) {
-                File file = new File(p.getImageUri().getPath());
-                file.delete();
-            }
-        }
+//        for (PageItem p : mPageItems) {
+//            if (p.getImageUri() != null) {
+//                File file = new File(p.getImageUri().getPath());
+//                file.delete();
+//            }
+//        }
+        String path = Environment.getExternalStorageDirectory() + "/" + "smtc/";
+        File smtcFolder = new File(path);
+
+        Util.purgeDirectory(smtcFolder);
 
     }
 

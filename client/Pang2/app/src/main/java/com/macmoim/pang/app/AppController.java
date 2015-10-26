@@ -13,6 +13,9 @@ import com.macmoim.pang.volley.LruBitmapCache;
 
 public class AppController extends Application {
 
+    // set true when release mode
+    private static boolean isReleaseVersion = false;
+
     public static final String TAG = AppController.class.getSimpleName();
     private static Activity currentActivity;
 
@@ -27,6 +30,11 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
+        if (isReleaseVersion) {
+            Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+        }
+
     }
 
     public static synchronized AppController getInstance() {
